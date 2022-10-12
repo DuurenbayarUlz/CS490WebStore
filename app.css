@@ -59,12 +59,6 @@
   padding: 23.2px 14.1px;
 }
 
-/* .filter {
-  border: 1px none;
-  height: 577px;
-  margin-top: -0.25px;
-  width: 210px;
-} */
 
 .title {
   letter-spacing: 0;
@@ -160,6 +154,234 @@
   height: 17px;
   width: 15px
 }
+.frame-5 {
+  align-items: flex-start;
+  border: 0.94px none;
+  display: flex;
+  gap: 5px;
+  min-width: 1200px;
+}
+
+.frame-9 {
+  align-items: flex-start;
+  background-color: var(--shark);
+  border: 0.94px none;
+  display: flex;
+  height: 38px;
+  min-width: 167px;
+  padding: 8.4px 47.1px;
+}
+
+.electronic {
+  letter-spacing: 0;
+  line-height: 18.8px;
+  min-height: 19px;
+  white-space: nowrap;
+}
+
+.frame-7 {
+  align-items: flex-start;
+  background-color: var(--shark);
+  border: 0.94px none;
+  display: flex;
+  height: 38px;
+  min-width: 167px;
+  padding: 8.4px 27.6px;
+}
+
+.office-supplies {
+  letter-spacing: 0;
+  line-height: 18.8px;
+  min-height: 19px;
+  white-space: nowrap;
+}
+.frame-11 {
+  align-items: flex-start;
+  background-color: var(--shark);
+  border: 0.94px none;
+  display: flex;
+  height: 38px;
+  justify-content: flex-end;
+  min-width: 167px;
+  padding: 8.4px 65.7px;
+}
+
+.toys {
+  letter-spacing: 0;
+  line-height: 18.8px;
+  min-height:19px;
+  white-space: nowrap;
+}
+
+.frame-10 {
+  align-items: flex-start;
+  background-color: var(--shark);
+  border: 0.94px none;
+  display: flex;
+  height: 38px;
+  min-width: 167px;
+  padding: 8.4px 42.9px;
+}
+
+.appliances {
+  letter-spacing: 0;
+  line-height: 18.8px;
+  min-height: 19px;
+  white-space: nowrap;
+}
+
+.frame-6 {
+  align-items: flex-start;
+  background-color: var(--shark);
+  border: 0.94px none;
+  display: flex;
+  height: 38px;
+  min-width: 167px;
+  padding: 8.4px 36.6px;
+}
+
+.home-goods {
+  letter-spacing: 0;
+  line-height: 18.8px;
+  min-height: 19px;
+  white-space: nowrap;
+} 
+
+.frame-12 {
+  align-items: flex-start;
+  background-color: var(--shark);
+  border: 0.94px none;
+  display: flex;
+  height: 38px;
+  justify-content: flex-end;
+  min-width: 167px;
+  padding: 8.4px 52.4px;
+}
+
+.clothing {
+  letter-spacing: 0;
+  line-height: 18.8px;
+  min-height: 19px;
+  white-space: nowrap;
+}
+
+
+.frame-8 {
+  align-items: flex-start;
+  background-color: var(--shark);
+  border: 0.94px none;
+  display: flex;
+  height: 38px;
+  min-width: 167px;
+  padding: 8.4px 29.9px;
+}
+
+.books-media {
+  letter-spacing: 0;
+  line-height: 18.8px;
+  min-height: 19px;
+  white-space: nowrap;
+}
+
+.footer-web {
+  align-items: flex-end;
+  background-color: var(--burnt-orange);
+  border: 1px none;
+  display: flex;
+  flex-direction: column;
+  gap: 101px;
+  height: 311px;
+  padding: 17.8px 17px;
+  width: 1200px;
+}
+
+.copyright {
+  letter-spacing: 0;
+  line-height: 16.9px;
+  min-height: 17px;
+  min-width: 118px;
+  white-space: nowrap;
+}
+
+.group-container {
+  align-items: flex-start;
+  align-self: center;
+  display: flex;
+  height: 133px;
+  margin-right: 4.69px;
+  margin-top: 25px;
+  min-width: 1083px;
+}
+
+.group-1 {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  min-height: 133px;
+  width: 147px;
+}
+
+.line-1 {
+  height: 1px;
+  margin-top: 13px;
+  width: 1080px;
+}
+
+.shop-by-category {
+  letter-spacing: 0;
+  margin-top: -2px;
+  min-height: 20px;
+}
+
+.frame-3 {
+  align-items: flex-start;
+  border: 1.51px none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+  min-height: 92px;
+  width: 130px;
+}
+
+.home-goods-1 {
+  letter-spacing: 0;
+  min-height: 20px;
+}
+
+.office-supplies-1 {
+  letter-spacing: 0;
+  margin-top: -2px;
+  min-height: 20px;
+}
+
+.books {
+  letter-spacing: 0;
+  min-height: 20px;
+}
+
+.group-2 {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  margin-left: 82px;
+  min-height: 133px;
+  width: 132px;
+}
+
+.line-1-1{
+  height: 1px;
+  margin-left: 0;
+  margin-top: 13px;
+  width: 37px;
+}
+
+.about {
+  letter-spacing: 0;
+  margin-top: -2px;
+  min-height: 20px;
+}
+
 .my-cart {
   letter-spacing: 0;
   line-height: 16.9px;
@@ -168,13 +390,51 @@
   white-space: nowrap;
 }
 
-/*
-.home-goods {
+.refill-webcoins {
   letter-spacing: 0;
-  line-height: 18.8px;
-  min-height: 19px;
-  white-space: nowrap;
-} */
+  min-height: 20px;
+}
+
+.about-us {
+  letter-spacing: 0;
+  margin-top: -2px;
+  min-height: 20px;
+}
+
+.group-3 {
+  align-items: flex-start;
+  display: flex;
+  gap: 23px;
+  height: 48px;
+  margin-left: 464px;
+  margin-top: 13.12px;
+  min-width: 258px;
+}
+
+.ellipse {
+  background-color: var(--buttery-white-2);
+  border: 0.94px none;
+  border-radius: 23.44px;
+  height: 47px;
+  width: 47px;
+}
+
+.ellipse-2 {
+  align-self: flex-end;
+  background-color: var(--buttery-white-2);
+  border: 0.94px none;
+  border-radius: 23.44px;
+  height: 47px;
+  width: 47px;
+}
+
+.ellipse-4 {
+  background-color: var(--buttery-white-2);
+  border: 0.94px none;
+  border-radius: 23.44px;
+  height: 47px;
+  width: 47px;
+}
 
 /* Variables */
 
