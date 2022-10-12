@@ -320,12 +320,6 @@
   width: 147px;
 }
 
-.line-1 {
-  height: 1px;
-  margin-top: 13px;
-  width: 1080px;
-}
-
 .shop-by-category {
   letter-spacing: 0;
   margin-top: -2px;
@@ -373,6 +367,13 @@
   margin-left: 0;
   margin-top: 13px;
   width: 37px;
+}
+
+.line-1{
+  height: 1px;
+  margin-left: 0;
+  margin-top: 13px;
+  width: 108px;
 }
 
 .about {
