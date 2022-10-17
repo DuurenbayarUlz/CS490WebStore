@@ -84,16 +84,9 @@ p {
 }
 
 .catalog {
-  height: 68vh;
+  min-height: 68vh;
   width: 90vw;
   background-color: rgb(253, 240, 213);
-}
-
-.catalog-container {
-  display: flex;
-  width: 100%;
-  justify-content: space-evenly;
-  padding-top: 1vh;
 }
 
 .catalog-item {
