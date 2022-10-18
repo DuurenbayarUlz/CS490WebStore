@@ -3,10 +3,10 @@
   padding: 0;
 }
 
-body {
+/* body {
   padding-left: 5vw;
   padding-right: 5vw;
-}
+} */
 
 p {
   margin-bottom: 0px;
@@ -19,7 +19,7 @@ p {
 }
 
 .header {
-  width: 90vw;
+  width: 100vw;
   height: 8vh;
   background-color: orange;
   display: flex;
@@ -65,7 +65,7 @@ p {
 }
 
 .menu {
-  width: 90vw;
+  width: 100vw;
   background-color: rgb(253, 240, 213);
   display: flex;
   justify-content: space-between;
@@ -84,8 +84,8 @@ p {
 }
 
 .catalog {
-  min-height: 68vh;
-  width: 90vw;
+  min-height: 90vh;
+  width: 100vw;
   background-color: rgb(253, 240, 213);
 }
 
@@ -141,8 +141,8 @@ p {
 }
 
 .footer {
-  width: 90vw;
-  height: 20vh;
+  width: 100vw;
+  height: 30vh;
   padding: 20px;
   display: flex;
   background-color: orange;
