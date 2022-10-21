@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       body {
+        background-color: rgb(253, 240, 213);
         font-family: Arial, Helvetica, sans-serif;
         margin: 0;
       }
@@ -18,11 +19,16 @@
         box-sizing: inherit;
       }
 
+      .row {
+        padding-top: 30px;
+      }
+
       .column {
         float: left;
         width: 20%;
         margin-bottom: 16px;
         padding: 0 8px;
+        border-radius: 20px;
       }
 
       .card {
@@ -33,8 +39,8 @@
       .about-section {
         padding: 50px;
         text-align: center;
-        background-color: #474e5d;
-        color: white;
+        background-color: orange;
+        color: black;
       }
 
       .container {
@@ -82,8 +88,6 @@
       <h1>About us</h1>
       <h3>COMP 490 Group 2</h3>
     </div>
-
-    <h2 style="text-align: center">Our Team</h2>
 
     <div class="row">
       <div class="column">
@@ -142,7 +146,7 @@
             style="width: 100%"
           />
           <div class="container">
-           <h2>Caroline</h2>
+            <h2>Caroline</h2>
             <p class="title">Front-End</p>
             <p>Year: Senior</p>
             <p>Major: CS</p>
@@ -158,15 +162,14 @@
             style="width: 100%"
           />
           <div class="container">
-           <h2>Sophie</h2>
+            <h2>Sophie</h2>
             <p class="title">UI/UX Lead Editor</p>
             <p>Year: Sophomore</p>
             <p>Major: CS</p>
           </div>
-          </div>
         </div>
-        <a href="/" onclick="route()">Home</a>
       </div>
+      <a href="/" onclick="route()">Home</a>
     </div>
   </body>
 </html>
