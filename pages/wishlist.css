@@ -1,9 +1,9 @@
-#root{
+  #root{
     max-width: 80%;
     margin: auto;
-}
+  }
 
-header {
+  header {
     width: 100%;
     height: 8vh;
     background-color: #ffa500;
@@ -117,6 +117,7 @@ header {
     display: flex;
     flex-direction: column;
     width:75%
+
   }
 
   .wishlist-item{
@@ -125,17 +126,52 @@ header {
     border-radius: 6px;
     padding:8px;
     display:flex;
+    margin-bottom: 10px;
   }
 
-  .wishlist-item .product{
-    font-weight:bold;
-    font-size:xx-large;
+  .item-details{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width:100%;
   }
 
-  .wishlist-item .brand{
+  .item-details .product{
+    font-weight:600;
+    font-size:30px;
+    padding:0px;
+    margin-bottom:-8px;
+  }
+
+  .item-details .brand{
     font-weight:400;
     color:#4D4D4D;
     font-size:larger;
+    padding:0px;
+    margin:0px;
+  }
+
+  .item-details .price{
+    margin:0px;
+    padding:0px;
+    font-weight: 600;
+    font-size:20px;
+  }
+
+  .wishlist-item .item-image{
+    align-self: flex-start;
+  }
+
+  .wishlist-item .actions{
+    display:flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width:100%;
+    margin: 10px;
+  }
+
+  .wishlist-item .actions a{
+    margin-bottom: 10px;
   }
 
   .catalog-item-description-star {
@@ -143,12 +179,15 @@ header {
     flex-direction: row;
     width: 100%;
   }
-  
-  .catalog-item-description-star p {
-    display: inline;
-    font-size: 20px;
+
+  .catalog-item-description-star img{
+    width:18px;
   }
 
+  .catalog-item-description-star p {
+    display: inline;
+    font-size: 15px;
+  }
 
   footer {
     width: 100%;
@@ -210,5 +249,34 @@ header {
     .header-navigation p {
       font-size: 14px;
       margin-left: 5px;
+    }
+
+    .wishlist-item{
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .wishlist-item .actions{
+      display:block;
+      text-align: center;
+    }
+
+    .wishlist-item .actions a{
+      background-color:gainsboro;
+      border:1px solid black;
+      padding:5px;
+      border-radius: 3px;
+    }
+
+    #root{
+      max-width: 100%;
+    }
+
+    main{
+      padding:15px;
+    }
+
+    .wishlist-item .item-image{
+      align-self:center;
     }
   }
