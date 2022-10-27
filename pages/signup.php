@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+  include("connection.php");
+
+  // try {
+  //   $sql = "insert into User (email, full_name, pass_word) values ('$email', '$full_name', '$password')";
+  //   $conn->exec($sql);
+  //   echo "New record created successfully";
+  // } catch(PDOException $e) {
+  //   echo $sql . "<br>" . $e->getMessage();
+  // }
+  // $conn = null;
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -15,7 +30,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
     />
-    <title>Log in</title>
+    <title>Sign up</title>
   </head>
   <body>
     <div id="root">
@@ -33,7 +48,7 @@
           <div class="header-navigation">
             <div class="header-navigation-account">
               <img
-                src="/images/profile.png"
+                src="../images/profile.png"
                 alt="heart-icon"
                 height="18"
                 width="18"
@@ -42,7 +57,7 @@
             </div>
             <div class="header-navigation-wishlist">
               <img
-                src="/images/HeartIcon2.png"
+                src="../images/HeartIcon2.png"
                 alt="heart-icon"
                 height="18"
                 width="18"
@@ -51,7 +66,7 @@
             </div>
             <div class="header-navigation-cart">
               <img
-                src="/images/shopping-cart.png"
+                src="../images/shopping-cart.png"
                 alt="heart-icon"
                 height="18"
                 width="18"
@@ -77,7 +92,7 @@
               class="d-flex flex-column justify-content-center align-items-center mt-4"
             >
               <div style="text-align: center">
-                <h3>Login to your account to start shopping</h3>
+                <h3>Signup to your account to start shopping</h3>
               </div>
 
               <div class="icon" style="margin-top: 10px; margin-bottom: 10px">
@@ -87,20 +102,30 @@
               <div
                 style="display: flex; flex-direction: column; margin-top: 20px"
               >
-                <input
-                  type="text"
-                  name=""
-                  class="form-control"
-                  placeholder="Username"
-                />
+                <form method="POST">
+                  <input
+                    type="text"
+                    name="email"
+                    class="form-control"
+                    placeholder="Email"
+                  />
 
-                <input
-                  type="text"
-                  name=""
-                  class="form-control"
-                  placeholder="Password"
-                />
-                <button>Log In</button>
+                  <input
+                    type="text"
+                    name="fullname"
+                    class="form-control"
+                    placeholder="Full name"
+                  />
+
+                  <input
+                    type="text"
+                    name="password"
+                    class="form-control"
+                    placeholder="Password"
+                  />
+                  <button type="submit" name="signup">Sign Up</button>
+                  <a href="login.php">Log in</a>
+                  </form>
               </div>
             </div>
           </div>
@@ -115,7 +140,7 @@
           <p>Books</p>
           <p>Electronics</p>
           <p>Home Goods</p>
-          <a href="/about" onclick="route()">About</a>
+          <a href="about.php">About</a>
         </div>
         <div class="footer-about">
           <h6>About</h6>
@@ -126,16 +151,16 @@
         <div class="footer-social">
           <div class="footer-social-logos">
             <div class="footer-social-logo-item">
-              <img src="/images/fb.png" alt="fb-icon" />
+              <img src="../images/fb.png" alt="fb-icon" />
             </div>
             <div class="footer-social-logo-item">
-              <img src="/images/insta-logo.png" alt="insta-icon" />
+              <img src="../images/insta-logo.png" alt="insta-icon" />
             </div>
             <div class="footer-social-logo-item">
-              <img src="/images/youtube.png" alt="youtube" />
+              <img src="../images/youtube.png" alt="youtube" />
             </div>
             <div class="footer-social-logo-item">
-              <img src="/images/twitter.png" alt="twitter" />
+              <img src="../images/twitter.png" alt="twitter" />
             </div>
           </div>
           <div class="footer-social-copyright">
@@ -144,6 +169,5 @@
         </div>
       </div>
     </div>
-    <script src="../router.js"></script>
   </body>
 </html>
