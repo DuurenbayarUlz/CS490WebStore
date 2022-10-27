@@ -6,10 +6,10 @@ const route = (event) => {
 };
 
 const routes = {
-  "/": "/pages/index.html",
   "/pages/index.html": "/pages/index.html",
   "/pages/about.html": "/pages/about.html",
-  "/about": "/pages/about.html",
+  "/pages/login.html": "/pages/login.html",
+  "/pages/signup.html": "/pages/signup.html",
   404: "/pages/404.html",
 };
 
