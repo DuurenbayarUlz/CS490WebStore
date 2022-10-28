@@ -45,7 +45,7 @@
                 height="18"
                 width="18"
               />
-              <p>My account</p>
+              <p><a href = "account.php">My account</a></p>
             </div>
             <div class="header-navigation-wishlist">
               <img
@@ -82,12 +82,6 @@
           <div
             class="row gx-4 gx-lg-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5"
           >
-            <div>
-              <p>
-                Welcome <?php echo $_SESSION['email']?>
-              </p>
-              <a href="logout.php">Log out</a>
-            </div> 
             <div class="col mb-5">
               <div class="catalog-item">
                 <img
