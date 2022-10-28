@@ -69,10 +69,10 @@
         <main>
             <div class="sidebar">
                 <ul>
-                    <li>Account Settings</li>
-                    <li>Order History</li>
-                    <li><a href="wishlist.html">Wishlist</a></li>
-                    <li>Refill Wallet</li>
+                  <li><a href="accountsettings.php">Account Settings</a></li>
+                  <li><a href="#">Order History</a></li>
+                  <li><a href="wishlist.php">Wishlist</a></li>
+                  <li><a href="#">Refill Wallet</a></li>
                 </ul>
             </div>
             <div class="wishlist">

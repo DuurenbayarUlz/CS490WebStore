@@ -1,2 +1,53 @@
 @import "sidebar.css";
 @import "header.css";
+@import "footer.css";
+
+#root{
+    max-width: 80%;
+    margin: auto;
+}
+
+main{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding:15px 50px;
+    gap:40px;
+    background-color: #FFFDF4;
+}
+
+body{
+    background-image: url(/images/background-bags-image.webp);
+    background-size: contain;
+    background-position-y: bottom;
+    background-attachment: fixed;
+}
+
+body a {
+    text-decoration: none;
+    color:inherit;
+}
+
+body a:hover{
+    color:#ffa500;
+}
+
+.accountsettings{
+    display: flex;
+    flex-direction: column;
+    width:75%
+}
+
+.top{
+    display:flex;
+}
+
+.userpass{
+    display: flex;
+    flex-direction: column;
+}
+
+.userpass input{
+    border: 1px solid black;
+    border-radius: 6px;
+}

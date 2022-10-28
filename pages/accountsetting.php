@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Settings</title>
-    <link href="accountsettings.css" ref="stylesheet">
+    <link href="accountsettings.css" rel="stylesheet">
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
       crossorigin="anonymous"
     />
+    <title>Account Settings</title>
 </head>
 <body>
     <div id="root">
@@ -55,6 +55,43 @@
                 </div>
             </div>
         </header>
+            <div class="menu">
+                <button>Home Goods</button>
+                <button>Office Supplies</button>
+                <button>Books & Media</button>
+                <button>Electronics</button>
+                <button>Appliances</button>
+                <button>Toys</button>
+                <button>Clothing</button>
+            </div>
+        <main>
+            <div class="sidebar">
+                <ul>
+                    <li><a href="accountsettings.php">Account Settings</a></li>
+                    <li><a href="#">Order History</a></li>
+                    <li><a href="wishlist.php">Wishlist</a></li>
+                    <li><a href="#">Refill Wallet</a></li>
+                </ul>
+            </div> <!-- End of sidebar -->
+            <div class="accountsettings">
+                <div class="top">
+
+                </div>
+                <div class="userpass">
+                    <div>
+                        <h3>Change Username:</h3>
+                        <input type="text" name="username" value="New username">
+                        <input type="submit" value="Submit">
+                    </div>
+                    <div>
+                        <h3>Change Password:</h3>
+                        <input type="password" name="password" value="New password">
+                        <input type="password" name="confirmpass" value="Confirm new password">
+                        <input type="submit" value="Submit">
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 </body>
 </html>
