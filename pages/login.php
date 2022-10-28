@@ -100,7 +100,7 @@
               class="d-flex flex-column justify-content-center align-items-center mt-4"
             >
               <div style="text-align: center">
-                <h3>Login to your account to start shopping</h3>
+                <h3>Login to start shopping</h3>
               </div>
 
               <div class="icon" style="margin-top: 10px; margin-bottom: 10px">
@@ -111,20 +111,24 @@
                 style="display: flex; flex-direction: column; margin-top: 20px"
               >
                 <form method="POST">
-                  <input
-                    type="text"
-                    name="email"
-                    class="form-control"
-                    placeholder="Email"
-                  />
 
-                  <input
-                    type="text"
-                    name="pass_word"
-                    class="form-control"
-                    placeholder="Password"
-                  />
-                  <button name="login">Log In</button>
+                  <div style="margin-bottom: 10px">
+                    <input
+                      type="text"
+                      name="email"
+                      class="form-control"
+                      placeholder="Email"
+                    />
+                  </div>
+                  <div style="margin-bottom: 10px">
+                    <input
+                      type="text"
+                      name="pass_word"
+                      class="form-control"
+                      placeholder="Password"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-secondary" name="login">Log In</button>
                   <a href="signup.php">Sign up</a>
                 </form>
               </div>

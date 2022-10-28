@@ -98,7 +98,7 @@
               class="d-flex flex-column justify-content-center align-items-center mt-4"
             >
               <div style="text-align: center">
-                <h3>Signup to your account to start shopping</h3>
+                <h4>Signup to start shopping</h4>
               </div>
 
               <div class="icon" style="margin-top: 10px; margin-bottom: 10px">
@@ -106,30 +106,36 @@
               </div>
 
               <div
-                style="display: flex; flex-direction: column; margin-top: 20px"
+                style="display: flex; flex-direction: column; margin-top: 10px"
               >
                 <form method="POST">
-                  <input
-                    type="text"
-                    name="email"
-                    class="form-control"
-                    placeholder="Email"
-                  />
+                  <div style="margin-bottom: 10px">
+                    <input
+                      type="text"
+                      name="email"
+                      class="form-control"
+                      placeholder="Email"
+                    />
+                  </div>
+                
+                  <div style="margin-bottom: 10px">
+                    <input
+                      type="text"
+                      name="full_name"
+                      class="form-control"
+                      placeholder="Full name"
+                    />
+                  </div>
 
-                  <input
-                    type="text"
-                    name="full_name"
-                    class="form-control"
-                    placeholder="Full name"
-                  />
-
-                  <input
-                    type="text"
-                    name="pass_word"
-                    class="form-control"
-                    placeholder="Password"
-                  />
-                  <button type="submit" name="signup">Sign Up</button>
+                  <div style="margin-bottom: 10px">
+                    <input
+                      type="text"
+                      name="pass_word"
+                      class="form-control"
+                      placeholder="Password"
+                    />
+                   </div>
+                  <button type="submit" class="btn btn-secondary" name="signup">Sign Up</button>
                   <a href="login.php">Log in</a>
                   </form>
               </div>
