@@ -28,7 +28,7 @@
             <div class="header-navigation">
                 <div class="header-navigation-account">
                     <img
-                    src="/images/profile.png"
+                    src="../images/profile.png"
                     alt="profile icon"
                     height="18"
                     width="18"
@@ -37,7 +37,7 @@
                 </div>
                 <div class="header-navigation-wishlist">
                     <img
-                    src="/images/HeartIcon2.png"
+                    src="../images/HeartIcon2.png"
                     alt="heart icon"
                     height="18"
                     width="18"
@@ -46,7 +46,7 @@
                 </div>
                 <div class="header-navigation-cart">
                     <img
-                    src="/images/shopping-cart.png"
+                    src="../images/shopping-cart.png"
                     alt="cart icon"
                     height="18"
                     width="18"
@@ -71,41 +71,41 @@
                 <ul>
                     <li>Account Settings</li>
                     <li>Order History</li>
-                    <li><a href="/pages/wishlist.html">Wishlist</a></li>
+                    <li><a href="wishlist.html">Wishlist</a></li>
                     <li>Refill Wallet</li>
                 </ul>
             </div>
             <div class="wishlist">
                 <h2 style="font-weight:bold;">My Wishlist</h2>
                 <div class="wishlist-item">
-                    <img class="item-image" src="/images/headphone.png">
+                    <img class="item-image" src="../images/headphone.png">
                     <div class="item-details">
                         <p class="product">Product Name</p>
                         <p class="brand">Brand</p>
                         <div class="catalog-item-description-star">
                             <span>
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-white.png"
+                                src="../images/star-white.png"
                                 alt="star-rating"
                                 title="rating"
                               />
@@ -120,34 +120,34 @@
                     </div>
                 </div>
                 <div class="wishlist-item">
-                    <img class="item-image" src="/images/headphone.png">
+                    <img class="item-image" src="../images/headphone.png">
                     <div class="item-details">
                         <p class="product">Product Name</p>
                         <p class="brand">Brand</p>
                         <div class="catalog-item-description-star">
                             <span>
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-white.png"
+                                src="../images/star-white.png"
                                 alt="star-rating"
                                 title="rating"
                               />
@@ -162,34 +162,34 @@
                     </div>
                 </div>
                 <div class="wishlist-item">
-                    <img class="item-image" src="/images/headphone.png">
+                    <img class="item-image" src="../images/headphone.png">
                     <div class="item-details">
                         <p class="product">Product Name</p>
                         <p class="brand">Brand</p>
                         <div class="catalog-item-description-star">
                             <span>
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-orange.png"
+                                src="../images/star-orange.png"
                                 alt="star-rating"
                                 title="rating"
                               />
                               <img
-                                src="/images/star-white.png"
+                                src="../images/star-white.png"
                                 alt="star-rating"
                                 title="rating"
                               />
@@ -215,7 +215,7 @@
             <p>Books</p>
             <p>Electronics</p>
             <p>Home Goods</p>
-            <a href="/about" onclick="route()">About</a>
+            <a href="about.php">About</a>
             </div>
             <div class="footer-about">
             <h6>About</h6>
@@ -226,16 +226,16 @@
             <div class="footer-social">
             <div class="footer-social-logos">
                 <div class="footer-social-logo-item">
-                <img src="/images/fb.png" alt="fb-icon" />
+                <img src="../images/fb.png" alt="fb-icon" />
                 </div>
                 <div class="footer-social-logo-item">
-                <img src="/images/insta-logo.png" alt="insta-icon" />
+                <img src="../images/insta-logo.png" alt="insta-icon" />
                 </div>
                 <div class="footer-social-logo-item">
-                <img src="/images/youtube.png" alt="youtube" />
+                <img src="../images/youtube.png" alt="youtube" />
                 </div>
                 <div class="footer-social-logo-item">
-                <img src="/images/twitter.png" alt="twitter" />
+                <img src="../images/twitter.png" alt="twitter" />
                 </div>
             </div>
             <div class="footer-social-copyright">

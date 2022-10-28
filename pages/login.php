@@ -1,3 +1,26 @@
+<?php
+  session_start();
+  include("connection.php");
+
+  if(isset($_POST["login"])) {
+    if ($_POST["pass_word"] == "" or $_POST["email"] == "") {
+      echo "<center><h1>Email and Password cannot be empty</h1></center>";
+    } else {
+      $email = trim($_POST["email"]);
+      $pass_word = strip_tags(trim($_POST["pass_word"]));
+      
+      $query=$conn->prepare("SELECT * FROM User WHERE email=? and pass_word=?");
+      $query->execute(array($email, $pass_word));
+      $control=$query->fetch(PDO::FETCH_OBJ);
+      if($control > 0) {
+        $_SESSION["email"] = $email;
+        header("Location: index.php");
+      }
+      echo "<center><p>Incorrect Password or Email</p></center>";
+    }
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -33,7 +56,7 @@
           <div class="header-navigation">
             <div class="header-navigation-account">
               <img
-                src="/images/profile.png"
+                src="../images/profile.png"
                 alt="heart-icon"
                 height="18"
                 width="18"
@@ -42,7 +65,7 @@
             </div>
             <div class="header-navigation-wishlist">
               <img
-                src="/images/HeartIcon2.png"
+                src="../images/HeartIcon2.png"
                 alt="heart-icon"
                 height="18"
                 width="18"
@@ -51,7 +74,7 @@
             </div>
             <div class="header-navigation-cart">
               <img
-                src="/images/shopping-cart.png"
+                src="../images/shopping-cart.png"
                 alt="heart-icon"
                 height="18"
                 width="18"
@@ -87,20 +110,23 @@
               <div
                 style="display: flex; flex-direction: column; margin-top: 20px"
               >
-                <input
-                  type="text"
-                  name=""
-                  class="form-control"
-                  placeholder="Username"
-                />
+                <form method="POST">
+                  <input
+                    type="text"
+                    name="email"
+                    class="form-control"
+                    placeholder="Email"
+                  />
 
-                <input
-                  type="text"
-                  name=""
-                  class="form-control"
-                  placeholder="Password"
-                />
-                <button>Log In</button>
+                  <input
+                    type="text"
+                    name="pass_word"
+                    class="form-control"
+                    placeholder="Password"
+                  />
+                  <button name="login">Log In</button>
+                  <a href="signup.php">Sign up</a>
+                </form>
               </div>
             </div>
           </div>
@@ -115,7 +141,7 @@
           <p>Books</p>
           <p>Electronics</p>
           <p>Home Goods</p>
-          <a href="/about" onclick="route()">About</a>
+          <a href="about.php">About</a>
         </div>
         <div class="footer-about">
           <h6>About</h6>
@@ -126,16 +152,16 @@
         <div class="footer-social">
           <div class="footer-social-logos">
             <div class="footer-social-logo-item">
-              <img src="/images/fb.png" alt="fb-icon" />
+              <img src="../images/fb.png" alt="fb-icon" />
             </div>
             <div class="footer-social-logo-item">
-              <img src="/images/insta-logo.png" alt="insta-icon" />
+              <img src="../images/insta-logo.png" alt="insta-icon" />
             </div>
             <div class="footer-social-logo-item">
-              <img src="/images/youtube.png" alt="youtube" />
+              <img src="../images/youtube.png" alt="youtube" />
             </div>
             <div class="footer-social-logo-item">
-              <img src="/images/twitter.png" alt="twitter" />
+              <img src="../images/twitter.png" alt="twitter" />
             </div>
           </div>
           <div class="footer-social-copyright">
@@ -144,6 +170,5 @@
         </div>
       </div>
     </div>
-    <script src="../router.js"></script>
   </body>
 </html>
