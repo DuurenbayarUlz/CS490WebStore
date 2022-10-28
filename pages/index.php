@@ -86,6 +86,7 @@
               <p>
                 Welcome <?php echo $_SESSION['email']?>
               </p>
+              <a href="logout.php">Log out</a>
             </div> 
             <div class="col mb-5">
               <div class="catalog-item">
