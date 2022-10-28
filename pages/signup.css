@@ -88,12 +88,7 @@ p {
 .login-section {
   min-height: 68vh;
   width: 100vw;
-  background: linear-gradient(
-      270deg,
-      rgba(0, 0, 0, 0) 32.71%,
-      rgba(0, 0, 0, 0.2) 100%
-    ),
-    #fffdf4;
+  background-color: rgb(253, 240, 213);
   display: flex;
   justify-content: center;
   align-items: center;
