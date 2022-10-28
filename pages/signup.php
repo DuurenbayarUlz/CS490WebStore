@@ -1,16 +1,22 @@
 <?php
-session_start();
-
+  session_start();
+  
   include("connection.php");
-
-  // try {
-  //   $sql = "insert into User (email, full_name, pass_word) values ('$email', '$full_name', '$password')";
-  //   $conn->exec($sql);
-  //   echo "New record created successfully";
-  // } catch(PDOException $e) {
-  //   echo $sql . "<br>" . $e->getMessage();
-  // }
-  // $conn = null;
+    if(isset($_POST["signup"])) {
+    if ($_POST["full_name"] == "" or $_POST["pass_word"] == "" or $_POST["email"] == "") {
+      echo "<center><h1>Fullname, Email, and Password cannot be empty</h1></center>";
+    } else {
+      try {
+        $email = trim($_POST["email"]);
+        $full_name = trim($_POST["full_name"]);
+        $pass_word = strip_tags(trim($_POST["pass_word"]));
+        $query=$conn->exec("insert into User (email, full_name, pass_word) values ('$email', '$full_name', '$pass_word')");
+        echo "New record created successfully";
+      } catch(PDOException $e) {
+        echo $sql . "<br>" . $e->getMessage();
+      }
+    }
+  }
 ?>
 
 <!DOCTYPE html>
@@ -112,14 +118,14 @@ session_start();
 
                   <input
                     type="text"
-                    name="fullname"
+                    name="full_name"
                     class="form-control"
                     placeholder="Full name"
                   />
 
                   <input
                     type="text"
-                    name="password"
+                    name="pass_word"
                     class="form-control"
                     placeholder="Password"
                   />
