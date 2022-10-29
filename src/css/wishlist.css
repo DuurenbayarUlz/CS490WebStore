@@ -7,25 +7,6 @@ body a:hover {
   color: #ffa500;
 }
 
-.menu {
-  width: 100%;
-  background-color: #ffa500;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-  overflow: scroll;
-}
-
-.menu button {
-  min-width: 150px;
-  height: 40px;
-  background-color: black;
-  color: rgb(242, 127, 3);
-  border-radius: 5px;
-  margin: 5px;
-}
-
 main {
   display: flex;
   justify-content: center;

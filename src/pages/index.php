@@ -21,15 +21,8 @@ if (!isset($_SESSION["email"])) {
 <body>
   <div id="root">
     <?php include("partials/header.php") ?>
-    <div class="menu">
-      <button>Home Goods</button>
-      <button>Office Supplies</button>
-      <button>Books & Media</button>
-      <button>Electronics</button>
-      <button>Appliances</button>
-      <button>Toys</button>
-      <button>Clothing</button>
-    </div>
+    <?php include("partials/menu.php") ?>
+
     <div class="catalog">
       <div class="container px-4 px-lg-5 pt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5">
