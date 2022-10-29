@@ -20,26 +20,7 @@ if (!isset($_SESSION["email"])) {
 
 <body>
   <div id="root">
-    <header>
-      <div class="header">
-        <div class="header-logo">
-          <h2>Webstore</h2>
-        </div>
-        <div class="header-navigation">
-          <div class="header-navigation-account">
-            <a href="index.php">Home</a>
-          </div>
-          <div class="header-navigation-wishlist">
-            <img src="../images/HeartIcon2.png" alt="heart-icon" height="18" width="18" />
-            <p>Wishlist</p>
-          </div>
-          <div class="header-navigation-cart">
-            <img src="../images/shopping-cart.png" alt="heart-icon" height="18" width="18" />
-            <p>My Cart</p>
-          </div>
-        </div>
-      </div>
-    </header>
+    <?php include("partials/header.php") ?>
     <div class="catalog">
       <p>
         Welcome <?php echo $_SESSION['email'] ?>

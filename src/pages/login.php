@@ -36,30 +36,7 @@ if (isset($_POST["login"])) {
 
 <body>
   <div id="root">
-    <header>
-      <div class="header">
-        <div class="header-logo">
-          <h2>Webstore</h2>
-        </div>
-        <div class="header-input">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-        </div>
-        <div class="header-navigation">
-          <div class="header-navigation-account">
-            <img src="../images/profile.png" alt="heart-icon" height="18" width="18" />
-            <p>My account</p>
-          </div>
-          <div class="header-navigation-wishlist">
-            <img src="../images/HeartIcon2.png" alt="heart-icon" height="18" width="18" />
-            <p>Wishlist</p>
-          </div>
-          <div class="header-navigation-cart">
-            <img src="../images/shopping-cart.png" alt="heart-icon" height="18" width="18" />
-            <p>My Cart</p>
-          </div>
-        </div>
-      </div>
-    </header>
+    <?php include("partials/header.php") ?>
     <div class="menu">
       <button>Home Goods</button>
       <button>Office Supplies</button>
