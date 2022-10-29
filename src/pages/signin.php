@@ -2,7 +2,7 @@
 session_start();
 include("connection.php");
 
-if (isset($_POST["login"])) {
+if (isset($_POST["signin"])) {
   if ($_POST["pass_word"] == "" or $_POST["email"] == "") {
     echo "<center><h1>Email and Password cannot be empty</h1></center>";
   } else {
@@ -28,7 +28,7 @@ if (isset($_POST["login"])) {
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../css/login.css" />
+  <link rel="stylesheet" href="../css/signin.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
   <title>Log in</title>
@@ -41,26 +41,22 @@ if (isset($_POST["login"])) {
     <div class="catalog">
       <div class="login-section">
         <div class="login-window">
-          <div class="d-flex flex-column justify-content-center align-items-center mt-4">
-            <div style="text-align: center">
-              <h3>Login to start shopping</h3>
-            </div>
-
-            <div class="icon" style="margin-top: 10px; margin-bottom: 10px">
-              <img src="../images/Log-in.png" alt="login" />
-            </div>
-
-            <div style="display: flex; flex-direction: column; margin-top: 20px">
+          <div class="d-flex flex-column">
+            <h3>Sign in</h3>
+            <div style="display: flex; flex-direction: column; margin-top: 20px; justify-content: space-between">
               <form method="POST">
-
                 <div style="margin-bottom: 10px">
-                  <input type="text" name="email" class="form-control" placeholder="Email" />
+                  <p>Email address</p>
+                  <input type="text" name="email" class="form-control" placeholder="" />
                 </div>
                 <div style="margin-bottom: 10px">
-                  <input type="text" name="pass_word" class="form-control" placeholder="Password" />
+                  <p>Password</p>
+                  <input type="password" name="pass_word" class="form-control" placeholder="" />
                 </div>
-                <button type="submit" class="btn btn-secondary" name="login">Log In</button>
-                <a href="signup.php">Sign up</a>
+                <div style="margin-top: 30px">
+                  <button type="submit" class="btn btn-secondary" name="signin">Sign in</button>
+                  <a href="signup.php">Sign up</a>
+                </div>
               </form>
             </div>
           </div>

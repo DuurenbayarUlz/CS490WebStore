@@ -27,7 +27,7 @@
     <p>Home Goods</p>
     <p>Office Supplies</p>
     <p>Health & Household</p>
-    <p>Books & Media</p>
+    <p>Books</p>
     <p>Electronics</p>
     <p>Appliances</p>
     <p>Toys</p>

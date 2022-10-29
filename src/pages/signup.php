@@ -39,30 +39,26 @@ if (isset($_POST["signup"])) {
     <div class="catalog">
       <div class="login-section">
         <div class="login-window">
-          <div class="d-flex flex-column justify-content-center align-items-center mt-4">
-            <div style="text-align: center">
-              <h4>Signup to start shopping</h4>
-            </div>
-
-            <div class="icon" style="margin-top: 10px; margin-bottom: 10px">
-              <img src="../images/Log-in.png" alt="login" />
-            </div>
-
-            <div style="display: flex; flex-direction: column; margin-top: 10px">
+          <div class="d-flex flex-column">
+            <h3>Sign up</h3>
+            <div style="display: flex; flex-direction: column; margin-top: 20px; justify-content: space-between">
               <form method="POST">
                 <div style="margin-bottom: 10px">
-                  <input type="text" name="email" class="form-control" placeholder="Email" />
+                  <p>Email address</p>
+                  <input type="text" name="email" class="form-control" placeholder="" />
                 </div>
-
                 <div style="margin-bottom: 10px">
-                  <input type="text" name="full_name" class="form-control" placeholder="Full name" />
+                  <p>Full name</p>
+                  <input type="text" name="full_name" class="form-control" placeholder="" />
                 </div>
-
                 <div style="margin-bottom: 10px">
-                  <input type="text" name="pass_word" class="form-control" placeholder="Password" />
+                  <p>Password</p>
+                  <input type="password" name="pass_word" class="form-control" placeholder="" />
                 </div>
-                <button type="submit" class="btn btn-secondary" name="signup">Sign Up</button>
-                <a href="login.php">Log in</a>
+                <div style="margin-top: 30px">
+                  <button type="submit" class="btn btn-secondary" name="signup">Sign up</button>
+                  <a href="signin.php">Sign in</a>
+                </div>
               </form>
             </div>
           </div>
