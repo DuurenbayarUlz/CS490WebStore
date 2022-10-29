@@ -79,7 +79,7 @@
             </div>
             <div class="header-navigation-cart">
                 <img src="../images/shopping-cart.png" alt="heart-icon" height="18" width="18" />
-                <p>My Cart</p>
+                <p><a href="cart.php">My Cart</a></p>
             </div>
         </div>
     </div>
