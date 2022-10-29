@@ -35,15 +35,7 @@ if (isset($_POST["signup"])) {
 <body>
   <div id="root">
     <?php include("partials/header.php") ?>
-    <div class="menu">
-      <button>Home Goods</button>
-      <button>Office Supplies</button>
-      <button>Books & Media</button>
-      <button>Electronics</button>
-      <button>Appliances</button>
-      <button>Toys</button>
-      <button>Clothing</button>
-    </div>
+    <?php include("partials/menu.php") ?>
     <div class="catalog">
       <div class="login-section">
         <div class="login-window">
