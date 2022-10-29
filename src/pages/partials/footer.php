@@ -21,6 +21,11 @@
         margin-right: 5vw;
     }
 
+    .footer-about a {
+        text-decoration: none;
+        color: black;
+    }
+
     .footer-about-line,
     .footer-category-line {
         border-top: 2px solid black;
@@ -56,12 +61,11 @@
         <p>Books</p>
         <p>Electronics</p>
         <p>Home Goods</p>
-        <a href="about.php">About</a>
     </div>
     <div class="footer-about">
         <h6>About</h6>
         <div class="footer-about-line"></div>
-        <p>About Us</p>
+        <a href="about.php">About us</a>
         <p>Refill Webcoins</p>
     </div>
     <div class="footer-social">
