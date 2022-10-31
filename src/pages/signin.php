@@ -9,12 +9,17 @@ if (isset($_POST["signin"])) {
     $email = trim($_POST["email"]);
     $pass_word = strip_tags(trim($_POST["pass_word"]));
 
-    $query = $conn->prepare("SELECT * FROM User WHERE email=? and pass_word=?");
-    $query->execute(array($email, $pass_word));
-    $control = $query->fetch(PDO::FETCH_OBJ);
-    if ($control > 0) {
-      $_SESSION["email"] = $email;
-      header("Location: index.php");
+    $stmt = $conn->query("SELECT pass_word FROM User WHERE email = '$email'");
+    $hashedPassword = $stmt->fetch();
+
+    if (password_verify($pass_word, $hashedPassword[0])) {
+      $query = $conn->prepare("SELECT * FROM User WHERE email=? and pass_word=?");
+      $query->execute(array($email, $hashedPassword[0]));
+      $control = $query->fetch(PDO::FETCH_OBJ);
+      if ($control > 0) {
+        $_SESSION["email"] = $email;
+        header("Location: index.php");
+      }
     }
     echo "<center><p>Incorrect Password or Email</p></center>";
   }
