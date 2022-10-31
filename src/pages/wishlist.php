@@ -23,14 +23,7 @@ if (!isset($_SESSION["email"])) {
     <?php include("partials/menu.php") ?>
 
     <main>
-      <div class="sidebar">
-        <ul>
-          <li>Account Settings</li>
-          <li>Order History</li>
-          <li><a href="wishlist.html">Wishlist</a></li>
-          <li>Refill Wallet</li>
-        </ul>
-      </div>
+      <?php include("../pages/partials/accountsidebar.php") ?>
       <div class="wishlist">
         <h2 style="font-weight:bold;">My Wishlist</h2>
         <div class="wishlist-item">
