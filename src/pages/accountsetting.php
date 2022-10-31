@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD:src/pages/accountsetting.php
     <link href="../css/accountsettings.css" rel="stylesheet">
-=======
-    <link href="accountsettings.css" rel="stylesheet">
->>>>>>> e829e13b6d73a7798e5a09407dc6a12904363923:pages/accountsetting.php
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -20,15 +16,7 @@
 <body>
     <div id="root">
         <?php include("../pages/partials/header.php") ?>
-            <div class="menu">
-                <button>Home Goods</button>
-                <button>Office Supplies</button>
-                <button>Books & Media</button>
-                <button>Electronics</button>
-                <button>Appliances</button>
-                <button>Toys</button>
-                <button>Clothing</button>
-            </div>
+        <?php include("../pages/partials/menu.php") ?>
         <main>
             <?php include("../pages/partials/accountsidebar.php") ?>
             <div class="accountsettings">

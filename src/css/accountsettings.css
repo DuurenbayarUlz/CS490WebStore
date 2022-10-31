@@ -54,3 +54,8 @@ body a:hover{
     max-width: 20%;
     height:auto;
 }
+
+.profile-picture{
+    width:fit-content;
+    height: fit-content;
+}
