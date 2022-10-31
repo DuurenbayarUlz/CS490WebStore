@@ -1,0 +1,140 @@
+  @import "sidebar.css";
+  @import "header.css";
+  @import "footer.css";
+  
+  #root{
+    max-width: 80%;
+    margin: auto;
+  }
+
+  body{
+    background-image: url(/images/background-bags-image.webp);
+    background-size: contain;
+    background-position-y: bottom;
+    background-attachment: fixed;
+  }
+
+  body a {
+    text-decoration: none;
+    color:inherit;
+  }
+
+  body a:hover{
+    color:#ffa500;
+  }
+
+  main{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding:15px 50px;
+    gap:40px;
+    background-color: #FFFDF4;
+  }
+
+  .wishlist{
+    display: flex;
+    flex-direction: column;
+    width:75%
+
+  }
+
+  .wishlist-item{
+    background-color: white;
+    border:1px solid #909090;
+    border-radius: 6px;
+    padding:8px;
+    display:flex;
+    margin-bottom: 10px;
+  }
+
+  .item-details{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width:100%;
+  }
+
+  .item-details .product{
+    font-weight:600;
+    font-size:30px;
+    padding:0px;
+    margin-bottom:-8px;
+  }
+
+  .item-details .brand{
+    font-weight:400;
+    color:#4D4D4D;
+    font-size:larger;
+    padding:0px;
+    margin:0px;
+  }
+
+  .item-details .price{
+    margin:0px;
+    padding:0px;
+    font-weight: 600;
+    font-size:20px;
+  }
+
+  .wishlist-item .item-image{
+    align-self: flex-start;
+  }
+
+  .wishlist-item .actions{
+    display:flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width:100%;
+    margin: 10px;
+  }
+
+  .wishlist-item .actions a{
+    margin-bottom: 10px;
+  }
+
+  .catalog-item-description-star {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .catalog-item-description-star img{
+    width:18px;
+  }
+
+  .catalog-item-description-star p {
+    display: inline;
+    font-size: 15px;
+  }
+
+  @media screen and (max-width: 960px) {
+    .wishlist-item{
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .wishlist-item .actions{
+      display:block;
+      text-align: center;
+    }
+
+    .wishlist-item .actions a{
+      background-color:gainsboro;
+      border:1px solid black;
+      padding:5px;
+      border-radius: 3px;
+    }
+
+    #root{
+      max-width: 100%;
+    }
+
+    main{
+      padding:15px;
+    }
+
+    .wishlist-item .item-image{
+      align-self:center;
+    }
+  }
