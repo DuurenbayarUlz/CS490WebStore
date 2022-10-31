@@ -15,7 +15,7 @@
 </head>
 <body>
     <div id="root">
-    <header>
+        <header>
             <div class="header-logo"><h2>Webstore</h2></div>
             <div class="header-input">
                 <input
@@ -75,7 +75,13 @@
             </div> <!-- End of sidebar -->
             <div class="accountsettings">
                 <div class="top">
-
+                    <div class="profile-picture">
+                        <img src="https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg" alt="...">
+                    </div>
+                    <div>
+                        <p>Upload new profile picture:</p>
+                        <input type="button" value="Upload">
+                    </div>
                 </div>
                 <div class="userpass">
                     <div>

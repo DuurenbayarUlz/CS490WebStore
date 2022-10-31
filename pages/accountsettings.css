@@ -35,7 +35,8 @@ body a:hover{
 .accountsettings{
     display: flex;
     flex-direction: column;
-    width:75%
+    width:75%;
+    align-items: flex-start;
 }
 
 .top{
@@ -50,4 +51,10 @@ body a:hover{
 .userpass input{
     border: 1px solid black;
     border-radius: 6px;
+}
+
+.profile-picture img{
+    border-radius: 50%;
+    max-width: 20%;
+    height:auto;
 }
