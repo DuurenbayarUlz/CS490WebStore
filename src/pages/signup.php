@@ -10,8 +10,10 @@ if (isset($_POST["signup"])) {
       $email = trim($_POST["email"]);
       $full_name = trim($_POST["full_name"]);
       $pass_word = strip_tags(trim($_POST["pass_word"]));
-      $hashed_password = password_hash($pass_word, PASSWORD_DEFAULT);
-      $query = $conn->exec("insert into User (email, full_name, pass_word) values ('$email', '$full_name', '$hashed_password')");
+      $hashed_password = password_hash($pass_word, PASSWORD_DEFAULT);      
+      $query = "INSERT INTO User (email, full_name, pass_word) values ('$email', '$full_name', '$hashed_password')";
+      $statement = $conn->prepare($query);
+      $statement->execute();
       echo "New record created successfully";
     } catch (PDOException $e) {
       echo $sql . "<br>" . $e->getMessage();
