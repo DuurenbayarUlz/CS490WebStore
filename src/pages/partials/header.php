@@ -21,7 +21,7 @@
     }
 
     .header-input input {
-        width: 35vw;
+        width: 40vw;
     }
 
     .header-navigation {
@@ -40,10 +40,15 @@
         padding-left: 5px;
     }
 
-    .header-logo h2 a,
+    .header-logo h3 a,
     .header-navigation p a {
         text-decoration: none;
         color: black;
+        font-weight: 400;
+    }
+
+    .header-logo h3 {
+        margin: 0;
     }
 
     .header-logo h2 a :hover,
@@ -63,7 +68,7 @@
 <header>
     <div class="header">
         <div class="header-logo">
-            <h2><a href="index.php">Webstore</a></h2>
+            <h3><a href="index.php">Webstore</a></h3>
         </div>
         <div class="header-input">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />

@@ -1,7 +1,7 @@
 <style>
     .menu {
         width: 100%;
-        height: 60px;
+        height: 50px;
         background-color: #ffd580;
         display: flex;
         align-items: center;
@@ -10,8 +10,10 @@
     }
 
     .menu p {
-        margin: 0px;
-        padding: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
+        margin-bottom: 0px;
+        padding: 3px;
     }
 
     .menu :hover {
