@@ -1,0 +1,49 @@
+main {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 50px;
+  background-color: #fffdf4;
+  min-height: 60vh;
+}
+
+body a {
+  text-decoration: none;
+  color: inherit;
+}
+
+body a:hover {
+  color: #ffa500;
+}
+
+.accountsettings {
+  display: flex;
+  flex-direction: column;
+  margin-left: 100px;
+  margin-top: 50px;
+}
+
+.top {
+  display: flex;
+}
+
+.userpass {
+  display: flex;
+  flex-direction: column;
+}
+
+.userpass input {
+  border: 1px solid black;
+  border-radius: 6px;
+}
+
+.profile-picture img {
+  border-radius: 50%;
+  max-width: 20%;
+  height: auto;
+}
+
+.profile-picture {
+  width: fit-content;
+  height: fit-content;
+}
