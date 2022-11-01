@@ -25,29 +25,7 @@ if (!isset($_SESSION["email"])) {
     <main>
       <?php include("../pages/partials/accountsidebar.php") ?>
       <div class="wishlist">
-        <h2 style="font-weight:bold;">My Wishlist</h2>
-        <div class="wishlist-item">
-          <img class="item-image" src="../images/headphone.png">
-          <div class="item-details">
-            <p class="product">Product Name</p>
-            <p class="brand">Brand</p>
-            <div class="catalog-item-description-star">
-              <span>
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-white.png" alt="star-rating" title="rating" />
-                <p>(37)</p>
-              </span>
-            </div>
-            <p class="price">$34.99</p>
-          </div>
-          <div class="actions">
-            <a href="#">Add to cart</a>
-            <a href="#">Remove from wishlist</a>
-          </div>
-        </div>
+        <h2>My Wishlist</h2>
         <div class="wishlist-item">
           <img class="item-image" src="../images/headphone.png">
           <div class="item-details">
