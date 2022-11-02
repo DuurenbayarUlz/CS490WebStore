@@ -28,9 +28,7 @@ if (!isset($_SESSION["email"])) {
       </div>
       <div>
         <div>
-          <div>
-            Welcome <?php echo $_SESSION['email'] ?>
-          </div>
+          Welcome <?php echo $_SESSION['email'] ?>
         </div>
         <div class="form">
           <p>Change Username:</p>

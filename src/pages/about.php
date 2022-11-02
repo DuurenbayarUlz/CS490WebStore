@@ -9,79 +9,85 @@ if (!isset($_SESSION["email"])) {
 <html>
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="../css/about.css">
 </head>
 
 <body>
-  <div class="about-section">
-    <h1>About us</h1>
-    <h3>COMP 490 Group 2</h3>
-  </div>
+  <div>
+    <?php include("partials/header.php") ?>
+    <div style="height: 70vh; display: flex; width: 100vw; justify-content:center; align-content: center;">
+      <div class="column">
+        <div class="card">
+          <div class="container">
+            <div style="height:120px; display:flex; justify-content:center; align-items:center">
+              <h2>Duure</h2>
+            </div>
+            <p class="title">Front-End & Back-End Lead</p>
+            <p>Year: Senior</p>
+            <p>Major: CS & Econ</p>
+          </div>
+        </div>
+      </div>
 
-  <div class="row">
-    <div class="column">
-      <div class="card">
-        <img src="https://www.seoclerk.com/pics/319222-1IvI0s1421931178.png" alt="pic" style="width: 100%" />
-        <div class="container">
-          <h2>Duure</h2>
-          <p class="title">Front-End Lead</p>
-          <p>Year: Senior</p>
-          <p>Major: CS & Econ</p>
+      <div class="column">
+        <div class="card">
+          <div class="container">
+            <div style="height:120px; display:flex; justify-content:center; align-items:center">
+              <h2>Thanh N. Vu</h2>
+            </div>
+            <p class="title">Back-End</p>
+            <p>Year: Senior</p>
+            <p>Major: CS</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="card">
+          <div class="container">
+            <div style="height:120px; display:flex; justify-content:center; align-items:center">
+              <h2>William</h2>
+            </div>
+            <p class="title">Back-End</p>
+            <p>Year: Senior</p>
+            <p>Major: CS</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="card">
+          <div class="container">
+            <div style="height:120px; display:flex; justify-content:center; align-items:center">
+              <h2>Caroline</h2>
+            </div>
+            <p class="title">Front-End</p>
+            <p>Year: Senior</p>
+            <p>Major: CS</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="card">
+          <div class="container">
+            <div style="height:120px; display:flex; justify-content:center; align-items:center">
+              <h2>Sophie</h2>
+            </div>
+            <p class="title">UI/UX Lead</p>
+            <p>Year: Sophomore</p>
+            <p>Major: CS</p>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="column">
-      <div class="card">
-        <img src="https://www.seoclerk.com/pics/319222-1IvI0s1421931178.png" alt="Jane" style="width: 100%" />
-        <div class="container">
-          <h2>Thanh N. Vu</h2>
-          <p class="title">Back-End Lead</p>
-          <p>Year: Senior</p>
-          <p>Major: CS</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="column">
-      <div class="card">
-        <img src="https://www.seoclerk.com/pics/319222-1IvI0s1421931178.png" alt="Jane" style="width: 100%" />
-        <div class="container">
-          <h2>William</h2>
-          <p class="title">Back-End</p>
-          <p>Year: Senior</p>
-          <p>Major: CS</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="column">
-      <div class="card">
-        <img src="https://www.seoclerk.com/pics/319222-1IvI0s1421931178.png" alt="Mike" style="width: 100%" />
-        <div class="container">
-          <h2>Caroline</h2>
-          <p class="title">Front-End</p>
-          <p>Year: Senior</p>
-          <p>Major: CS</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="column">
-      <div class="card">
-        <img src="https://www.seoclerk.com/pics/319222-1IvI0s1421931178.png" alt="John" style="width: 100%" />
-        <div class="container">
-          <h2>Sophie</h2>
-          <p class="title">UI/UX Lead Editor</p>
-          <p>Year: Sophomore</p>
-          <p>Major: CS</p>
-        </div>
-      </div>
-    </div>
-    <a href="index.php">Home</a>
     <?php include("partials/footer.php") ?>
-  </div>
 </body>
 
 </html>
