@@ -22,10 +22,29 @@ if (!isset($_SESSION["email"])) {
   <div id="root">
     <?php include("partials/header.php") ?>
     <div class="catalog">
-      <p>
-        Welcome <?php echo $_SESSION['email'] ?>
-      </p>
-      <a href="logout.php">Log out</a>
+      <div>
+        <?php include("../pages/partials/sidebar.php") ?>
+        <a href="logout.php">Log out</a>
+      </div>
+      <div>
+        <div>
+          <div>
+            Welcome <?php echo $_SESSION['email'] ?>
+          </div>
+        </div>
+        <div class="form">
+          <p>Change Username:</p>
+          <input type="text" name="email" class="form-control" placeholder="" />
+          <button type="submit" class="btn btn-secondary" name="change-username" style="margin-top: 10px">Submit</button>
+        </div>
+        <div style="padding-top: 20px">
+          <p>Change Password:</p>
+          <input type="text" name="password" class="form-control" placeholder="" />
+          <input type="text" name="password" class="form-control" placeholder="" style="margin-top: 6px" />
+          <button type="submit" class="btn btn-secondary" name="change-password" style="margin-top: 10px">Submit</button>
+
+        </div>
+      </div>
     </div>
     <?php include("partials/footer.php") ?>
   </div>
