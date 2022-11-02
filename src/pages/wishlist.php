@@ -3,6 +3,11 @@ session_start();
 if (!isset($_SESSION["email"])) {
   header("Location: signin.php");
 }
+require_once("connection.php");
+$email = $_SESSION["email"];
+$result = $conn->query("SELECT id FROM User WHERE email='$email'");
+$id = $result->fetch();
+$wishlist = $conn->query("SELECT * FROM ProductFavorite WHERE user_id='$id[id]'");
 ?>
 
 <!DOCTYPE html>
@@ -26,10 +31,16 @@ if (!isset($_SESSION["email"])) {
       <?php include("../pages/partials/sidebar.php") ?>
       <div class="wishlist">
         <h2>My Wishlist</h2>
+        <?php
+        if($wishlist->rowCount() > 0){
+          while($row=$wishlist->fetch()){
+            $item = $conn->query("SELECT * FROM Product WHERE id=$row[product_id]");
+            $itemdet = $item->fetch();
+        ?>
         <div class="wishlist-item">
-          <img class="item-image" src="../images/headphone.png">
+          <img class="item-image" src="<?php echo $itemdet['image_path'] ?>">
           <div class="item-details">
-            <p class="product">Product Name</p>
+            <p class="product"><?php echo $itemdet['name'] ?></p>
             <p class="brand">Brand</p>
             <div class="catalog-item-description-star">
               <span>
@@ -41,57 +52,19 @@ if (!isset($_SESSION["email"])) {
                 <p>(37)</p>
               </span>
             </div>
-            <p class="price">$34.99</p>
+            <p class="price"><?php echo $itemdet['price'] ?></p>
           </div>
           <div class="actions">
             <a href="#">Add to cart</a>
             <a href="#">Remove from wishlist</a>
           </div>
         </div>
-        <div class="wishlist-item">
-          <img class="item-image" src="../images/headphone.png">
-          <div class="item-details">
-            <p class="product">Product Name</p>
-            <p class="brand">Brand</p>
-            <div class="catalog-item-description-star">
-              <span>
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-white.png" alt="star-rating" title="rating" />
-                <p>(37)</p>
-              </span>
-            </div>
-            <p class="price">$34.99</p>
-          </div>
-          <div class="actions">
-            <a href="#">Add to cart</a>
-            <a href="#">Remove from wishlist</a>
-          </div>
-        </div>
-        <div class="wishlist-item">
-          <img class="item-image" src="../images/headphone.png">
-          <div class="item-details">
-            <p class="product">Product Name</p>
-            <p class="brand">Brand</p>
-            <div class="catalog-item-description-star">
-              <span>
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-white.png" alt="star-rating" title="rating" />
-                <p>(37)</p>
-              </span>
-            </div>
-            <p class="price">$34.99</p>
-          </div>
-          <div class="actions">
-            <a href="#">Add to cart</a>
-            <a href="#">Remove from wishlist</a>
-          </div>
-        </div>
+        <?php
+          }}
+        else{
+        ?>
+        <h3>No wishlist items to display</h3>
+        <?php } ?>
       </div>
     </main>
     <?php include("partials/footer.php") ?>
