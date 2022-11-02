@@ -11,8 +11,14 @@ if (isset($_POST["signup"])) {
       $full_name = trim($_POST["full_name"]);
       $pass_word = strip_tags(trim($_POST["pass_word"]));
       $hashed_password = password_hash($pass_word, PASSWORD_DEFAULT);
-      $query = $conn->exec("insert into User (email, full_name, pass_word) values ('$email', '$full_name', '$hashed_password')");
-      echo "New record created successfully";
+
+      $stmt = $conn->query("SELECT email FROM User WHERE email = '$email'");
+      if ($stmt->rowCount() > 0) {
+        echo "Email already exists!";
+      } else {
+        $query = $conn->exec("insert into User (email, full_name, pass_word) values ('$email', '$full_name', '$hashed_password')");
+        echo "New record created successfully";
+      }
     } catch (PDOException $e) {
       echo $sql . "<br>" . $e->getMessage();
     }
