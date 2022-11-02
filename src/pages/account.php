@@ -28,20 +28,20 @@ if (!isset($_SESSION["email"])) {
       </div>
       <div>
         <div>
-          Welcome <?php echo $_SESSION['email'] ?>
+          Username: <?php echo $_SESSION['username'] ?>
         </div>
-        <div class="form">
-          <p>Change Username:</p>
-          <input type="text" name="email" class="form-control" placeholder="" />
+        <form>
+          <p style="margin-top: 30px">Change Username:</p>
+          <input type="text" name="email" class="form-control" placeholder="new username" />
           <button type="submit" class="btn btn-secondary" name="change-username" style="margin-top: 10px">Submit</button>
-        </div>
-        <div style="padding-top: 20px">
-          <p>Change Password:</p>
-          <input type="text" name="password" class="form-control" placeholder="" />
-          <input type="text" name="password" class="form-control" placeholder="" style="margin-top: 6px" />
+
+          <p style="margin-top: 30px">Change Password:</p>
+          <input type="text" name="password" class="form-control" placeholder="current password" />
+          <input type="text" name="password" class="form-control" placeholder="new password" style="margin-top: 6px" />
+          <input type="text" name="password" class="form-control" placeholder="confirm password" />
           <button type="submit" class="btn btn-secondary" name="change-password" style="margin-top: 10px">Submit</button>
 
-        </div>
+        </form>
       </div>
     </div>
     <?php include("partials/footer.php") ?>
