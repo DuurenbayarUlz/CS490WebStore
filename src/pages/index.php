@@ -10,18 +10,25 @@ if (!isset($_SESSION["email"])) {
 
 try {
 
-  $stmt = $conn->query("SELECT id FROM Product");
+  $stmt = $conn->query("SELECT * FROM Product");
 
-  // GET all POST ID 
+  // Get id product name, brand, price, image_path from product Id 
   while($row = $stmt->fetch()) {
     $randomProducts[] =  $row['id'];
+    $productNames[] = $row['name'];
+    $productPrices[] = $row['price'];
+    $productBrands[] = $row['brand'];
+    $productImagePaths[] = $row['image_path'];
   }
 
 } catch(PDOException $e) {
   echo "Error: " . $e->getMessage();
 }
-// SHUFFLE product ID to have random products
+
+
+// SHUFFLE product ID to have random product id
 shuffle($randomProducts);
+$randomProductId = $randomProducts[0];
 
 // Close connection to save resources
 $conn = null;
@@ -47,14 +54,15 @@ $conn = null;
 
     <div class="catalog">
       <div class="container px-4 px-lg-5 pt-5">
-        
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5">
-          <div class="col mb-5">
+
+        <!-- start a new product -->
+        <div class="col mb-5">
             <div class="catalog-item">
               <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
               <div class="catalog-item-description">
                 <div class="catalog-item-description-name">
-                  <p>Product Name</p> <!-- name of the product -->
+                  <p>Product Name</p>
                   <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
                 </div>
 
@@ -77,11 +85,41 @@ $conn = null;
               </div>
             </div>
           </div>
+
+          <!-- end a new product -->
+          <?php 
+            for ($i = 0; $i < count($productNames); $i++) {
+              echo "<div class='col mb-5'>
+              <div class='catalog-item'>
+                <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
+                <div class='catalog-item-description'>
+                  <div class='catalog-item-description-name'>
+                    <p>$productNames[$i]</p>
+                    <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+                  </div>
+              
+                  <div class='catalog-item-description-brand'>
+                    <p>$productBrands[$i]</p>
+                    <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
+                  </div>
+              
+                  <div class='catalog-item-description-star'>
+                    <span>
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-white.png' alt='star-rating' title='rating' />
+                      <p>(37)</p>
+                    </span>
+                  </div>
+                  <p>\$ $productPrices[$i].99</p>
+                </div>
+              </div>
+              </div>";    
+            }
+          ?>       
         </div>
-
-
-        
-      
       </div>
     </div>
     <?php include("partials/footer.php") ?>
