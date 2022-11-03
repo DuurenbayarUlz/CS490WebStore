@@ -1,8 +1,38 @@
 <?php
 session_start();
+require_once("connection.php");
+
 if (!isset($_SESSION["email"])) {
     header("Location: signin.php");
 }
+
+/**
+ *  IMPLEMENT REFILL BY AMOUNT
+ *     @author: Thanh Vu 11/03/2022
+ */
+
+if (!empty($_GET['amounts'])) {
+    $refillAmount = $_GET['amounts'] ?? '0';
+    $userId = $_SESSION['userid'];
+    echo ($userId);
+    echo ($refillAmount);
+    echo "Added successfully";
+
+    $conn->beginTransaction(); 
+    $sql = ("UPDATE User SET webstoreBalance = webstoreBalance + ? where id = ?");
+    $statement = $conn->prepare($sql);
+    $statement->bindValue(1, $refillAmount);
+    $statement->bindValue(2, $userId);
+    $statement->execute();
+    $conn->commit(); 
+    echo ($userId);
+    echo ($refillAmount);
+    echo "Added successfully";
+}   
+
+
+// close db connection to save resources
+$conn = null;
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +58,7 @@ if (!isset($_SESSION["email"])) {
 
             <div>
                 <p>Remaining Balance: 10</p>
-                <form action="refill-webcoin">
+                <form action="refill-webcoins.php" method="get">
                     <label for="amount">Add coins to the account:</label>
                     <select name="amounts" id="amount">
                         <option value=100>100</option>
@@ -36,11 +66,9 @@ if (!isset($_SESSION["email"])) {
                         <option value=10>10</option>
                     </select>
                     <br><br>
-                    <button type="submit" value="Submit" class="btn btn-secondary" name="change-username" style="margin-top: 10px">Add</button>
+                    <button type="submit" value="Submit" class="btn btn-secondary" style="margin-top: 10px">Add</button>
                 </form>
             </div>
-
-
         </div>
         <?php include("partials/footer.php") ?>
     </div>
