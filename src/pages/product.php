@@ -1,8 +1,43 @@
 <?php
 session_start();
+require_once("connection.php");
+
+// if user is not logged in, redirect to signin.php
 if (!isset($_SESSION["email"])) {
     header("Location: signin.php");
 }
+
+// check if id exists in query param
+if(empty($_GET['id'])) {
+    header("Location: error.php?error=Missing Query ID Param");
+} else {
+    // get image ID from url ? params
+    $productId = $_GET['id'];
+}
+
+// get product name, brand, price, units_in_storage from product id
+try {
+    $stmt = $conn->query("SELECT * FROM Product where id = $productId");
+    $result = $stmt->fetch();
+
+    if ($result == null) {
+      header("Location: error.php?error=Product with given id does not exist");
+    }
+
+    $productName = $result['name'];
+    $productPrice = $result['price'] ?? 'unknown price';
+    $productBrand = $result['brand'] ?? 'unknown brand';
+    $productImagePath = $result['image_path'];
+    $productQuantity = $result['units_in_storage'];
+    $productDescription = $result['description'];
+
+
+  } catch(PDOException $e) {
+    header("Location: error.php?error=Connection failed:" . $e->getMessage());
+  }
+
+// Close connection to save resources
+$db = null;
 ?>
 
 <!DOCTYPE html>
@@ -24,26 +59,26 @@ if (!isset($_SESSION["email"])) {
         <div class="product">
             <div class="product-section">
                 <div class="product-section-image">
-                    <img src="https://m.media-amazon.com/images/I/51n-E0hy3NL._AC_SL1500_.jpg" alt="product" style="object-fit: contain;" height="100%" width="100%" />
+                    <img src="<?php echo $productImagePath?>" alt="product" style="object-fit: contain;" height="100%" width="100%" />
                 </div>
                 <div class="product-section-description">
                     <div class="product-section-description-title">
-                        <h2>Product Title</h2>
+                        <h2><?php echo $productName?></h2>
                     </div>
                     <div class="product-section-description-brand">
-                        <h3>Product Brand</h3>
+                        <h3>Brand: <?php echo $productBrand?></h3>
                     </div>
                     <div class="product-section-description-rating">
                         <h4>Produt Rating</h4>
                     </div>
                     <div class="product-section-description-price">
-                        <h4>Product Price</h4>
+                        <h4>$<?php echo $productPrice?>.99</h4>
                     </div>
                     <div class="product-section-description-stock">
-                        <h4>In stock : 45</h4>
+                        <h4>In stock : <?php echo $productQuantity?></h4>
                     </div>
                     <div class="product-section-description-info">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ac diam sit amet enim tempus sodales. Proin congue bibendum convallis. Ut metus quam, consectetur at ante et, dignissim auctor ipsum. Cras posuere volutpat massa, et facilisis odio iaculis id. Nunc ullamcorper tincidunt metus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque tempus molestie nulla, nec mattis justo dignissim eu.</p>
+                        <p><?php echo $productDescription?></p>
                     </div>
                     <div class="product-section-description-action">
                         <button type="submit" class="btn btn-secondary" name="signup">Add to Cart</button>
