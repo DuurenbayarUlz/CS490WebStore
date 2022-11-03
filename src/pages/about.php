@@ -28,7 +28,7 @@ if (!isset($_SESSION["email"])) {
             <div style="height:120px; display:flex; justify-content:center; align-items:center">
               <h2>Duure</h2>
             </div>
-            <p class="title">Front-End & Back-End Lead</p>
+            <p class="title">Front-End Lead & Back-End Dev</p>
             <p>Year: Senior</p>
             <p>Major: CS & Econ</p>
           </div>
@@ -41,7 +41,7 @@ if (!isset($_SESSION["email"])) {
             <div style="height:120px; display:flex; justify-content:center; align-items:center">
               <h2>Thanh N. Vu</h2>
             </div>
-            <p class="title">Back-End</p>
+            <p class="title">Back-End and Database Lead</p>
             <p>Year: Senior</p>
             <p>Major: CS</p>
           </div>
@@ -54,7 +54,7 @@ if (!isset($_SESSION["email"])) {
             <div style="height:120px; display:flex; justify-content:center; align-items:center">
               <h2>William</h2>
             </div>
-            <p class="title">Back-End</p>
+            <p class="title">Back-End Dev</p>
             <p>Year: Senior</p>
             <p>Major: CS</p>
           </div>
@@ -67,7 +67,7 @@ if (!isset($_SESSION["email"])) {
             <div style="height:120px; display:flex; justify-content:center; align-items:center">
               <h2>Caroline</h2>
             </div>
-            <p class="title">Front-End</p>
+            <p class="title">Front-End Dev</p>
             <p>Year: Senior</p>
             <p>Major: CS</p>
           </div>

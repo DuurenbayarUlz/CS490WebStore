@@ -40,6 +40,8 @@
     *  IMPLEMENT SIMILAR PRODUCTS
     *  @author: Thanh Vu 11/03/2022
     */
+
+    
     try {
         $stmt = $conn->query("SELECT * FROM Product where NOT id = $productId");
 
@@ -55,8 +57,6 @@
         echo "Error: " . $e->getMessage();
     }
       
-
-
     /**
     * Implement product rating
     * @author: Thanh Vu 11/03/2022

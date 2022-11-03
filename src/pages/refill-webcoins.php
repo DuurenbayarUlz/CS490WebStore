@@ -14,9 +14,6 @@ if (!isset($_SESSION["email"])) {
 if (!empty($_GET['amounts'])) {
     $refillAmount = $_GET['amounts'] ?? '0';
     $userId = $_SESSION['userid'];
-    echo ($userId);
-    echo ($refillAmount);
-    echo "Added successfully";
 
     $conn->beginTransaction(); 
     $sql = ("UPDATE User SET webstoreBalance = webstoreBalance + ? where id = ?");
