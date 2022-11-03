@@ -8,8 +8,6 @@ if (isset($_POST["signin"])) {
   } else {
     $email = trim($_POST["email"]);
     $pass_word = strip_tags(trim($_POST["pass_word"]));
-
-
     $stmt = $conn->query("SELECT id, pass_word, full_name FROM User WHERE email = '$email'");
     $result = $stmt->fetch();
     $hashedPassword = $result['pass_word'];
