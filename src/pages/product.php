@@ -1,102 +1,105 @@
 <?php
-session_start();
-require_once("connection.php");
+    session_start();
+    require_once("connection.php");
 
-/***
-*  IMPLEMENT PRODUCT DETAILS SECTION
-*/
+    /**
+    *     IMPLEMENT PRODUCT DETAILS SECTION
+    *     @author: Thanh Vu 11/03/2022
+    */
 
-// check if id exists in query param
-if (empty($_GET['id'])) {
-    header("Location: error.php?error=Missing Query ID Param");
-} else {
-    // get image ID from url ? params
-    $productId = $_GET['id'];
-}
 
-// get product name, brand, price, units_in_storage from product id
-try {
-    $stmt = $conn->query("SELECT * FROM Product where id = '$productId'");
-    $result = $stmt->fetch();
-    
-    if ($result == null) {
-        header("Location: error.php?error=Product with given id does not exist");
+    // check if id exists in query param
+    if (empty($_GET['id'])) {
+        header("Location: error.php?error=Missing Query ID Param");
+    } else {
+        // get image ID from url ? params
+        $productId = $_GET['id'];
+    }
+
+    // get product name, brand, price, units_in_storage from product id
+    try {
+        $stmt = $conn->query("SELECT * FROM Product where id = '$productId'");
+        $result = $stmt->fetch();
+        
+        if ($result == null) {
+            header("Location: error.php?error=Product with given id does not exist");
+        }
+        
+        $productName = $result['name'];
+        $productPrice = $result['price'] ?? 'unknown price';
+        $productBrand = $result['brand'] ?? 'unknown brand';
+        $productImagePath = $result['image_path'];
+        $productQuantity = $result['units_in_storage'];
+        $productDescription = $result['description'] ?? 'unknown description'; 
+
+    } catch(PDOException $e) {
+        header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
+
+    /**
+    *  IMPLEMENT SIMILAR PRODUCTS
+    *  @author: Thanh Vu 11/03/2022
+    */
+
+    $stmt = $conn->query("SELECT * FROM Product where NOT id = $productId");
+
+    // Get id product name, brand, price, image_path from product Id
+    while ($row = $stmt->fetch()) {
+        $productIds[] =  $row['id'];
+        $productNames[] = $row['name'];
+        $productPrices[] = $row['price'];
+        $productBrands[] = $row['brand'];
+        $productImagePaths[] = $row['image_path'];
+    }
+
+    /**
+    * Implement product rating
+    * @author: Thanh Vu 11/03/2022
+    */
+
+    try {
+        // Case 1: if vote is selected but user is not signed in
+        if (!empty($_GET['points']) && !isset($_SESSION["email"])) { 
+            header("Location: signin.php");
+        // Case 2: if vote is selected but there is no product id
+        } elseif (!empty($_GET['points']) && empty($_GET['id'])) { 
+            die();  // kill all actions to avoid null record in database
+        // Case 3: if vote is selected and user is signed in
+        } elseif (!empty($_GET['points']) && isset($_SESSION["userid"])){
+            // get points from query param
+            $point = $_GET['points'] ?? 0;
+            $userId = $_SESSION['userid'];
+            $conn->beginTransaction(); 
+            $sql = ("INSERT INTO ProductRating (user_id, product_id, rating) VALUES (?, ?, ?)");
+            $statement = $conn->prepare($sql);
+            $statement->bindValue(1, $userId);
+            $statement->bindValue(2, $productId);
+            $statement->bindValue(3, $point);
+            $statement->execute();
+            $conn->commit(); 
+        }
+    } catch(PDOException $e) {
+        header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
+
+    // Get Rating and Vote numbers from imageid
+    try {
+        $stmt = $conn->query("SELECT AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND Product.id = $productId");
+        $result = $stmt->fetch();
+    } catch(PDOException $e) {
+        header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
+
+    if (empty($result['RatingAverage'])) {
+        $productAvgRating = 0;
+    } else {
+        $productAvgRating = number_format($result['RatingAverage'], 2, '.', '');
     }
     
-    $productName = $result['name'];
-    $productPrice = $result['price'] ?? 'unknown price';
-    $productBrand = $result['brand'] ?? 'unknown brand';
-    $productImagePath = $result['image_path'];
-    $productQuantity = $result['units_in_storage'];
-    $productDescription = $result['description'] ?? 'unknown description'; 
+    $voteCounts = $result['Votes'];
 
-} catch(PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
-}
-
-/***
-*  IMPLEMENT SIMILAR PRODUCTS
-*/
-
-$stmt = $conn->query("SELECT * FROM Product where NOT id = $productId");
-
-// Get id product name, brand, price, image_path from product Id
-while ($row = $stmt->fetch()) {
-    $productIds[] =  $row['id'];
-    $productNames[] = $row['name'];
-    $productPrices[] = $row['price'];
-    $productBrands[] = $row['brand'];
-    $productImagePaths[] = $row['image_path'];
-}
-
-/***
-* Implement product rating
-*/
-echo $_SESSION['userid'];
-try {
-    // Case 1: if vote is selected but user is not signed in
-    if (!empty($_GET['points']) && !isset($_SESSION["email"])) { 
-        header("Location: signin.php");
-    // Case 2: if vote is selected but there is no product id
-    } elseif (!empty($_GET['points']) && empty($_GET['id'])) { 
-        die();  // kill all actions to avoid null record in database
-    // Case 3: if vote is selected and user is signed in
-    } elseif (!empty($_GET['points']) && isset($_SESSION["userid"])){
-        // get points from query param
-        $point = $_GET['points'] ?? 0;
-        $userId = $_SESSION['userid'];
-        $conn->beginTransaction(); 
-        $sql = ("INSERT INTO ProductRating (user_id, product_id, rating) VALUES (?, ?, ?)");
-        $statement = $conn->prepare($sql);
-        $statement->bindValue(1, $userId);
-        $statement->bindValue(2, $productId);
-        $statement->bindValue(3, $point);
-        $statement->execute();
-        $conn->commit(); 
-    }
-} catch(PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
-}
-
-// Get Rating and Vote numbers from imageid
-try {
-    $stmt = $conn->query("SELECT AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND Product.id = $productId");
-    $result = $stmt->fetch();
-} catch(PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
-}
-
-if (empty($result['RatingAverage'])) {
-    $productAvgRating = 0;
-} else {
-    $productAvgRating = number_format($result['RatingAverage'], 2, '.', '');
-}
-  
-$voteCounts = $result['Votes'];
-
-
-// Close connection to save resources
-$conn = null;
+    // Close connection to save resources
+    $conn = null;
 ?>
 
 <!DOCTYPE html>
