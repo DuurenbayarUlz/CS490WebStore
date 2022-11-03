@@ -1,8 +1,19 @@
 <?php
 session_start();
+require_once("connection.php");
+
+// if user is not logged in, redirect to signin.php
 if (!isset($_SESSION["email"])) {
     header("Location: signin.php");
 }
+
+
+
+
+
+
+// Close connection to save resources
+$db = null;
 ?>
 
 <!DOCTYPE html>
