@@ -64,7 +64,7 @@
               echo "<div class='wishlist-item'>
               <img class='item-image' src='$productImagePaths[$i]'>
               <div class='item-details'>
-                <a href='product.php'?id=$productIds[$i]'><p class='product'>$productNames[$i]</p>
+                <a href='product.php?id='$productIds[$i]'><p class='product'>$productNames[$i]</p>
                 <p class='brand'>$productBrands[$i]</p>
                 <div class='catalog-item-description-star'>
                     <span>
