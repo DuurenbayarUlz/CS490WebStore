@@ -1,12 +1,30 @@
 <?php
 session_start();
+require_once("connection.php");
+$randomProducts;
+
+// if user is not logged in, redirect to signin.php
 if (!isset($_SESSION["email"])) {
   header("Location: signin.php");
 }
 
-// Close connection to save resources
-$db = null;
+try {
 
+  $stmt = $conn->query("SELECT id FROM Product");
+
+  // GET all POST ID 
+  while($row = $stmt->fetch()) {
+    $randomProducts[] =  $row['id'];
+  }
+
+} catch(PDOException $e) {
+  echo "Error: " . $e->getMessage();
+}
+// SHUFFLE product ID to have random products
+shuffle($randomProducts);
+
+// Close connection to save resources
+$conn = null;
 ?>
 
 <!DOCTYPE html>
@@ -29,13 +47,14 @@ $db = null;
 
     <div class="catalog">
       <div class="container px-4 px-lg-5 pt-5">
+        
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5">
           <div class="col mb-5">
             <div class="catalog-item">
               <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
               <div class="catalog-item-description">
                 <div class="catalog-item-description-name">
-                  <p>Product Name</p>
+                  <p>Product Name</p> <!-- name of the product -->
                   <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
                 </div>
 
@@ -59,6 +78,10 @@ $db = null;
             </div>
           </div>
         </div>
+
+
+        
+      
       </div>
     </div>
     <?php include("partials/footer.php") ?>
