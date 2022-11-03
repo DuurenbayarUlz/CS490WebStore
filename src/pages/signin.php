@@ -13,7 +13,6 @@ if (isset($_POST["signin"])) {
     $hashedPassword = $result['pass_word'];
     $userName = $result['full_name'];
     $userId = $result['id'];
-    
 
     if (password_verify($pass_word, $hashedPassword)) {
       $query = $conn->prepare("SELECT * FROM User WHERE email=? and pass_word=?");

@@ -40,17 +40,22 @@
     *  IMPLEMENT SIMILAR PRODUCTS
     *  @author: Thanh Vu 11/03/2022
     */
+    try {
+        $stmt = $conn->query("SELECT * FROM Product where NOT id = $productId");
 
-    $stmt = $conn->query("SELECT * FROM Product where NOT id = $productId");
-
-    // Get id product name, brand, price, image_path from product Id
-    while ($row = $stmt->fetch()) {
-        $productIds[] =  $row['id'];
-        $productNames[] = $row['name'];
-        $productPrices[] = $row['price'];
-        $productBrands[] = $row['brand'];
-        $productImagePaths[] = $row['image_path'];
+        // Get id product name, brand, price, image_path from product Id
+        while ($row = $stmt->fetch()) {
+            $productIds[] =  $row['id'];
+            $productNames[] = $row['name'];
+            $productPrices[] = $row['price'];
+            $productBrands[] = $row['brand'];
+            $productImagePaths[] = $row['image_path'];
+        }
+    } catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
+      
+
 
     /**
     * Implement product rating

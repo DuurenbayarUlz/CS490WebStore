@@ -25,8 +25,7 @@ if (!empty($_GET['amounts'])) {
     $statement->bindValue(2, $userId);
     $statement->execute();
     $conn->commit(); 
-    echo ($userId);
-    echo ($refillAmount);
+
     echo "Added successfully";
 }   
 
@@ -58,7 +57,7 @@ $conn = null;
 
             <div>
                 <p>Remaining Balance: 10</p>
-                <form action="refill-webcoins.php" method="get">
+                <form action="refill-webcoins.php" method="post">
                     <label for="amount">Add coins to the account:</label>
                     <select name="amounts" id="amount">
                         <option value=100>100</option>
