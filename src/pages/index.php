@@ -14,7 +14,7 @@ try {
 
   // Get id product name, brand, price, image_path from product Id 
   while($row = $stmt->fetch()) {
-    $randomProducts[] =  $row['id'];
+    $productIds[] =  $row['id'];
     $productNames[] = $row['name'];
     $productPrices[] = $row['price'];
     $productBrands[] = $row['brand'];
@@ -24,11 +24,6 @@ try {
 } catch(PDOException $e) {
   echo "Error: " . $e->getMessage();
 }
-
-
-// SHUFFLE product ID to have random product id
-shuffle($randomProducts);
-$randomProductId = $randomProducts[0];
 
 // Close connection to save resources
 $conn = null;
@@ -62,7 +57,7 @@ $conn = null;
               <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
               <div class="catalog-item-description">
                 <div class="catalog-item-description-name">
-                  <p>Product Name</p>
+                <p>Product Name</p>
                   <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
                 </div>
 
@@ -94,7 +89,7 @@ $conn = null;
                 <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
                 <div class='catalog-item-description'>
                   <div class='catalog-item-description-name'>
-                    <p>$productNames[$i]</p>
+                    <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
                     <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
                   </div>
               
