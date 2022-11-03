@@ -9,16 +9,22 @@ if (isset($_POST["signin"])) {
     $email = trim($_POST["email"]);
     $pass_word = strip_tags(trim($_POST["pass_word"]));
 
-    $stmt = $conn->query("SELECT pass_word, full_name FROM User WHERE email = '$email'");
-    $hashedPassword = $stmt->fetch();
 
-    if (password_verify($pass_word, $hashedPassword[0])) {
+    $stmt = $conn->query("SELECT id, pass_word, full_name FROM User WHERE email = '$email'");
+    $result = $stmt->fetch();
+    $hashedPassword = $result['pass_word'];
+    $userName = $result['full_name'];
+    $userId = $result['id'];
+    
+
+    if (password_verify($pass_word, $hashedPassword)) {
       $query = $conn->prepare("SELECT * FROM User WHERE email=? and pass_word=?");
-      $query->execute(array($email, $hashedPassword[0]));
+      $query->execute(array($email, $hashedPassword));
       $control = $query->fetch(PDO::FETCH_OBJ);
       if ($control > 0) {
         $_SESSION["email"] = $email;
-        $_SESSION['username'] = $hashedPassword[1];
+        $_SESSION['username'] = $userName;
+        $_SESSION['userid'] = $userId;
         header("Location: index.php");
       }
     }
