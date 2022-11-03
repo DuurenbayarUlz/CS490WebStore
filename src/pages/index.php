@@ -3,6 +3,12 @@ session_start();
 require_once("connection.php");
 $randomProducts;
 
+/**
+ *  IMPLEMENT SHOWING PRODUCTS ON HOME PAGE
+ *  @author: Thanh Vu 11/03/2022
+ */
+
+
 // if user is not logged in, redirect to signin.php
 if (!isset($_SESSION["email"])) {
   header("Location: signin.php");
