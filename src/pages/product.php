@@ -7,7 +7,6 @@
     *     @author: Thanh Vu 11/03/2022
     */
 
-
     // check if id exists in query param
     if (empty($_GET['id'])) {
         header("Location: error.php?error=Missing Query ID Param");
@@ -32,7 +31,7 @@
         $productQuantity = $result['units_in_storage'];
         $productDescription = $result['description'] ?? 'unknown description'; 
 
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
 
@@ -41,7 +40,6 @@
     *  @author: Thanh Vu 11/03/2022
     */
 
-    
     try {
         $stmt = $conn->query("SELECT * FROM Product where NOT id = $productId");
 
@@ -83,7 +81,7 @@
             $statement->execute();
             $conn->commit(); 
         }
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
 
@@ -103,6 +101,40 @@
     
     $voteCounts = $result['Votes'];
 
+
+    /**
+     * IMPLEMENT ADD TO WISHLIST 
+     * @author Thanh Vu 11/03/2022
+     */
+    try {
+        // Case 1: if vote is selected but user is not signed in
+        if (!empty($_GET['addProductId']) && !isset($_SESSION["email"])) { 
+            header("Location: signin.php");
+        // Case 2: if vote is selected but there is no product id
+        } elseif (!empty($_GET['addProductId']) && empty($_GET['id'])) { 
+            die();  // kill all actions to avoid null record in database
+        // Case 3: if vote is selected and user is signed in
+        } elseif (!empty($_GET['addProductId']) && isset($_SESSION["userid"])){
+            $userId = $_SESSION["userid"];
+            $stmt = $conn->query("SELECT * FROM ProductFavorite where product_id = $productId");
+            if ($stmt->rowCount() > 0) {
+                echo "Product already exists in cart!";
+            } else {
+                $conn->beginTransaction(); 
+                $sql = ("INSERT INTO ProductFavorite (user_id, product_id) VALUES (?, ?)");
+                $statement = $conn->prepare($sql);
+                $statement->bindValue(1, $userId);
+                $statement->bindValue(2, $productId);
+                $statement->execute();
+                $conn->commit(); 
+            }
+            
+            
+        }
+    } catch (PDOException $e) {
+        header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
+    
     // Close connection to save resources
     $conn = null;
 ?>
@@ -148,8 +180,12 @@
 <p><strong>About this item:</strong> <?php echo $productDescription?></p>
 </div>
 <div class="product-section-description-action">
+<form action='product.php' method='get'>
+    <!-- Hidden input contains value of query param id=? so we can append further query param -->
+    <input type="hidden" name="id" value="<?php echo $productId?>">
+<button type="submit" class="btn btn-secondary" value=<?php echo $productId?> name='addProductId'>Add to Wishlist</button>
+</form>
 <button type="submit" class="btn btn-secondary" name="signup">Add to Cart</button>
-<button type="submit" class="btn btn-secondary" name="signup">Add to Wishlist</button>
 </div>
 </div>
 

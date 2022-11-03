@@ -6,7 +6,6 @@ if (!isset($_SESSION["email"])) {
   header("Location: signin.php");
 }
 
-
 /**
 * IMPLEMENT REMOVING FROM WISHLIST
 * @author: Thanh Vu
@@ -27,8 +26,6 @@ try {
   echo "Error: " . $e->getMessage();
 }
 
-
-
 /**
 * IMPLEMENT SHOWING PRODUCTS
 * @author: Sophie Decker and Thanh Vu
@@ -37,7 +34,7 @@ try {
 
 // get email of logged in user
 $email = $_SESSION["email"];
-$userId = $_SESSION['userid'];
+$userId = $_SESSION["userid"];
 
 try {
   $stmt = $conn->query("SELECT * from Product
@@ -103,11 +100,11 @@ $conn = null;
                 </div>
                 <p class='price'>$productPrices[$i]</p>
               </div>
-              <form action='wishlist.php' method='get'>
-                <div class='form-group text-center'>
-                  <button type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Remove From WishList</button>               
-                </div>
-              </form>
+              <div class='form-group text-center'>
+                <form action='wishlist.php' method='get'>
+                  <button type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Remove From WishList</button>
+                </form>
+              </div>
                 <div class='form-group text-center'>
                   <button type='submit' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Add To Cart</button>               
                 </div>   
