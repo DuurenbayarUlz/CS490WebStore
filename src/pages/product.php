@@ -2,6 +2,10 @@
 session_start();
 require_once("connection.php");
 
+/***
+ *  IMPLEMENT PRODUCT DETAILS SECTION
+ */
+
 // if user is not logged in, redirect to signin.php
 if (!isset($_SESSION["email"])) {
     header("Location: signin.php");
@@ -17,7 +21,7 @@ if(empty($_GET['id'])) {
 
 // get product name, brand, price, units_in_storage from product id
 try {
-    $stmt = $conn->query("SELECT * FROM Product where id = $productId");
+    $stmt = $conn->query("SELECT * FROM Product where id = '$productId'");
     $result = $stmt->fetch();
 
     if ($result == null) {
@@ -29,12 +33,28 @@ try {
     $productBrand = $result['brand'] ?? 'unknown brand';
     $productImagePath = $result['image_path'];
     $productQuantity = $result['units_in_storage'];
-    $productDescription = $result['description'];
-
+    $productDescription = $result['description'] ?? 'unknown description'; 
 
   } catch(PDOException $e) {
     header("Location: error.php?error=Connection failed:" . $e->getMessage());
   }
+
+/***
+ *  IMPLEMENT SIMILAR PRODUCTS
+ */
+
+$stmt = $conn->query("SELECT * FROM Product where NOT id = $productId");
+  
+// Get id product name, brand, price, image_path from product Id 
+while ($row = $stmt->fetch()) {
+    $productIds[] =  $row['id'];
+    $productNames[] = $row['name'];
+    $productPrices[] = $row['price'];
+    $productBrands[] = $row['brand'];
+    $productImagePaths[] = $row['image_path'];
+}
+
+
 
 // Close connection to save resources
 $db = null;
@@ -78,7 +98,7 @@ $db = null;
                         <h4>In stock : <?php echo $productQuantity?></h4>
                     </div>
                     <div class="product-section-description-info">
-                        <p><?php echo $productDescription?></p>
+                        <p><strong>About this item:</strong> <?php echo $productDescription?></p>
                     </div>
                     <div class="product-section-description-action">
                         <button type="submit" class="btn btn-secondary" name="signup">Add to Cart</button>
@@ -91,32 +111,39 @@ $db = null;
                 <h4 style=" margin:0px">Similar Products:</h4>
             </div>
             <div class=" similar-product">
-                <div class="catalog-item">
-                    <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
-                    <div class="catalog-item-description">
-                        <div class="catalog-item-description-name">
-                            <p>Product Name</p>
-                            <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
-                        </div>
-
-                        <div class="catalog-item-description-brand">
-                            <p>Brand</p>
-                            <img src="../images/PointerIcon.png" alt="heart-icon" height="12" width="13" />
-                        </div>
-
-                        <div class="catalog-item-description-star">
-                            <span>
-                                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                                <img src="../images/star-white.png" alt="star-rating" title="rating" />
+                
+            <?php
+                for ($i = 0; $i < count($productNames); $i++) { 
+                    echo "<div class='catalog-item'>
+                            <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
+                            <div class='catalog-item-description'>
+                            <div class='catalog-item-description-name'>
+                                <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
+                                <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+                            </div>
+                        
+                            <div class='catalog-item-description-brand'>
+                                <p>$productBrands[$i]</p>
+                                <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
+                            </div>
+                        
+                            <div class='catalog-item-description-star'>
+                                <span>
+                                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                                <img src='../images/star-white.png' alt='star-rating' title='rating' />
                                 <p>(37)</p>
-                            </span>
-                        </div>
-                        <p>$34.99</p>
-                    </div>
-                </div>
+                                </span>
+                            </div>
+                            <p>\$ $productPrices[$i].99</p>
+                            </div>
+                        </div>";
+                }
+            
+            ?>
+
                 <div class="catalog-item">
                     <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
                     <div class="catalog-item-description">

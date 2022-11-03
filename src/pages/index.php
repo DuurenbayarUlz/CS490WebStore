@@ -13,7 +13,7 @@ try {
   $stmt = $conn->query("SELECT * FROM Product");
 
   // Get id product name, brand, price, image_path from product Id 
-  while($row = $stmt->fetch()) {
+  while ($row = $stmt->fetch()) {
     $productIds[] =  $row['id'];
     $productNames[] = $row['name'];
     $productPrices[] = $row['price'];
