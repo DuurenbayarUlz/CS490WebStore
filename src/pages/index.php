@@ -54,6 +54,65 @@ if (!isset($_SESSION["email"])) {
               </div>
             </div>
           </div>
+
+          <div class="col mb-5">
+            <div class="catalog-item">
+              <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
+              <div class="catalog-item-description">
+                <div class="catalog-item-description-name">
+                  <p>Product Name</p>
+                  <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
+                </div>
+
+                <div class="catalog-item-description-brand">
+                  <p>Brand</p>
+                  <img src="../images/PointerIcon.png" alt="heart-icon" height="12" width="13" />
+                </div>
+
+                <div class="catalog-item-description-star">
+                  <span>
+                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                    <img src="../images/star-white.png" alt="star-rating" title="rating" />
+                    <p>(37)</p>
+                  </span>
+                </div>
+                <p>$34.99</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col mb-5">
+            <div class="catalog-item">
+              <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
+              <div class="catalog-item-description">
+                <div class="catalog-item-description-name">
+                  <p>Product Name</p>
+                  <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
+                </div>
+
+                <div class="catalog-item-description-brand">
+                  <p>Brand</p>
+                  <img src="../images/PointerIcon.png" alt="heart-icon" height="12" width="13" />
+                </div>
+
+                <div class="catalog-item-description-star">
+                  <span>
+                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                    <img src="../images/star-white.png" alt="star-rating" title="rating" />
+                    <p>(37)</p>
+                  </span>
+                </div>
+                <p>$34.99</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
