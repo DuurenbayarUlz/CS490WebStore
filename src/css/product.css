@@ -46,12 +46,17 @@ p {
 }
 
 .product-section-description-info {
-  height: 180px;
-  overflow: scroll;
+  height: 280px;
+  overflow:visible;
+}
+
+.product-description{
+  display:flex;
 }
 
 .product-section-description-action {
   margin-top: 10px;
+  display:flex;
 }
 
 .similar-product {
