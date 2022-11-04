@@ -542,6 +542,7 @@
                         <p>$34.99</p>
                     </div>
                 </div>
+            <p>$34.99</p>
             </div>
         </div>
         <!-- END A SAMPLE PRODUCT-->
