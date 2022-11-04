@@ -1,8 +1,60 @@
 <?php
-session_start();
+  session_start();
+require_once("connection.php");
+
 if (!isset($_SESSION["email"])) {
   header("Location: signin.php");
 }
+
+/**
+* IMPLEMENT REMOVING FROM WISHLIST
+* @author: Thanh Vu
+* revised by: Thanh Vu 11/03/2022 - add this function 
+*/
+
+try {
+  if (!empty($_GET['productRemoveId'])){
+    $productRemoveId = $_GET['productRemoveId'] ?? '0';
+    $conn->beginTransaction(); 
+    $sql = ("DELETE FROM ProductFavorite where product_id = ?");
+    $statement = $conn->prepare($sql);
+    $statement->bindValue(1, $productRemoveId);
+    $statement->execute();
+    $conn->commit(); 
+  }
+} catch(PDOException $e) {
+  echo "Error: " . $e->getMessage();
+}
+
+/**
+* IMPLEMENT SHOWING PRODUCTS
+* @author: Sophie Decker and Thanh Vu
+* revised by: Thanh Vu 11/03/2022 - restructuring DB query 
+*/
+
+// get email of logged in user
+$email = $_SESSION["email"];
+$userId = $_SESSION["userid"];
+
+try {
+  $stmt = $conn->query("SELECT * from Product
+  INNER JOIN ProductFavorite ON Product.id = ProductFavorite.product_id AND ProductFavorite.user_id = $userId
+  ");
+  
+  while ($row = $stmt->fetch()) {
+    $productIds[] =  $row['id'];
+    $productNames[] = $row['name'];
+    $productPrices[] = $row['price'];
+    $productBrands[] = $row['brand'];
+    $productImagePaths[] = $row['image_path'];
+  }
+} catch(PDOException $e) {
+  echo "Error: " . $e->getMessage();
+}
+
+
+// Close connection to save resources
+$conn = null;
 ?>
 
 <!DOCTYPE html>
@@ -26,73 +78,43 @@ if (!isset($_SESSION["email"])) {
       <?php include("../pages/partials/sidebar.php") ?>
       <div class="wishlist">
         <h2>My Wishlist</h2>
-        <div class="wishlist-item">
-          <img class="item-image" src="../images/headphone.png">
-          <div class="item-details">
-            <p class="product">Product Name</p>
-            <p class="brand">Brand</p>
-            <div class="catalog-item-description-star">
-              <span>
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-white.png" alt="star-rating" title="rating" />
-                <p>(37)</p>
-              </span>
-            </div>
-            <p class="price">$34.99</p>
-          </div>
-          <div class="actions">
-            <a href="#">Add to cart</a>
-            <a href="#">Remove from wishlist</a>
-          </div>
-        </div>
-        <div class="wishlist-item">
-          <img class="item-image" src="../images/headphone.png">
-          <div class="item-details">
-            <p class="product">Product Name</p>
-            <p class="brand">Brand</p>
-            <div class="catalog-item-description-star">
-              <span>
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-white.png" alt="star-rating" title="rating" />
-                <p>(37)</p>
-              </span>
-            </div>
-            <p class="price">$34.99</p>
-          </div>
-          <div class="actions">
-            <a href="#">Add to cart</a>
-            <a href="#">Remove from wishlist</a>
-          </div>
-        </div>
-        <div class="wishlist-item">
-          <img class="item-image" src="../images/headphone.png">
-          <div class="item-details">
-            <p class="product">Product Name</p>
-            <p class="brand">Brand</p>
-            <div class="catalog-item-description-star">
-              <span>
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                <img src="../images/star-white.png" alt="star-rating" title="rating" />
-                <p>(37)</p>
-              </span>
-            </div>
-            <p class="price">$34.99</p>
-          </div>
-          <div class="actions">
-            <a href="#">Add to cart</a>
-            <a href="#">Remove from wishlist</a>
-          </div>
-        </div>
-      </div>
+        <?php 
+          if (!empty($productNames)) {
+            
+            for ($i = 0; $i < count($productNames); $i++) { 
+              echo "
+            <div class='wishlist-item'>
+              <img class='item-image' src='$productImagePaths[$i]' width=500 height=500>
+              <div class='item-details'>
+                <a href='product.php?id=$productIds[$i]'><p class='product'>$productNames[$i]</p>
+                <p class='brand'>$productBrands[$i]</p>
+                <div class='catalog-item-description-star'>
+                    <span>
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-white.png' alt='star-rating' title='rating' />
+                      <p>(37)</p>
+                    </span>
+                </div>
+                <p class='price'>$productPrices[$i]</p>
+              </div>
+              <div class='form-group text-center'>
+                <form action='wishlist.php' method='get'>
+                  <button type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Remove From WishList</button>
+                </form>
+              </div>
+                <div class='form-group text-center'>
+                  <button type='submit' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Add To Cart</button>               
+                </div>   
+             </div>";
+            }
+        } else {
+            echo "<h3>No wishlist items to display</h3>";
+          }     
+        ?>
+      </div> 
     </main>
     <?php include("partials/footer.php") ?>
   </div>

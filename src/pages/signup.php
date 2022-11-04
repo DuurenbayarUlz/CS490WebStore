@@ -24,6 +24,9 @@ if (isset($_POST["signup"])) {
     }
   }
 }
+
+// Close connection to save resources
+$conn = null;
 ?>
 
 <!DOCTYPE html>
