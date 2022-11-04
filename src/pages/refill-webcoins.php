@@ -8,7 +8,7 @@ if (!isset($_SESSION["email"])) {
 
 /**
  *  IMPLEMENT REFILL BY AMOUNT
- *     @author: Thanh Vu 11/03/2022
+ *     @author: Caroline and Thanh Vu 11/03/2022
  */
 
 if (!empty($_GET['amounts'])) {
