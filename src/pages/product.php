@@ -153,158 +153,152 @@
 </head>
 
 <body>
-<div id="root">
-<?php include("partials/header.php") ?>
-<div class="product">
-<div class="product-section">
-<div class="product-section-image">
-<img src="<?php echo $productImagePath?>" alt="product" style="object-fit: contain;" height="100%" width="100%" />
-</div>
-<div class="product-section-description">
-<div class="product-section-description-title">
-<h2><?php echo $productName?></h2>
-</div>
-<div class="product-section-description-brand">
-<h3>Brand: <?php echo $productBrand?></h3>
-</div>
-<div class="product-section-description-rating">
-<h4>Produt Rating</h4>
-</div>
-<div class="product-section-description-price">
-<h4>$<?php echo $productPrice?>.99</h4>
-</div>
-<div class="product-section-description-stock">
-<h4>In stock : <?php echo $productQuantity?></h4>
-</div>
-<div class="product-section-description-info">
-<p><strong>About this item:</strong> <?php echo $productDescription?></p>
-</div>
-<div class="product-section-description-action">
-<form action='product.php' method='get'>
-    <!-- Hidden input contains value of query param id=? so we can append further query param -->
-    <input type="hidden" name="id" value="<?php echo $productId?>">
-<button type="submit" class="btn btn-secondary" value=<?php echo $productId?> name='addProductId'>Add to Wishlist</button>
-</form>
-<button type="submit" class="btn btn-secondary" name="signup">Add to Cart</button>
-</div>
-</div>
+    <div id="root">
+        <?php include("partials/header.php") ?>
+        <div class="product">
+            <div class="product-section">
+                <div class="product-section-image">
+                <img src="<?php echo $productImagePath?>" alt="product" style="object-fit: contain;" height="100%" width="100%" />
+                </div>
+                <div class="product-section-description">
+                    <div class="product-section-description-title">
+                        <h2><?php echo $productName?></h2>
+                    </div>
+                    <div class="product-section-description-brand">
+                        <h3>Brand: <?php echo $productBrand?></h3>
+                    </div>
+                    <div class="product-section-description-rating">
+                        <h4>Produt Rating</h4>
+                    </div>
+                    <div class="product-section-description-price">
+                        <h4>$<?php echo $productPrice?>.99</h4>
+                    </div>
+                    <div class="product-section-description-stock">
+                        <h4>In stock : <?php echo $productQuantity?></h4>
+                    </div>
+                    <div class="product-section-description-info">
+                        <p><strong>About this item:</strong> <?php echo $productDescription?></p>
+                    </div>
+                    <div class="product-section-description-action">
+                        <form action='product.php' method='get'>
+                            <!-- Hidden input contains value of query param id=? so we can append further query param -->
+                            <input type="hidden" name="id" value="<?php echo $productId?>">
+                            <button type="submit" class="btn btn-secondary" value=<?php echo $productId?> name='addProductId'>Add to Wishlist</button>
+                        </form>
+                        <button type="submit" class="btn btn-secondary" name="signup">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            <div style="padding-left: 100px">
+                <h4 style=" margin:0px">Similar Products:</h4>
+            </div>
+        </div>
+    <div class=" similar-product">
+        <?php
+        for ($i = 0; $i < count($productNames); $i++) { 
+            echo "<div class='catalog-item'>
+            <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
+            <div class='catalog-item-description'>
+            <div class='catalog-item-description-name'>
+            <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
+            <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+            </div>
+            
+            <div class='catalog-item-description-brand'>
+            <p>$productBrands[$i]</p>
+            <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
+            </div>
+            
+            <div class='catalog-item-description-star'>
+            <span>
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <p>(37)</p>
+            </span>
+            </div>
+            <p>\$ $productPrices[$i].99</p>
+            </div>
+            </div>";
+        }
 
-</div>
-<div style="padding-left: 100px">
-<h4 style=" margin:0px">Similar Products:</h4>
-</div>
-<div class=" similar-product">
+        ?>
+        <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4>Rating</h4>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php echo $voteCounts;?> votes] </li>
+                    <li class="list-group-item">
+                        <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
+                            <div class="form-group text-center">
+                            <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
+                            <input type="range" id="rng" name="points" min="1" max="5" step="1">
+                            <!-- The value of the hiddem input field is the productID -->
+                            <input type="hidden" name="id" value=<?php echo $productId?>>
+                            </div>
+                            <div class="form-group text-center">
+                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> Vote!</button>
 
-<?php
-for ($i = 0; $i < count($productNames); $i++) { 
-    echo "<div class='catalog-item'>
-    <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
-    <div class='catalog-item-description'>
-    <div class='catalog-item-description-name'>
-    <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-    <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            <div class="catalog-item">
+                <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
+                <div class="catalog-item-description">
+                    <div class="catalog-item-description-name">
+                        <p>Product Name</p>
+                        <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
+                    </div>
+                    <div class="catalog-item-description-brand">
+                        <p>Brand</p>
+                        <img src="../images/PointerIcon.png" alt="heart-icon" height="12" width="13" />
+                    </div>
+                    <div class="catalog-item-description-star">
+                        <span>
+                            <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                            <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                            <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                            <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                            <img src="../images/star-white.png" alt="star-rating" title="rating" />
+                            <p>(37)</p>
+                        </span>
+                    </div>
+                <p>$34.99</p>
+                </div>
+            </div>
+            <div class="catalog-item">
+                <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
+                <div class="catalog-item-description">
+                    <div class="catalog-item-description-name">
+                        <p>Product Name</p>
+                        <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
+                    </div>
+                    <div class="catalog-item-description-brand">
+                        <p>Brand</p>
+                        <img src="../images/PointerIcon.png" alt="heart-icon" height="12" width="13" />
+                    </div>
+                    <div class="catalog-item-description-star">
+                        <span>
+                            <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                            <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                            <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                            <img src="../images/star-orange.png" alt="star-rating" title="rating" />
+                            <img src="../images/star-white.png" alt="star-rating" title="rating" />
+                            <p>(37)</p>
+                        </span>
+                    </div>
+                    <p>$34.99</p>
+                </div>
+            </div>
+        </div>
+        <?php include("partials/footer.php") ?>
     </div>
-    
-    <div class='catalog-item-description-brand'>
-    <p>$productBrands[$i]</p>
-    <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
-    </div>
-    
-    <div class='catalog-item-description-star'>
-    <span>
-    <img src='../images/star-orange.png' alt='star-rating' title='rating' />
-    <img src='../images/star-orange.png' alt='star-rating' title='rating' />
-    <img src='../images/star-orange.png' alt='star-rating' title='rating' />
-    <img src='../images/star-orange.png' alt='star-rating' title='rating' />
-    <img src='../images/star-white.png' alt='star-rating' title='rating' />
-    <p>(37)</p>
-    </span>
-    </div>
-    <p>\$ $productPrices[$i].99</p>
-    </div>
-    </div>";
-}
-
-?>
-<div class="col-md-3">
-<div class="panel panel-primary">
-<div class="panel-heading"><h4>Rating</h4></div>
-<ul class="list-group">
-<li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php echo $voteCounts;?> votes] </li>
-<li class="list-group-item">
-
-<form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
-<div class="form-group text-center">
-<output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
-<input type="range" id="rng" name="points" min="1" max="5" step="1">
-<!-- The value of the hiddem input field is the productID -->
-<input type="hidden" name="id" value=<?php echo $productId?>>
-</div>
-<div class="form-group text-center">
-<button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> Vote!</button>
-
-</div>
-</form>
-</li>
-</ul>
-</div>
-
-<div class="catalog-item">
-<img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
-<div class="catalog-item-description">
-<div class="catalog-item-description-name">
-<p>Product Name</p>
-<img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
-</div>
-
-<div class="catalog-item-description-brand">
-<p>Brand</p>
-<img src="../images/PointerIcon.png" alt="heart-icon" height="12" width="13" />
-</div>
-
-<div class="catalog-item-description-star">
-<span>
-<img src="../images/star-orange.png" alt="star-rating" title="rating" />
-<img src="../images/star-orange.png" alt="star-rating" title="rating" />
-<img src="../images/star-orange.png" alt="star-rating" title="rating" />
-<img src="../images/star-orange.png" alt="star-rating" title="rating" />
-<img src="../images/star-white.png" alt="star-rating" title="rating" />
-<p>(37)</p>
-</span>
-</div>
-<p>$34.99</p>
-</div>
-</div>
-<div class="catalog-item">
-<img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
-<div class="catalog-item-description">
-<div class="catalog-item-description-name">
-<p>Product Name</p>
-<img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
-</div>
-
-<div class="catalog-item-description-brand">
-<p>Brand</p>
-<img src="../images/PointerIcon.png" alt="heart-icon" height="12" width="13" />
-</div>
-
-<div class="catalog-item-description-star">
-<span>
-<img src="../images/star-orange.png" alt="star-rating" title="rating" />
-<img src="../images/star-orange.png" alt="star-rating" title="rating" />
-<img src="../images/star-orange.png" alt="star-rating" title="rating" />
-<img src="../images/star-orange.png" alt="star-rating" title="rating" />
-<img src="../images/star-white.png" alt="star-rating" title="rating" />
-<p>(37)</p>
-</span>
-</div>
-<p>$34.99</p>
-</div>
-</div>
-</div>
-
-<?php include("partials/footer.php") ?>
-</div>
 </body>
 
 </html>
