@@ -6,6 +6,9 @@ if (!isset($_SESSION["email"])) {
   header("Location: signin.php");
 }
 
+// get email of logged in user
+$userId = $_SESSION["userid"];
+
 /**
 * IMPLEMENT REMOVING FROM WISHLIST
 * @author: Thanh Vu
@@ -16,9 +19,10 @@ try {
   if (!empty($_GET['productRemoveId'])){
     $productRemoveId = $_GET['productRemoveId'] ?? '0';
     $conn->beginTransaction(); 
-    $sql = ("DELETE FROM ProductFavorite where product_id = ?");
+    $sql = ("DELETE FROM ProductFavorite where product_id = ? and user_id = ?");
     $statement = $conn->prepare($sql);
     $statement->bindValue(1, $productRemoveId);
+    $statement->bindValue(2, $userId);
     $statement->execute();
     $conn->commit(); 
   }
@@ -27,14 +31,32 @@ try {
 }
 
 /**
+* IMPLEMENT REMOVING ALL FROM WISHLIST
+* @author: Thanh Vu
+* revised by: Thanh Vu 11/03/2022 - add this function 
+*/
+
+try {
+  if (!empty($_GET['removeAll'])){
+    $conn->beginTransaction(); 
+    $sql = ("DELETE FROM ProductFavorite where user_id = ?");
+    $statement = $conn->prepare($sql);
+    $statement->bindValue(1, $userId);
+    $statement->execute();
+    $conn->commit(); 
+  }
+} catch(PDOException $e) {
+  header("Location: error.php?error=Connection failed:" . $e->getMessage());
+}
+
+
+
+
+/**
 * IMPLEMENT SHOWING PRODUCTS
 * @author: Sophie Decker and Thanh Vu
 * revised by: Thanh Vu 11/03/2022 - restructuring DB query 
 */
-
-// get email of logged in user
-$email = $_SESSION["email"];
-$userId = $_SESSION["userid"];
 
 try {
   $stmt = $conn->query("SELECT * from Product
@@ -51,7 +73,6 @@ try {
 } catch(PDOException $e) {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
-
 
 // Close connection to save resources
 $conn = null;
@@ -105,9 +126,11 @@ $conn = null;
                   <button type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Remove From WishList</button>
                 </form>
               </div>
+              <form action='wishlist.php' method='get'>
                 <div class='form-group text-center'>
-                  <button type='submit' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Add To Cart</button>               
-                </div>   
+                  <button type='submit' value='1' name='removeAll' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Remove All From Wishlist</button>               
+                </div> 
+                </form>  
              </div>";
             }
         } else {

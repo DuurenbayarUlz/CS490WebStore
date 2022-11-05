@@ -68,7 +68,7 @@
         <a href="about.php">About us</a>
     <?php 
         
-            echo (isset($_SESSION["email"])) ? "<p>Refill Webcoins</p>" : "";
+            echo (isset($_SESSION["email"])) ? "<a href=refill-webcoins.php> <p>Refill Webcoins</p></a>" : "";
     ?> 
     </div>
     <div class="footer-social">

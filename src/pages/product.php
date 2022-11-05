@@ -11,7 +11,7 @@
     if (empty($_GET['id'])) {
         header("Location: error.php?error=Missing Query ID Param");
     } else {
-        // get image ID from url ? params
+        // get product ID from url ? params
         $productId = $_GET['id'];
     }
 
@@ -25,10 +25,13 @@
         }
         
         $productName = $result['name'];
+        $productCategory = $result['category'];
         $productPrice = $result['price'] ?? 'unknown price';
         $productBrand = $result['brand'] ?? 'unknown brand';
         $productImagePath = $result['image_path'];
         $productQuantity = $result['units_in_storage'];
+        $productWeight = $result['weight'] ?? 'weight not listed';
+        $productDimension = $result['dimension'] ?? 'dimension not listed'; 
         $productDescription = $result['description'] ?? 'unknown description';
     } catch (PDOException $e) {
         header("Location: error.php?error=Connection failed:" . $e->getMessage());
@@ -41,7 +44,7 @@
     */
 
     try {
-        $stmt = $conn->query("SELECT * FROM Product where NOT id = $productId");
+        $stmt = $conn->query("SELECT * FROM Product where (NOT id = $productId) AND category = '$productCategory'");
 
         // Get id product name, brand, price, image_path from product Id
         while ($row = $stmt->fetch()) {
@@ -54,11 +57,133 @@
     } catch(PDOException $e) {
         header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
+
+    /**
+    * IMPLEMENT SWITCH CASE FOR VOTING
+    * THANH VU implemented on 11/05/22
+    */
+
+    $productAvgRatings;
+    $voteCounts;
+    $ratingDisplays;
+
+
+    try {
+        for ($i = 0; $i < count($productIds); $i++) { 
+          $stmt = $conn->query("SELECT AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND Product.id = $productIds[$i]");
+          $result = $stmt->fetch();
+          
+          $productAvgRating = empty($result['RatingAverage']) ? 0 : number_format($result['RatingAverage'], 2, '.', '');
+          $voteCount = $result['Votes'];
+          
+        
+          switch ($productAvgRating) {
+            case ($productAvgRating >= 1 &&$productAvgRating <= 1.5):
+              $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+              $ratingDisplays[] = $ratingDisplay;
+              break;
+            case ($productAvgRating > 1.5 &&$productAvgRating < 2):
+              $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange-51-99' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+              $ratingDisplays[] = $ratingDisplay;
+              break;
+            case ($productAvgRating >= 2 &&$productAvgRating <= 2.5):
+              $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+              $ratingDisplays[] = $ratingDisplay;
+              break;
+            case ($productAvgRating > 2.5 &&$productAvgRating < 3):
+              $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange-51-99.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+              $ratingDisplays[] = $ratingDisplay;
+              break;
+            case ($productAvgRating >= 3 &&$productAvgRating <=3.5):
+              $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+              $ratingDisplays[] = $ratingDisplay;
+              break;
+            case ($productAvgRating > 3.5 &&$productAvgRating < 4):
+              $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange-51-99.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+              $ratingDisplays[] = $ratingDisplay;
+              break;
+              case ($productAvgRating >= 4 &&$productAvgRating <= 4.5):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />";
+                $ratingDisplays[] = $ratingDisplay;
+                break;
+              case ($productAvgRating > 4.5 &&$productAvgRating < 5):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                <img src='../images/star-orange-51-99.png' alt='star-rating' title='rating' />";
+                $ratingDisplays[] = $ratingDisplay;
+                break;            
+            case 5:
+              $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+              <img src='../images/star-orange.png' alt='star-rating' title='rating' />";
+              $ratingDisplays[] = $ratingDisplay;
+            default: 
+              $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />
+              <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+              $ratingDisplays[] = $ratingDisplay;
+        }
+  
+          $productAvgRatings[] = $productAvgRating;
+          $voteCounts[] = $voteCount;
+        }
+        
+    } catch(PDOException $e) {
+        header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
+
+    
+
       
     /**
     * Implement product rating
     *  Thanh Vu 11/03/2022
     */
+
+        // Get number of people would buy product again
+    try {
+        $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId");
+        $result = $stmt->fetch();
+        $buyAgainNum = $result['BuyAgain'] ?? '0'; 
+    } catch (PDOException $e) {
+        header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
+
+
 
     try {
         // Case 1: if vote is selected but user is not signed in
@@ -74,23 +199,32 @@
             $userId = $_SESSION['userid'];
             $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
             if ($stmt->rowCount() > 0) { 
+                $buyAgainNumMess = ($buyAgainNum <= 1) ? ($buyAgainNum . ' person') : ($buyAgainNum . ' people');
+                $chosenOption = ($_GET['buyAgain'] == 1) ? 'buy again' : 'not buy again';
                 $messageVoteCasted = "<div class='alert alert-warning alert-dismissable'>
                 <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                <strong>Error: </strong> You have already voted for this product 
+                <strong>Error: </strong> You have already rated this product and chose to $chosenOption  <br>Did you know that $buyAgainNumMess would purchase this product gain.
               </div>";
             } else {
+                $buyAgain = $_GET['buyAgain'];
                 $conn->beginTransaction(); 
-                $sql = ("INSERT INTO ProductRating (user_id, product_id, rating) VALUES (?, ?, ?)");
+                $sql = ("INSERT INTO ProductRating (user_id, product_id, rating, would_buy_again) VALUES (?, ?, ?, ?)");
                 $statement = $conn->prepare($sql);
                 $statement->bindValue(1, $userId);
                 $statement->bindValue(2, $productId);
                 $statement->bindValue(3, $point);
+                $statement->bindValue(4, $buyAgain);
                 $statement->execute();
                 $conn->commit();
                 
+                /**
+                 *  IMPLEMENT RATING: WOULD BUY AGAIN
+                 */
+                
+
                 $newVoteCasted = "<div class='alert alert-warning alert-dismissable'>
                 <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                A new vote has been casted 
+                Thank you for your Rating. Did you know that $buyAgainNum people would buy this product again. 
               </div>";
             }
         }
@@ -144,6 +278,7 @@
                 $statement->bindValue(2, $productId);
                 $statement->execute();
                 $conn->commit(); 
+                
                 //  GENERATE HTML NOTIFYING USER THAT PRODUCT HAS BEEN ADDED TO WISHLIST
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
                                             <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
@@ -161,6 +296,7 @@
      *  Thanh Vu 11/05/2022 created this function
      * 
      */
+    
     try {
         // Case 1: if vote is selected but user is not signed in
         if (!empty($_GET['addCartId']) && !isset($_SESSION["email"])) { 
@@ -176,7 +312,7 @@
                 // GENERATE HTML NOTIFYING USER ABOUT EXISTING PRODUCT
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
                                             <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                                            <strong>Error: </strong> Product already exists in WishList. Go to <a href='cart.php'>cart.</a>
+                                            <strong>Error: </strong> Product already exists in Cart. Go to <a href='cart.php'>Cart.</a>
                                          </div>";
             } else {
                 $conn->beginTransaction(); 
@@ -197,7 +333,7 @@
         header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
 
-    
+
 
     // Close connection to save resources
     $conn = null;
@@ -219,36 +355,42 @@
       <div class="product">
       <div class="product-section">
          <div class="product-section-image">
-            <img src="<?php echo $productImagePath?>" alt="product" style="object-fit: contain;" height="100%" width="100%" />
+            <img src="<?php echo $productImagePath;?>" alt="product" style="object-fit: contain;" height="100%" width="100%" />
          </div>
          <div class="product-section-description">
             <div class="product-section-description-title">
-               <h2><?php echo $productName?></h2>
+               <h2><?php echo $productName;?></h2>
             </div>
             <div class="product-section-description-brand">
-               <h3>Brand: <?php echo $productBrand?></h3>
+               <h3>Brand: <?php echo $productBrand;?></h3>
             </div>
             <div class="product-section-description-rating">
-               <h4>Rating: <?php echo $productAvgRating ?>/5</h4>
+               <h4>Rating: <?php echo $productAvgRating; ?>/5</h4>
             </div>
             <div class="product-section-description-price">
-               <h4>$<?php echo $productPrice?>.99</h4>
+               <h4>$<?php echo $productPrice;?></h4>
+            </div>
+            <div class="product-section-description-weight">
+               <h4>Weight: <?php echo $productWeight;?></h4>
+            </div>
+            <div class="product-section-description-dimension">
+               <h4>Dimension: <?php echo $productDimension;?></h4>
             </div>
             <div class="product-section-description-stock">
-               <h4>In stock : <?php echo $productQuantity?></h4>
+               <h4>Available in stock : <?php echo ($productQuantity > 0) ? $productQuantity : 'Out of Stock'; ?></h4>
             </div>
             <div class="product-section-description-info">
-               <p><strong>About this item:</strong> <?php echo $productDescription?></p>
+               <p><strong>About this item:</strong> <?php echo $productDescription;?></p>
             </div>
                 <form action='product.php' method='get'>
                   <!-- Hidden input contains value of query param id=? so we can append further query param -->
-                  <input type="hidden" name="id" value="<?php echo $productId?>">
-                  <button type="submit" class="btn btn-secondary" value=<?php echo $productId?> name='addWishListId'>Add to Wishlist</button>
+                  <input type="hidden" name="id" value="<?php echo $productId;?>">
+                  <button type="submit" class="btn btn-secondary" value=<?php echo $productId;?> name='addWishListId'>Add to Wishlist</button>
                </form>
                <form action='product.php' method='get'>
                   <!-- Hidden input contains value of query param id=? so we can append further query param -->
                   <input type="hidden" name="id" value="<?php echo $productId?>">
-                  <button type="submit" class="btn btn-secondary" value=<?php echo $productId?> name='addCartId'>Add to Cart</button>
+                  <button type="submit" class="btn btn-secondary" value=<?php echo $productId;?> name='addCartId'>Add to Cart</button>
                </form>
             <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
                 <?php 
@@ -263,7 +405,7 @@
             <h4>Rating</h4>
         </div>
         <ul class="list-group">
-            <li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php echo $voteCount;?> votes] </li>
+            <li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php echo $voteCount;?> Stars] </li>
             <li class="list-group-item">
                 <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
                     <div class="form-group text-center">
@@ -272,13 +414,18 @@
                         <!-- The value of the hiddem input field is the productID -->
                         <input type="hidden" name="id" value=<?php echo $productId?>>
                     </div>
+                    <br>
+                    <p>Buy Again:        <select name="buyAgain" id="buyAgain">
+                        <option value=1>Yes</option>
+                        <option value=0>No</option>
+                    </select></p>
                     <div class="form-group text-center">
-                        <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> Vote!</button>
+                        <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
                     </div>
-
+    
                     <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
                     <?php 
-                    echo (!empty($newVoteCasted)) ? newVoteCasted : '';
+                    echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
                     echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
                     ?>
                     <!-- END display error -->
@@ -320,35 +467,12 @@ for ($i = 0; $i < count($productNames); $i++) {
     <p>(37)</p>
     </span>
     </div>
-    <p>\$ $productPrices[$i].99</p>
+    <p>\$ $productPrices[$i]</p>
     </div>
     </div>";
 }
 ?>
-    <div class="catalog-item">
-        <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
-        <div class="catalog-item-description">
-            <div class="catalog-item-description-name">
-                <p>Product Name</p>
-                <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
-            </div>
-            <div class="catalog-item-description-brand">
-                <p>Brand</p>
-                <img src="../images/PointerIcon.png" alt="heart-icon" height="12" width="13" />
-            </div>
-            <div class="catalog-item-description-star">
-                <span>
-                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                    <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                    <img src="../images/star-white.png" alt="star-rating" title="rating" />
-                    <p>(37)</p>
-                </span>
-            </div>
-            <p>$34.99</p>
-        </div>
-    </div>
+    <!-- START A SAMPLE PRODUCT-->
     <div class="catalog-item">
         <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
         <div class="catalog-item-description">
@@ -374,6 +498,8 @@ for ($i = 0; $i < count($productNames); $i++) {
         </div>
     </div>
 </div>
+
+<!-- END A SAMPLE PRODUCT-->
 <?php include("partials/footer.php") ?>
 </div>
 
