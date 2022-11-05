@@ -77,7 +77,7 @@
             <div class="header-navigation-account">
                 <img src="../images/profile.png" alt="heart-icon" height="18" width="18" />
                 <?php 
-                            echo (!isset($_SESSION["email"])) ? "<p><a href='signin.php'>Sign In</a></p>" : "<p><a href='account.php'>My account</a></p>";
+                            echo (!isset($_SESSION["email"])) ? "<p><a href='signin.php'>Sign In</a></p>" : "<p><a href='home.php'>My account</a></p>";
                 ?>
             </div>
             <div class="header-navigation-wishlist">
