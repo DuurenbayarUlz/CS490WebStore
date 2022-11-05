@@ -8,11 +8,6 @@ $randomProducts;
  *  @author: Thanh Vu 11/03/2022
  */
 
-// if user is not logged in, redirect to signin.php
-if (!isset($_SESSION["email"])) {
-  header("Location: signin.php");
-}
-
 try {
 
   $stmt = $conn->query("SELECT * FROM Product");
@@ -29,10 +24,6 @@ try {
 } catch(PDOException $e) {
   echo "Error: " . $e->getMessage();
 }
-
-
-
-
 
 // Close connection to save resources
 $conn = null;
@@ -53,7 +44,7 @@ $conn = null;
 
 <body>
   <div id="root">
-    <?php include("partials/header.php") ?>
+    <?php include("partials/header-landing.php") ?>
     <?php include("partials/menu.php") ?>
 
     <div class="catalog">
@@ -92,37 +83,35 @@ $conn = null;
 
           <!-- end a new product -->
           <?php 
-            
             for ($i = 0; $i < count($productNames); $i++) {
-                    $voteCounts = $result['Votes'];
-                      echo "<div class='col mb-5'>
-                      <div class='catalog-item'>
-                        <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
-                        <div class='catalog-item-description'>
-                          <div class='catalog-item-description-name'>
-                            <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-                            <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
-                          </div>
-                      
-                          <div class='catalog-item-description-brand'>
-                            <p>$productBrands[$i]</p>
-                            <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
-                          </div>
-                      
-                          <div class='catalog-item-description-star'>
-                            <span>
-                              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
-                              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
-                              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
-                              <img src='../images/star-orange.png' alt='star-rating' title='rating' />
-                              <img src='../images/star-white.png' alt='star-rating' title='rating' />
-                              <p>(37)</p>
-                            </span>
-                          </div>
-                          <p>\$ $productPrices[$i].99</p>
-                        </div>
-                      </div>
-                      </div>";    
+              echo "<div class='col mb-5'>
+              <div class='catalog-item'>
+                <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
+                <div class='catalog-item-description'>
+                  <div class='catalog-item-description-name'>
+                    <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
+                    <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+                  </div>
+              
+                  <div class='catalog-item-description-brand'>
+                    <p>$productBrands[$i]</p>
+                    <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
+                  </div>
+              
+                  <div class='catalog-item-description-star'>
+                    <span>
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                      <img src='../images/star-white.png' alt='star-rating' title='rating' />
+                      <p>(37)</p>
+                    </span>
+                  </div>
+                  <p>\$ $productPrices[$i].99</p>
+                </div>
+              </div>
+              </div>";    
             }
           ?>       
         </div>

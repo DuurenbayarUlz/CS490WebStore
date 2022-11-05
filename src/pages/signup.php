@@ -1,10 +1,20 @@
 <?php
 session_start();
-
 include("connection.php");
+
+
+/**
+ *  IMPLEMENT SIGN IN
+ *  Duuren created this function
+ *  Thanh revised SQL query to bind statement and display alert
+ */
+
 if (isset($_POST["signup"])) {
   if ($_POST["full_name"] == "" or $_POST["pass_word"] == "" or $_POST["email"] == "") {
-    echo "<center><h1>Fullname, Email, and Password cannot be empty</h1></center>";
+    $messageEmpty = "<div class='alert alert-warning alert-dismissable'>
+    <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+    <strong>Error: </strong> Email or password cannot be empty. 
+  </div>";
   } else {
     try {
       $email = trim($_POST["email"]);
@@ -14,13 +24,33 @@ if (isset($_POST["signup"])) {
 
       $stmt = $conn->query("SELECT email FROM User WHERE email = '$email'");
       if ($stmt->rowCount() > 0) {
-        echo "Email already exists!";
+        $emailExisted = "<div class='alert alert-warning alert-dismissable'>
+                          <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                          <strong>Error: </strong> Username $email has been taken!
+                        </div>";
       } else {
-        $query = $conn->exec("insert into User (email, full_name, pass_word) values ('$email', '$full_name', '$hashed_password')");
-        echo "New record created successfully";
+          /**
+           *  IMPLEMENT PASSWORD HASHING
+           *  Thanh Vu revised to add form validation
+           */
+
+          $conn->beginTransaction(); 
+          $sql = ("INSERT INTO User (email, full_name, pass_word) VALUES (?, ?, ?)");
+          $statement = $conn->prepare($sql);
+          $statement->bindValue(1, $email);
+          $statement->bindValue(2, $full_name);
+          $statement->bindValue(3, $hashed_password);
+          $statement->execute();
+          $conn->commit(); 
+
+          $userCreated = "<div class='alert alert-warning alert-dismissable'>
+          <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+          <strong>Error: </strong> New user $email has been created! 
+        </div>";
+
       }
     } catch (PDOException $e) {
-      echo $sql . "<br>" . $e->getMessage();
+      header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
   }
 }
@@ -31,6 +61,15 @@ $conn = null;
 
 <!DOCTYPE html>
 <html lang="en">
+
+<!-- AVOID FORM RESUBMISSION UPON PAGE REFRESH-->
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
+<!-- END SCRIPT - PAGE REFRESH-->
+
 
 <head>
   <meta charset="UTF-8" />
@@ -52,10 +91,20 @@ $conn = null;
           <div class="d-flex flex-column">
             <h3>Sign up</h3>
             <div style="display: flex; flex-direction: column; margin-top: 20px; justify-content: space-between">
+            
+              <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+              <?php 
+                echo (!empty($messageEmpty)) ?  $messageEmpty : '';
+                echo (!empty($messageEmptyPass)) ?  $messageEmptyPass : '';
+                echo (!empty($emailExisted)) ?  $emailExisted : '';
+                echo (!empty($userCreated )) ?  $userCreated  : '';
+              ?>
+              <!-- END display error -->
+
               <form method="POST">
                 <div style="margin-bottom: 10px">
                   <p>Email address</p>
-                  <input type="text" name="email" class="form-control" placeholder="" />
+                  <input type="email" name="email" class="form-control" placeholder="" />
                 </div>
                 <div style="margin-bottom: 10px">
                   <p>Full name</p>
@@ -77,6 +126,15 @@ $conn = null;
     </div>
     <?php include("partials/footer.php") ?>
   </div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>
