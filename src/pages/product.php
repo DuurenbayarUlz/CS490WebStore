@@ -1,7 +1,6 @@
 <?php
     session_start();
     require_once("connection.php");
-    
 
     /**
     *     IMPLEMENT PRODUCT DETAILS SECTION
@@ -113,7 +112,7 @@
         $productAvgRating = number_format($result['RatingAverage'], 2, '.', '');
     }
     
-    $voteCounts = $result['Votes'];
+    $voteCount = $result['Votes'];
     
     /**
      * IMPLEMENT ADD TO WISHLIST 
@@ -159,8 +158,8 @@
 
      /**
      * IMPLEMENT ADD TO CART 
-     *  Thanh Vu 11/05/2022
-     * 11/04/2012 Added missing userId check in SQL query
+     *  Thanh Vu 11/05/2022 created this function
+     * 
      */
     try {
         // Case 1: if vote is selected but user is not signed in
@@ -264,7 +263,7 @@
             <h4>Rating</h4>
         </div>
         <ul class="list-group">
-            <li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php echo $voteCounts;?> votes] </li>
+            <li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php echo $voteCount;?> votes] </li>
             <li class="list-group-item">
                 <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
                     <div class="form-group text-center">
