@@ -23,7 +23,7 @@ try {
     $conn->commit(); 
   }
 } catch(PDOException $e) {
-  echo "Error: " . $e->getMessage();
+  header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
 /**
@@ -49,7 +49,7 @@ try {
     $productImagePaths[] = $row['image_path'];
   }
 } catch(PDOException $e) {
-  echo "Error: " . $e->getMessage();
+  header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
 

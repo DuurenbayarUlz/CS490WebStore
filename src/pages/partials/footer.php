@@ -66,7 +66,10 @@
         <h6>About</h6>
         <div class="footer-about-line"></div>
         <a href="about.php">About us</a>
-        <p>Refill Webcoins</p>
+    <?php 
+        
+            echo (isset($_SESSION["email"])) ? "<p>Refill Webcoins</p>" : "";
+    ?> 
     </div>
     <div class="footer-social">
         <div class="footer-social-logos">

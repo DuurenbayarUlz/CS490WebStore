@@ -2,18 +2,32 @@
 session_start();
 include("connection.php");
 
+
+/**
+ *  IMPLEMENT SIGN IN
+ *  Duuren created this function
+ *  Thanh Vu revised SQL query string and alert display
+ */
+
 if (isset($_POST["signin"])) {
   if ($_POST["pass_word"] == "" or $_POST["email"] == "") {
-    echo "<center><h1>Email and Password cannot be empty</h1></center>";
+    $messageEmptyPass = "<div class='alert alert-warning alert-dismissable'>
+    <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+    <strong>Error: </strong> Email or password cannot be empty. 
+  </div>";
   } else {
     $email = trim($_POST["email"]);
     $pass_word = strip_tags(trim($_POST["pass_word"]));
     $stmt = $conn->query("SELECT id, pass_word, full_name FROM User WHERE email = '$email'");
     $result = $stmt->fetch();
-    $hashedPassword = $result['pass_word'];
-    $userName = $result['full_name'];
-    $userId = $result['id'];
+    $hashedPassword = $result['pass_word'] ?? '';
+    $userName = $result['full_name'] ?? '';
+    $userId = $result['id'] ?? '';
 
+    /**
+     * IMPLEMENTING PASSWORD HASHING
+     * Thanh Vu modified hashing variables and saving sessions on 11/05/2022
+     */
     if (password_verify($pass_word, $hashedPassword)) {
       $query = $conn->prepare("SELECT * FROM User WHERE email=? and pass_word=?");
       $query->execute(array($email, $hashedPassword));
@@ -25,13 +39,28 @@ if (isset($_POST["signin"])) {
         header("Location: index.php");
       }
     }
-    echo "<center><p>Incorrect Password or Email</p></center>";
+    
+    $messageIncorrectPass =  "<div class='alert alert-warning alert-dismissable'>
+    <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+    <strong>Error: </strong> E-mail or password did not match our records. 
+  </div>";
   }
-}
+} 
+
+// Close connection to save resources
+$conn = null;
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
+<!-- AVOID FORM RESUBMISSION UPON PAGE REFRESH-->
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
+<!-- END SCRIPT - PAGE REFRESH-->
 
 <head>
   <meta charset="UTF-8" />
@@ -53,10 +82,18 @@ if (isset($_POST["signin"])) {
           <div class="d-flex flex-column">
             <h3>Sign in</h3>
             <div style="display: flex; flex-direction: column; margin-top: 20px; justify-content: space-between">
-              <form method="POST">
+           
+            <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+            <?php 
+              echo (!empty($messageIncorrectPass)) ? $messageIncorrectPass : '';
+              echo (!empty($messageEmptyPass)) ?  $messageEmptyPass : '';
+            ?>
+            <!-- END display error -->
+           
+            <form method="POST">
                 <div style="margin-bottom: 10px">
                   <p>Email address</p>
-                  <input type="text" name="email" class="form-control" placeholder="" />
+                  <input type="email" name="email" class="form-control" placeholder="" />
                 </div>
                 <div style="margin-bottom: 10px">
                   <p>Password</p>
@@ -67,6 +104,7 @@ if (isset($_POST["signin"])) {
                   <a href="signup.php">Sign up</a>
                 </div>
               </form>
+
             </div>
           </div>
         </div>
@@ -74,7 +112,16 @@ if (isset($_POST["signin"])) {
     </div>
 
     <?php include("partials/footer.php") ?>
-  </div>
-</body>
+  </div>  <!-- end container -->
 
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+</body>
 </html>
