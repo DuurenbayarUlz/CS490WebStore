@@ -30,7 +30,7 @@
     <p>Office Supplies</p>
     <p>Health & Household</p>
     <p>Books</p>
-    <p>Electronics</p>
+    <a href="catalog.php" ><p>Electronics</p></a>
     <p>Appliances</p>
     <p>Toys</p>
     <p>Home Improvement</p>

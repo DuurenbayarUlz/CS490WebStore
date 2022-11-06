@@ -80,11 +80,18 @@
                             echo (!isset($_SESSION["email"])) ? "<p><a href='signin.php'>Sign In</a></p>" : "<p><a href='home.php'>My account</a></p>";
                 ?>
             </div>
-            <div class="header-navigation-wishlist">
+            <div class="header-navigation-wishlist" 
+            <?php 
+                echo (!isset($_SESSION["email"])) ? " style='display:none'" : '';
+            ?>>
                 <img src="../images/HeartIcon2.png" alt="heart-icon" height="18" width="18" />
                 <p><a href="wishlist.php">Wishlist</a></p>
             </div>
-            <div class="header-navigation-cart">
+            <div class="header-navigation-cart"
+            <?php 
+                echo (!isset($_SESSION["email"])) ? " style='display:none'" : '';
+            ?>
+            >
                 <img src="../images/shopping-cart.png" alt="heart-icon" height="18" width="18" />
                 <p><a href="cart.php">My Cart</a></p>
             </div>

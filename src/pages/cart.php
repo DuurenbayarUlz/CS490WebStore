@@ -1,10 +1,11 @@
 <?php
     session_start();
-    require_once("connection.php");
-
+    
     if (!isset($_SESSION["email"])) {
-    header("Location: signin.php");
-    }
+      header("Location: signin.php");
+      }
+
+    require_once("connection.php");
 
     /**
     * IMPLEMENT REMOVING FROM Cart
@@ -26,7 +27,8 @@
         header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
 
-    /**
+
+ /**
     * IMPLEMENT SHOWING PRODUCTS ON CART
     * Sophie Decker and Thanh Vu
     * revised by: Thanh Vu 11/03/2022 - restructuring DB query 
@@ -34,20 +36,92 @@
 
 
     try {
-        $stmt = $conn->query("SELECT * from Product
-        INNER JOIN Cart ON Product.id = Cart.product_id AND Cart.user_id = $userId
-        ");
+      $stmt = $conn->query("SELECT * from Product
+      INNER JOIN Cart ON Product.id = Cart.product_id AND Cart.user_id = $userId
+      ");
 
-        while ($row = $stmt->fetch()) {
-            $productIds[] =  $row['id'];
-            $productNames[] = $row['name'];
-            $productPrices[] = $row['price'];
-            $productBrands[] = $row['brand'];
-            $productImagePaths[] = $row['image_path'];
+      while ($row = $stmt->fetch()) {
+          $productIds[] =  $row['id'];
+          $productNames[] = $row['name'];
+          $productPrices[] = $row['price'];
+          $productBrands[] = $row['brand'];
+          $productImagePaths[] = $row['image_path'];
+          $productUnits[] = $row['units_in_storage'];
+      }
+  } catch(PDOException $e) {
+      header("Location: error.php?error=Connection failed:" . $e->getMessage());
+  }
+
+
+    /**
+     * IMPLEMENT PURCHASING ITEM FROM CART:
+     */
+
+  try {
+         // STEP 1: Show current balance
+         $stmt = $conn->query("SELECT webstoreBalance FROM User where id = $userId");
+         $result = $stmt->fetch();
+         $userBalance = $result['webstoreBalance'] ?? -1;
+
+      } catch(PDOException $e) {
+      header("Location: error.php?error=Connection failed:" . $e->getMessage());
+  }
+
+     
+  try {
+      
+      // STEP 2: Check if Purchase button is clicked
+      if (!empty($_GET['productPurchasedPrice'])) {
+
+        $productPurchasedPrice = $_GET['productPurchasedPrice'] ?? '0';
+        $productUnit = $_GET['unit'] ?? 0;
+        $productId = $_GET['id'] ?? 0;
+        if ($userBalance > $productPurchasedPrice  && $productUnit >= 1) {
+          
+
+          //STEP 3: Deduce the unit by 1
+          $conn->beginTransaction(); 
+          $sql = ("UPDATE Product SET units_in_storage = units_in_storage - 1 where id = ?");
+          $statement = $conn->prepare($sql);
+          $statement->bindValue(1, $productId);
+          $statement->execute();
+          $conn->commit();
+
+          //STEP 3: Deduce the remaining webcoin by the product 
+          $conn->beginTransaction(); 
+          $sql = ("UPDATE User SET webstoreBalance = webstoreBalance - ? where id = ?");
+          $statement = $conn->prepare($sql);
+          $statement->bindValue(1, $productPurchasedPrice);
+          $statement->bindValue(2, $userId);
+          $statement->execute();
+          $conn->commit();
         }
-    } catch(PDOException $e) {
-        header("Location: error.php?error=Connection failed:" . $e->getMessage());
-    }
+      // //LAST STEP: REMOVE ITEM FROM CART
+      //   $conn->beginTransaction(); 
+      //   $sql = ("DELETE FROM Cart where product_id = ?");
+      //   $statement = $conn->prepare($sql);
+      //   $statement->bindValue(1, $productPurchasedPrice);
+      //   $statement->execute();
+      //   $conn->commit(); 
+      }
+      // STEP 4: Show the updated amount of webcoin after purchase
+      $stmt = $conn->query("SELECT webstoreBalance FROM User where id = $userId");
+      $result = $stmt->fetch();
+      $userBalance = $result['webstoreBalance'] ?? -10;
+
+      // STEP 5: SHOW THE UPDATED AMOUNT OF UNIT after purchase: 
+      $stmt = $conn->query("SELECT * from Product
+                            INNER JOIN Cart ON Product.id = Cart.product_id AND Cart.user_id = $userId
+                          ");
+      unset($productUnits);
+      while ($row = $stmt->fetch()) {
+          $productUnits[] = $row['units_in_storage'];
+      }
+
+  } catch(PDOException $e) {
+      header("Location: error.php?error=Connection failed:" . $e->getMessage());
+  }
+
 
     // Close connection to save resources
     $conn = null;
@@ -74,10 +148,24 @@
       <?php include("../pages/partials/sidebar.php") ?>
       <div class="cart">
         <h2>My Cart</h2>
+        <h3><strong><p>Remaining Balance: </strong>&curren;<?php echo $userBalance ?></p></h3> 
         <?php 
           if (!empty($productNames)) {
+            print_r($productUnits);
             
             for ($i = 0; $i < count($productNames); $i++) { 
+              if ($productUnits[$i] >= 1) {
+                echo "There is enough in storage for you to buy";
+              } else {
+                echo "The product is out of stock";
+              }
+              $productPurchasedPrice = $productPurchasedPrice ?? 0;
+              if ($productPurchasedPrice <= $userBalance) {
+                echo "You have enough in your balance for this product";
+              } else {
+                echo "You don't have enough in your balance. Refill your webcoin!";
+              }
+              echo $userBalance;
               echo "
             <div class='cart-item'>
               <img class='item-image' src='$productImagePaths[$i]' width=500 height=500>
@@ -94,7 +182,8 @@
                       <p>(37)</p>
                     </span>
                 </div>
-                <p class='price'>$productPrices[$i]</p>
+                <p class='price'>&curren; $productPrices[$i]</p>
+                <p class='units-in-storage'>$productUnits[$i] left in storage</p>
               </div>
               <div class='form-group text-center'>
                 <form action='cart.php' method='get'>
@@ -102,8 +191,13 @@
                 </form>
               </div>
                 <div class='form-group text-center'>
-                  <button type='submit' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Purchase Item</button>               
-                </div>   
+                  <form action='cart.php' method='get'>
+                   <!-- Hidden input contains value of query param id=? so we can append further query param -->
+                    <input type='hidden' name='unit' value='$productUnits[$i]'>
+                    <input type='hidden' name='id' value='$productIds[$i]'>
+                    <button type='submit' value='$productPrices[$i]' name='productPurchasedPrice' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Purchase Item</button>               
+                  </form>
+                  </div>   
              </div>";
             }
         } else {

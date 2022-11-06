@@ -6,7 +6,7 @@ include("connection.php");
 /**
  *  IMPLEMENT SIGN IN
  *  Duuren created this function
- *  Thanh revised SQL query to bind statement and display alert
+ *  Thanh revised SQL query to bind statement and display alert 02/11/22
  */
 
 if (isset($_POST["signup"])) {
@@ -45,7 +45,7 @@ if (isset($_POST["signup"])) {
 
           $userCreated = "<div class='alert alert-warning alert-dismissable'>
           <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-          <strong>Error: </strong> New user $email has been created! 
+          New user $email has been created! 
         </div>";
 
       }

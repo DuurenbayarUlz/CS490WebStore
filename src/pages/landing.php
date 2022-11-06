@@ -5,7 +5,7 @@ $randomProducts;
 
 /**
  *  IMPLEMENT SHOWING PRODUCTS ON HOME PAGE
- *  @author: Thanh Vu 11/03/2022
+ *  Thanh Vu 11/03/2022
  */
 
 try {

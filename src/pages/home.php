@@ -1,8 +1,28 @@
 <?php
 session_start();
+require_once("connection.php");
+
 if (!isset($_SESSION["email"])) {
   header("Location: signin.php");
 }
+
+/**
+ *  IMPLEMENT GET WEBCOIN AMOUNT
+ *     Thanh Vu 11/06/2022
+ */
+
+
+$userId = $_SESSION['userid'];
+
+try {
+  $stmt = $conn->query("SELECT webstoreBalance FROM User where id = $userId");
+  $result = $stmt->fetch();
+  $userBalance = $result['webstoreBalance'] ?? -1;
+
+} catch(PDOException $e) {
+    header("Location: error.php?error=Connection failed:" . $e->getMessage());
+  }
+
 ?>
 
 <!DOCTYPE html>
@@ -28,7 +48,9 @@ if (!isset($_SESSION["email"])) {
       </div>
       <div>
         <div>
-          Username: <?php echo $_SESSION['username'] ?>
+        <strong>Greeting</strong> <?php echo $_SESSION['username'] ?>.
+          <br>
+          <strong>Your WebCoin Balance is: </strong>&curren; <?php echo $userBalance ?>.
         </div>
         <form>
           <p style="margin-top: 30px">Change Username:</p>
