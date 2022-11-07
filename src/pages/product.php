@@ -406,13 +406,13 @@
                         <h2><?php echo $productName;?></h2>
                     </div>
                     <div class="product-section-description-brand">
-                        <h3>Brand: <?php echo $productBrand;?></h3>
+                        <h3><?php echo $productBrand;?></h3>
                     </div>
                     <div class="product-section-description-rating">
                         <h4>Rating: <?php echo $productAvgRating; ?>/5</h4>
                     </div>
                     <div class="product-section-description-price">
-                        <h4>Price: &curren; <?php echo $productPrice;?></h4>
+                        <h4>Price: &curren;<?php echo $productPrice;?></h4>
                     </div>
                     <div class="product-section-description-weight">
                         <h4>Weight: <?php echo $productWeight;?></h4>
@@ -421,74 +421,38 @@
                         <h4>Dimension: <?php echo $productDimension;?></h4>
                     </div>
                     <div class="product-section-description-stock">
-                        <h4>Available in stock : <?php echo ($productQuantity > 0) ? $productQuantity : 'Out of Stock'; ?></h4>
+                        <h4>In stock: <?php echo ($productQuantity > 0) ? $productQuantity : 'Out of Stock'; ?></h4>
                     </div>
                     <div class="product-section-description-info">
                         <p><strong>About this item:</strong> <?php echo $productDescription;?></p>
                     </div>
-                    <form action='product.php' method='get'>
-                        <!-- Hidden input contains value of query param id=? so we can append further query param -->
-                        <input type="hidden" name="id" value="<?php echo $productId;?>">
-                        <button type="submit" class="btn btn-secondary" value=<?php echo $productId;?> name='addWishListId'>Add to Wishlist</button>
-                    </form>
-                    <form action='product.php' method='get'>
-                        <!-- Hidden input contains value of query param id=? so we can append further query param -->
-                        <input type="hidden" name="id" value="<?php echo $productId?>">
-                        <button type="submit" class="btn btn-secondary" value='1' name='addCartQuant'>Add to Cart</button>
-                    </form>
+                    <div class="actions">
+                        <form action='product.php' method='get'>
+                            <!-- Hidden input contains value of query param id=? so we can append further query param -->
+                            <input type="hidden" name="id" value="<?php echo $productId;?>">
+                            <button type="submit" class="btn btn-secondary" value=<?php echo $productId;?> name='addWishListId'>Add to Wishlist</button>
+                        </form>
+                        <form action='product.php' method='get'>
+                            <!-- Hidden input contains value of query param id=? so we can append further query param -->
+                            <input type="hidden" name="id" value="<?php echo $productId?>">
+                            <button type="submit" class="btn btn-secondary" value='1' name='addCartQuant'>Add to Cart</button>
+                        </form>
+                    </div>
                     <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
                         <?php 
                         echo (!empty($messageProductExisted)) ? $messageProductExisted : '';
                         ?>
                     <!-- END display error -->
-
-                    <!-- VOTING SECTION -->
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h4>Rating</h4>
-                        </div>
-                        <ul class="list-group">
-                            <li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
-                            $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
-                            echo $productRateMess;
-                            ?>] </li>
-                            <li class="list-group-item">
-                                <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
-                                    <div class="form-group text-center">
-                                        <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
-                                        <input type="range" id="rng" name="points" min="1" max="5" step="1">
-                                        <!-- The value of the hiddem input field is the productID -->
-                                        <input type="hidden" name="id" value=<?php echo $productId?>>
-                                    </div>
-                                    <br>
-                                    <p>Buy Again:        <select name="buyAgain" id="buyAgain">
-                                        <option value=1>Yes</option>
-                                        <option value=0>No</option>
-                                    </select></p>
-                                    <div class="form-group text-center">
-                                        <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
-                                    </div>
-                    
-                                    <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-                                    <?php 
-                                    echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
-                                    echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
-                                    ?>
-                                    <!-- END display error -->
-
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- END VOTING SECTION -->
                 </div>
             </div>
+        </div>
+        
+        <!-- BEGIN SIMILAR PRODUCT SECTION -->
+        <div class=" similar-product">
             <div style="padding-left: 100px">
                 <h4 style=" margin:0px">Similar Products:</h4>
             </div>
-
-            <!-- BEGIN SIMILAR PRODUCT SECTION -->
-            <div class=" similar-product">
+            <div class="product-row">
                 <?php
                 for ($i = 0; $i < count($productNames); $i++) { 
                     $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
@@ -539,13 +503,50 @@
                                 <p>(37)</p>
                             </span>
                         </div>
-                        <p>$34.99</p>
                     </div>
                 </div>
-            <p>$34.99</p>
+                <!-- END A SAMPLE PRODUCT-->
             </div>
         </div>
-        <!-- END A SAMPLE PRODUCT-->
+        <!-- VOTING SECTION -->
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>Rating</h4>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
+                $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
+                echo $productRateMess;
+                ?>] </li>
+                <li class="list-group-item">
+                    <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
+                        <div class="form-group text-center">
+                            <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
+                            <input type="range" id="rng" name="points" min="1" max="5" step="1">
+                            <!-- The value of the hiddem input field is the productID -->
+                            <input type="hidden" name="id" value=<?php echo $productId?>>
+                        </div>
+                        <br>
+                        <p>Buy Again:        <select name="buyAgain" id="buyAgain">
+                            <option value=1>Yes</option>
+                            <option value=0>No</option>
+                        </select></p>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
+                        </div>
+        
+                        <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+                        <?php 
+                        echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
+                        echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+                        ?>
+                        <!-- END display error -->
+
+                    </form>
+                </li>
+            </ul>
+        </div>
+        <!-- END VOTING SECTION -->
         <?php include("partials/footer.php") ?>
     </div>
 

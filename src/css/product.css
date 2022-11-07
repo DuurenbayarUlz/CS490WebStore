@@ -20,6 +20,7 @@ p {
   display: flex;
   flex-direction: column;
   padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .product-section {
@@ -59,7 +60,19 @@ p {
   display:flex;
 }
 
-.similar-product {
+.actions{
+  display: flex;
+}
+
+.actions form{
+  margin-right: 10px;
+}
+
+.similar-product{
+  padding:10px 0px;
+}
+
+.product-row {
   height: 36vh;
   display: flex;
   padding-left: 100px;
