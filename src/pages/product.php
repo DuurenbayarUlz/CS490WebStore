@@ -396,6 +396,7 @@
    <body>
     <div id="root">
       <?php include("partials/header.php") ?>
+      <?php include("partials/menu.php") ?>
         <div class="product">
             <div class="product-section">
                 <div class="product-section-image">
