@@ -37,6 +37,8 @@
     .header-navigation p {
         margin-bottom: 0;
         cursor: pointer;
+        text-align: center;
+        font-size: 14px;
         padding-left: 5px;
     }
 
@@ -62,6 +64,10 @@
     .header-navigation-wishlist,
     .header-navigation-account {
         display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: flex-end;
     }
 </style>
 
@@ -76,22 +82,19 @@
         <div class="header-navigation">
             <div class="header-navigation-account">
                 <img src="../images/profile.png" alt="heart-icon" height="18" width="18" />
-                <?php 
-                            echo (!isset($_SESSION["email"])) ? "<p><a href='signin.php'>Sign In</a></p>" : "<p><a href='home.php'>My account</a></p>";
+                <?php
+                echo (!isset($_SESSION["email"])) ? "<p><a href='signin.php'>Sign In</a></p>" : "<p><a href='home.php'>My account</a></p>";
                 ?>
             </div>
-            <div class="header-navigation-wishlist" 
-            <?php 
-                echo (!isset($_SESSION["email"])) ? " style='display:none'" : '';
-            ?>>
+            <div class="header-navigation-wishlist" <?php
+                                                    echo (!isset($_SESSION["email"])) ? " style='display:none'" : '';
+                                                    ?>>
                 <img src="../images/HeartIcon2.png" alt="heart-icon" height="18" width="18" />
                 <p><a href="wishlist.php">Wishlist</a></p>
             </div>
-            <div class="header-navigation-cart"
-            <?php 
-                echo (!isset($_SESSION["email"])) ? " style='display:none'" : '';
-            ?>
-            >
+            <div class="header-navigation-cart" <?php
+                                                echo (!isset($_SESSION["email"])) ? " style='display:none'" : '';
+                                                ?>>
                 <img src="../images/shopping-cart.png" alt="heart-icon" height="18" width="18" />
                 <p><a href="cart.php">My Cart</a></p>
             </div>
