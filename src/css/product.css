@@ -133,6 +133,47 @@ p {
   font-size: 8px;
 }
 
+.review-brick{
+  display:block;
+  background-color: antiquewhite;
+  border:2px solid black;
+  margin:4px;
+  width:40%;
+  border-radius: 7px;
+  padding:5px,5px;
+}
+
+.review-panel{
+  display: flex;
+  flex-direction: column;
+  width:100%;
+}
+
+.review-panel form{
+  text-align: center;
+}
+
+.ratings{
+  display:flex;
+}
+
+.panel-head{
+  display: block;
+  background-color: white;
+  width:100%;
+  border-bottom: 2px solid darkgray;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+}
+
+.panel-head h4{
+  font-weight: bold;
+}
+
+.buy-again{
+  display:flex;
+}
+
 @media screen and (max-width: 960px) {
   .header-navigation p {
     font-size: 14px;

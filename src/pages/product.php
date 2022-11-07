@@ -510,42 +510,40 @@
             </div>
         </div>
         <!-- VOTING SECTION -->
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4>Rating</h4>
-            </div>
-            <ul class="list-group">
-                <li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
-                $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
-                echo $productRateMess;
-                ?>] </li>
-                <li class="list-group-item">
-                    <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
-                        <div class="form-group text-center">
-                            <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
-                            <input type="range" id="rng" name="points" min="1" max="5" step="1">
-                            <!-- The value of the hiddem input field is the productID -->
-                            <input type="hidden" name="id" value=<?php echo $productId?>>
-                        </div>
-                        <br>
-                        <p>Buy Again:        <select name="buyAgain" id="buyAgain">
-                            <option value=1>Yes</option>
-                            <option value=0>No</option>
-                        </select></p>
-                        <div class="form-group text-center">
+        <div class="review-brick">
+            <div class="review-panel">
+                <div class="panel-head">
+                    <h4>Rating</h4>
+                </div>
+                <div class="ratings">
+                    <strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
+                    $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
+                    echo $productRateMess;
+                    ?>]
+                </div>
+                        <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '"> 
+                                <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
+                                <input type="range" id="rng" name="points" min="1" max="5" step="1">
+                                <!-- The value of the hidden input field is the productID -->
+                                <input type="hidden" name="id" value=<?php echo $productId?>>
+                            <br>
+                                <p>Would you buy this again?</p>
+                                <input type="radio" id="yes" name="buyAgain" value=1>
+                                <label for="yes">Yes</label>
+                                <input type="radio" id="no" name="buyAgain" value=2>
+                                <label for="no">No</label>
+                            <br>
                             <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
-                        </div>
-        
-                        <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-                        <?php 
-                        echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
-                        echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
-                        ?>
-                        <!-- END display error -->
+            
+                            <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+                            <?php 
+                            echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
+                            echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+                            ?>
+                            <!-- END display error -->
 
-                    </form>
-                </li>
-            </ul>
+                        </form>
+            </div>
         </div>
         <!-- END VOTING SECTION -->
         <?php include("partials/footer.php") ?>
