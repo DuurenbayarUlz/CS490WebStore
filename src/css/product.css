@@ -1,16 +1,10 @@
-* {
-  margin: 0;
-  padding: 0;
-}
-
-p {
-  margin-bottom: 0px;
-}
-
-.center {
+main {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding: 15px 50px;
+  gap: 40px;
+  background-color: #fffdf4;
 }
 
 .product {

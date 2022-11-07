@@ -397,6 +397,7 @@
     <div id="root">
       <?php include("partials/header.php") ?>
       <?php include("partials/menu.php") ?>
+      <main>
         <div class="product">
             <div class="product-section">
                 <div class="product-section-image">
@@ -546,6 +547,7 @@
             </div>
         </div>
         <!-- END VOTING SECTION -->
+        </main>
         <?php include("partials/footer.php") ?>
     </div>
 
