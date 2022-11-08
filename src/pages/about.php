@@ -1,34 +1,7 @@
 <?php
 session_start();
+require_once("connection.php");
 
-/**
- *  IMPLEMENT REFILL BY AMOUNT
- *     Caroline and Thanh Vu 11/03/2022
- */
-
-$userId = $_SESSION['userid'];
-
-if (!empty($_GET['amounts'])) {
-    $refillAmount = $_GET['amounts'] ?? '0';
- 
-
-    $conn->beginTransaction(); 
-    $sql = ("UPDATE User SET webstoreBalance = webstoreBalance + ? where id = ?");
-    $statement = $conn->prepare($sql);
-    $statement->bindValue(1, $refillAmount);
-    $statement->bindValue(2, $userId);
-    $statement->execute();
-    $conn->commit(); 
- 
-    $messageRefilled =  "<div class='alert alert-warning alert-dismissable'>
-    <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-        $refillAmount &curren; added successfully 
-  </div>";
-}   
-
-$stmt = $conn->query("SELECT webstoreBalance FROM User where id = $userId");
-$result = $stmt->fetch();
-$userBalance = $result['webstoreBalance'] ?? -1;
 
 ?>
 

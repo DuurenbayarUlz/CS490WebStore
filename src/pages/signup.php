@@ -10,48 +10,41 @@ include("connection.php");
  */
 
 if (isset($_POST["signup"])) {
-  if ($_POST["full_name"] == "" or $_POST["pass_word"] == "" or $_POST["email"] == "") {
-    $messageEmpty = "<div class='alert alert-warning alert-dismissable'>
-    <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-    <strong>Error: </strong> Email or password cannot be empty. 
-  </div>";
-  } else {
-    try {
-      $email = trim($_POST["email"]);
-      $full_name = trim($_POST["full_name"]);
-      $pass_word = strip_tags(trim($_POST["pass_word"]));
-      $hashed_password = password_hash($pass_word, PASSWORD_DEFAULT);
+  try {
+    $email = trim($_POST["email"]);
+    $full_name = trim($_POST["full_name"]);
+    $pass_word = strip_tags(trim($_POST["pass_word"]));
+    $hashed_password = password_hash($pass_word, PASSWORD_DEFAULT);
 
-      $stmt = $conn->query("SELECT email FROM User WHERE email = '$email'");
-      if ($stmt->rowCount() > 0) {
-        $emailExisted = "<div class='alert alert-warning alert-dismissable'>
-                          <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                          <strong>Error: </strong> Username $email has been taken!
-                        </div>";
-      } else {
-          /**
-           *  IMPLEMENT PASSWORD HASHING
-           *  Thanh Vu revised to add form validation
-           */
+    $stmt = $conn->query("SELECT email FROM User WHERE email = '$email'");
+    if ($stmt->rowCount() > 0) {
+      $emailExisted = "<div class='alert alert-warning alert-dismissable'>
+                        <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                        <strong>Error: </strong> Username $email has been taken!
+                      </div>";
+    } else {
+        /**
+         *  IMPLEMENT PASSWORD HASHING
+         *  Thanh Vu revised to add form validation
+         */
 
-          $conn->beginTransaction(); 
-          $sql = ("INSERT INTO User (email, full_name, pass_word) VALUES (?, ?, ?)");
-          $statement = $conn->prepare($sql);
-          $statement->bindValue(1, $email);
-          $statement->bindValue(2, $full_name);
-          $statement->bindValue(3, $hashed_password);
-          $statement->execute();
-          $conn->commit(); 
+        $conn->beginTransaction(); 
+        $sql = ("INSERT INTO User (email, full_name, pass_word) VALUES (?, ?, ?)");
+        $statement = $conn->prepare($sql);
+        $statement->bindValue(1, $email);
+        $statement->bindValue(2, $full_name);
+        $statement->bindValue(3, $hashed_password);
+        $statement->execute();
+        $conn->commit(); 
 
-          $userCreated = "<div class='alert alert-warning alert-dismissable'>
-          <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-          New user $email has been created! 
-        </div>";
+        $userCreated = "<div class='alert alert-warning alert-dismissable'>
+        <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+        New user $email has been created! 
+      </div>";
 
-      }
-    } catch (PDOException $e) {
-      header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
+  } catch (PDOException $e) {
+    header("Location: error.php?error=Connection failed:" . $e->getMessage());
   }
 }
 
@@ -94,8 +87,6 @@ if ( window.history.replaceState ) {
             
               <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
               <?php 
-                echo (!empty($messageEmpty)) ?  $messageEmpty : '';
-                echo (!empty($messageEmptyPass)) ?  $messageEmptyPass : '';
                 echo (!empty($emailExisted)) ?  $emailExisted : '';
                 echo (!empty($userCreated )) ?  $userCreated  : '';
               ?>
@@ -104,18 +95,18 @@ if ( window.history.replaceState ) {
               <form method="POST">
                 <div style="margin-bottom: 10px">
                   <p>Email address</p>
-                  <input type="email" name="email" class="form-control" placeholder="" />
+                  <input type="email" name="email" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-bottom: 10px">
                   <p>Full name</p>
-                  <input type="text" name="full_name" class="form-control" placeholder="" />
+                  <input type="text" name="full_name" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-bottom: 10px">
                   <p>Password</p>
-                  <input type="password" name="pass_word" class="form-control" placeholder="" />
+                  <input type="password" name="pass_word" class="form-control" pattern=".{8,12}" required title="Password must be 8 to 12 characters" />
                 </div>
                 <div style="margin-top: 30px">
-                  <button type="submit" class="btn btn-secondary" name="signup">Sign up</button>
+                  <button type="submit" class="btn btn-secondary" name="signup" required>Sign up</button>
                   <a href="signin.php">Sign in</a>
                 </div>
               </form>
