@@ -1,3 +1,6 @@
+<?php 
+$displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
+?>
 <style>
     .header {
         width: 100%;
@@ -64,6 +67,14 @@
         display: flex;
     }
 </style>
+<!-- AVOID FORM RESUBMISSION UPON PAGE REFRESH-->
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
+<!-- END SCRIPT - PAGE REFRESH-->
+
 
 <header>
     <div class="header">
@@ -82,14 +93,14 @@
             </div>
             <div class="header-navigation-wishlist" 
             <?php 
-                echo (!isset($_SESSION["email"])) ? " style='display:none'" : '';
+                echo $displayNone;
             ?>>
                 <img src="../images/HeartIcon2.png" alt="heart-icon" height="18" width="18" />
                 <p><a href="wishlist.php">Wishlist</a></p>
             </div>
             <div class="header-navigation-cart"
             <?php 
-                echo (!isset($_SESSION["email"])) ? " style='display:none'" : '';
+                echo $displayNone;
             ?>
             >
                 <img src="../images/shopping-cart.png" alt="heart-icon" height="18" width="18" />

@@ -95,14 +95,56 @@
           $statement->bindValue(2, $userId);
           $statement->execute();
           $conn->commit();
+
+          $conn->beginTransaction(); 
+          $sql = ("INSERT INTO OrderDetails (user_id, total, product_id) VALUES (?, ?, ?)");
+          $statement = $conn->prepare($sql);
+          $statement->bindValue(1, $userId);
+          $statement->bindValue(2, $productPurchasedPrice);
+          $statement->bindValue(3, $productId);
+          $statement->execute();
+          $conn->commit(); 
+            //  GENERATE HTML NOTIFYING USER THAT PRODUCT HAS BEEN Purchased successfully
+            $purchaseMessage = "<div class='alert alert-warning alert-dismissable'>
+            <a href='cart.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+            You have successfully purchased this product. Go to <a href='order.php'>Order History.</a>
+          </div>";
+
+            //LAST STEP: REMOVE ITEM FROM CART
+            $conn->beginTransaction(); 
+            $sql = ("DELETE FROM Cart where product_id = ?");
+            $statement = $conn->prepare($sql);
+            $statement->bindValue(1, $productId);
+            $statement->execute();
+            $conn->commit(); 
+
+            $stmt = $conn->query("SELECT * from Product
+            INNER JOIN Cart ON Product.id = Cart.product_id AND Cart.user_id = $userId
+            ");
+
+            unset($productIds);
+            unset($productNames);
+            while ($row = $stmt->fetch()) {
+                $productIds[] =  $row['id'];
+                $productNames[] = $row['name'];
+                $productUnits[] = $row['units_in_storage'];
+            }
+
+            
+
+
+        } else if ($userBalance < $productPurchasedPrice ) { // if user does not have enough balance
+          $purchaseMessage = "<div class='alert alert-warning alert-dismissable'>
+          <a href='cart.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+          You don't have enough balance to purchase this product
+        </div>";
+
+        } else {
+          $purchaseMessage = "<div class='alert alert-warning alert-dismissable'>
+          <a href='cart.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+          The item is out of stock;
+        </div>";
         }
-      // //LAST STEP: REMOVE ITEM FROM CART
-      //   $conn->beginTransaction(); 
-      //   $sql = ("DELETE FROM Cart where product_id = ?");
-      //   $statement = $conn->prepare($sql);
-      //   $statement->bindValue(1, $productPurchasedPrice);
-      //   $statement->execute();
-      //   $conn->commit(); 
       }
       // STEP 4: Show the updated amount of webcoin after purchase
       $stmt = $conn->query("SELECT webstoreBalance FROM User where id = $userId");
@@ -113,11 +155,12 @@
       $stmt = $conn->query("SELECT * from Product
                             INNER JOIN Cart ON Product.id = Cart.product_id AND Cart.user_id = $userId
                           ");
+
+      //unset array so it holds value of updated unit number
       unset($productUnits);
       while ($row = $stmt->fetch()) {
           $productUnits[] = $row['units_in_storage'];
       }
-
   } catch(PDOException $e) {
       header("Location: error.php?error=Connection failed:" . $e->getMessage());
   }
@@ -311,54 +354,73 @@
       <div class="cart">
         <h2>My Cart</h2>
         <h3><strong><p>Remaining Balance: </strong>&curren;<?php echo $userBalance ?></p></h3> 
-        <?php 
+        <?php
+          $purchaseMessage = (!empty($purchaseMessage))  ? $purchaseMessage : '';
+          echo $purchaseMessage;        
+          
           if (!empty($productNames)) {
-            print_r($productUnits);
-            
+        
             for ($i = 0; $i < count($productNames); $i++) { 
+              
               $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+              
               if ($productUnits[$i] >= 1) {
-                echo "There is enough in storage for you to buy";
+                $cartMessage = "<div class='alert alert-warning alert-dismissable'>
+                <a href='cart.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                In stock 
+              </div>";
               } else {
-                echo "The product is out of stock";
+                $cartMessage = "<div class='alert alert-warning alert-dismissable'>
+                <a href='cart.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                The product is out of stock
+              </div>";
               }
               $productPurchasedPrice = $productPurchasedPrice ?? 0;
               if ($productPurchasedPrice <= $userBalance) {
-                echo "You have enough in your balance for this product";
+                $cartMessage = "<div class='alert alert-warning alert-dismissable'>
+                <a href='cart.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                Enough Balance
+              </div>";
               } else {
-                echo "You don't have enough in your balance. Refill your webcoin!";
+                 $cartMessage = "<div class='alert alert-warning alert-dismissable'>
+                <a href='cart.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                Not enough Balance
+              </div>";
               }
               
+              $productUnitsMess = ($productUnits[$i] == 0) ? "<p class='units-in-storage'>Out of stock</p>" : "<p class='units-in-storage'>$productUnits[$i] left in storage</p>";
+              
               echo "
-            <div class='cart-item'>
-              <img class='item-image' src='$productImagePaths[$i]' width=500 height=500>
-              <div class='item-details'>
-                <a href='product.php?id=$productIds[$i]'><p class='product'>$productNames[$i]</p>
-                <p class='brand'>$productBrands[$i]</p>
-                <div class='catalog-item-description-star'>
-                    <span>
-                      $ratingDisplays[$i]
-                      <p>$productAvgRatings[$i]/5</p>
-                      <p>($productRateMess)</p>
-                    </span>
-                </div>
-                <p class='price'>&curren; $productPrices[$i]</p>
-                <p class='units-in-storage'>$productUnits[$i] left in storage</p>
-              </div>
-              <div class='form-group text-center'>
-                <form action='cart.php' method='get'>
-                  <button type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Remove From cart</button>
-                </form>
-              </div>
-                <div class='form-group text-center'>
-                  <form action='cart.php' method='get'>
-                   <!-- Hidden input contains value of query param id=? so we can append further query param -->
-                    <input type='hidden' name='unit' value='$productUnits[$i]'>
-                    <input type='hidden' name='id' value='$productIds[$i]'>
-                    <button type='submit' value='$productPrices[$i]' name='productPurchasedPrice' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Purchase Item</button>               
-                  </form>
-                  </div>   
-             </div>";
+                    <div class='cart-item'>
+                      <img class='item-image' src='$productImagePaths[$i]' width=500 height=500>
+                      <div class='item-details'>
+                        <a href='product.php?id=$productIds[$i]'><p class='product'>$productNames[$i]</p>
+                        <p class='brand'>$productBrands[$i]</p>
+                        <div class='catalog-item-description-star'>
+                            <span>
+                              $ratingDisplays[$i]
+                              <p>$productAvgRatings[$i]/5</p>
+                              <p>($productRateMess)</p>
+                            </span>
+                        </div>
+                        <p class='price'>&curren; $productPrices[$i]</p>
+                        $productUnitsMess
+                        </div>
+                      
+                      <div class='form-group text-center'>
+                        <form action='cart.php' method='get'>
+                          <button type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Remove From cart</button>
+                        </form>
+                      </div>
+                        <div class='form-group text-center'>
+                          <form action='cart.php' method='get'>
+                          <!-- Hidden input contains value of query param id=? so we can append further query param -->
+                            <input type='hidden' name='unit' value='$productUnits[$i]'>
+                            <input type='hidden' name='id' value='$productIds[$i]'>
+                            <button type='submit' value='$productPrices[$i]' name='productPurchasedPrice' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Purchase Item</button>               
+                          </form>
+                          </div>   
+                    </div>";
             }
         } else {
             echo "<h3>No cart items to display</h3>";
@@ -368,6 +430,6 @@
     </main>
     <?php include("partials/footer.php") ?>
   </div>
-</body>
 
+</body>
 </html>

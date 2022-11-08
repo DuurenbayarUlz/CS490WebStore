@@ -44,7 +44,7 @@ $conn = null;
 
 <body>
   <div id="root">
-    <?php include("partials/header-landing.php") ?>
+    <?php include("partials/header.php") ?>
     <?php include("partials/menu.php") ?>
 
     <div class="catalog">
