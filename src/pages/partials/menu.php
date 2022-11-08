@@ -13,7 +13,8 @@
         margin-left: 5px;
         margin-right: 5px;
         margin-bottom: 0px;
-        padding: 3px;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
     .menu :hover {
@@ -25,13 +26,11 @@
 
 <div class="menu">
     <img height="43px" width="40px" src="../images/hamburger.png" alt="hamburger-icon" />
-    <p>Halloween Special</p>
     <p>Home Goods</p>
     <p>Office Supplies</p>
     <p>Health & Household</p>
     <p>Books</p>
-    <a href="catalog.php" ><p>Electronics</p></a>
-    <p>Appliances</p>
+    <p>Electronics</p>
     <p>Toys</p>
     <p>Home Improvement</p>
     <p>Fashion</p>

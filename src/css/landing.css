@@ -22,14 +22,16 @@ p {
 .catalog-item {
   display: flex;
   flex-direction: column;
-  height: 220px;
-  width: 160px;
-  border-radius: 10px;
+  height: 250px;
+  width: 180px;
+  border-radius: 8px;
   border: 1px solid grey;
   align-items: center;
   overflow: hidden;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(0, 0, 0, 0.08);
   cursor: pointer;
+  background-color: white;
+  padding: 10px;
 }
 
 .catalog-item-description {
