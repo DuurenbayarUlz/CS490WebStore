@@ -48,6 +48,14 @@ try {
     
   
     switch ($productAvgRating) {
+      case 0: 
+        $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />
+        <img src='../images/star-white.png' alt='star-rating' title='rating' />
+        <img src='../images/star-white.png' alt='star-rating' title='rating' />
+        <img src='../images/star-white.png' alt='star-rating' title='rating' />
+        <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+        $ratingDisplays[] = $ratingDisplay;
+        break;
       case ($productAvgRating > 1 && $productAvgRating <= 1.5):
         $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
         <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />

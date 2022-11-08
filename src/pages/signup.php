@@ -102,7 +102,7 @@ if ( window.history.replaceState ) {
                   <input type="text" name="full_name" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-bottom: 10px">
-                  <p>Password</p>
+                  <p>Password (8 characters minimum)</p>
                   <input type="password" name="pass_word" class="form-control" pattern=".{8,12}" required title="Password must be 8 to 12 characters" />
                 </div>
                 <div style="margin-top: 30px">

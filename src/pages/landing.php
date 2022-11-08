@@ -20,6 +20,7 @@ try {
     $productBrands[] = $row['brand'];
     $productImagePaths[] = $row['image_path'];
   }
+
 } catch (PDOException $e) {
   echo "Error: " . $e->getMessage();
 }
@@ -45,7 +46,7 @@ $conn = null;
   <div id="root">
     <?php include("partials/header.php") ?>
     <?php include("partials/menu.php") ?>
-
+    
     <div class="catalog">
       <div class="container px-4 px-lg-5 pt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5">
