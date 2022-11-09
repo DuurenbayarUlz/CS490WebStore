@@ -48,7 +48,7 @@ $conn = null;
 
     <div class="catalog">
       <div class="container px-4 px-lg-5 pt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5">
+        <div class="row gx-4 gx-lg-5 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6">
 
         <!-- start a new product -->
         <div class="col mb-5">

@@ -201,7 +201,9 @@ $conn = null;
 		              $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
 		              echo "<div class='col mb-5'>
 		                      <div class='catalog-item'>
-		                        <img src='$productImagePaths[$i]' alt='Item' width='100%' height='130px' class='contain'/>
+		                      	 <div class='catalog-item-image'>
+		                        	<img src='$productImagePaths[$i]' alt='Item' width='100%' height='130px' class='contain'/>
+		                         </div>	
 		                        <div class='catalog-item-description'>
 		                          <div class='catalog-item-description-name'>
 		                            <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
