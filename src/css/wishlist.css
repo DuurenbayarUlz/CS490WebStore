@@ -1,24 +1,3 @@
-body a {
-  text-decoration: none;
-  color: inherit;
-}
-
-body a:hover {
-  color: #ffa500;
-}
-
-.catalog {
-  min-height: 62vh;
-  width: 100%;
-  background-color: rgb(253, 240, 213);
-  display: flex;
-}
-
-.catalog p {
-  padding: 0px;
-  margin: 0px;
-}
-
 .wishlist {
   display: flex;
   flex-direction: column;
