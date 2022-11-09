@@ -79,7 +79,8 @@
 
 
     try {
-        for ($i = 0; $i < count($productIds); $i++) { 
+        $productNums = (!empty($productIds)) ? count($productIds) : 0;
+        for ($i = 0; $i < $productNums; $i++) { 
           $stmt = $conn->query("SELECT AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND Product.id = $productIds[$i]");
           $result = $stmt->fetch();
           
@@ -225,16 +226,14 @@
     */
 
         // Get number of people would buy product again
-    try {
-        $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId");
-        $result = $stmt->fetch();
-        $buyAgainNum = $result['BuyAgain'] ?? '0'; 
-    } catch (PDOException $e) {
-        header("Location: error.php?error=Connection failed:" . $e->getMessage());
-    }
-
-
-
+        try {
+            $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId");
+            $result = $stmt->fetch();
+            $buyAgainNum = $result['BuyAgain'] ?? '0'; 
+        } catch (PDOException $e) {
+            header("Location: error.php?error=Connection failed:" . $e->getMessage());
+        }
+    
     try {
         // Case 1: if vote is selected but user is not signed in
         if (!empty($_GET['points']) && !isset($_SESSION["email"])) { 
@@ -252,10 +251,11 @@
                 $buyAgainNumMess = ($buyAgainNum <= 1) ? ($buyAgainNum . ' person') : ($buyAgainNum . ' people');
                 $chosenOption = ($_GET['buyAgain'] == 1) ? 'buy again' : 'not buy again';
                 $messageVoteCasted = "<div class='alert alert-warning alert-dismissable'>
-                <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                 <strong>Error: </strong> You have already rated this product and chose to $chosenOption  <br>Did you know that $buyAgainNumMess would purchase this product gain.
-              </div>";
+                 </div>";
             } else {
+                // BUY AGAIN insert function
                 $buyAgain = $_GET['buyAgain'];
                 $conn->beginTransaction(); 
                 $sql = ("INSERT INTO ProductRating (user_id, product_id, rating, would_buy_again) VALUES (?, ?, ?, ?)");
@@ -268,12 +268,14 @@
                 $conn->commit();
                 
                 /**
-                 *  IMPLEMENT RATING: WOULD BUY AGAIN
+                 *  Re-update buyagain num after insertion  
                  */
-                
+                $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId");
+                $result = $stmt->fetch();
+                $buyAgainNum = $result['BuyAgain'] ?? '0'; 
 
                 $newVoteCasted = "<div class='alert alert-warning alert-dismissable'>
-                <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                 Thank you for your Rating. Did you know that $buyAgainNum people would buy this product again. 
               </div>";
             }
@@ -317,7 +319,7 @@
             if ($stmt->rowCount() > 0) {
                 // GENERATE HTML NOTIFYING USER ABOUT EXISTING PRODUCT
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
-                                            <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                                            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                                             <strong>Error: </strong> Product already exists in wishlist. Go to <a href='wishlist.php'>Wishlist.</a>
                                          </div>";
             } else {
@@ -331,7 +333,7 @@
                 
                 //  GENERATE HTML NOTIFYING USER THAT PRODUCT HAS BEEN ADDED TO WISHLIST
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
-                                            <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                                            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                                             Added this product to wishlist!, Go to <a href='wishlist.php'>Wishlist.</a>
                                           </div>";
             }      
@@ -361,7 +363,7 @@
             if ($stmt->rowCount() > 0) {
                 // GENERATE HTML NOTIFYING USER ABOUT EXISTING PRODUCT
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
-                                            <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                                            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                                             <strong>Error: </strong> Product already exists in Cart. Go to <a href='cart.php'>Cart.</a>
                                          </div>";
             } else {
@@ -374,7 +376,7 @@
                 $conn->commit(); 
                 //  GENERATE HTML NOTIFYING USER THAT PRODUCT HAS BEEN ADDED TO cart
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
-                                            <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                                            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                                             Added this product to cart!, Go to <a href='cart.php'>cart.</a>
                                           </div>";
             }      
@@ -383,7 +385,7 @@
         header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
 
-
+    $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
 
     // Close connection to save resources
     $conn = null;
@@ -497,32 +499,37 @@
       <div class=" similar-product">
 
     <?php
-    for ($i = 0; $i < count($productNames); $i++) { 
-        $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-        echo "<div class='catalog-item'>
-        <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
-        <div class='catalog-item-description'>
-        <div class='catalog-item-description-name'>
-        <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-        <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
-        </div>
+      if (!empty($productNames)) {
+        for ($i = 0; $i < count($productNames); $i++) {
         
-        <div class='catalog-item-description-brand'>
-        <p>$productBrands[$i]</p>
-        <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
-        </div>
-        
-        <div class='catalog-item-description-star'>
-        <span>
-        $ratingDisplays[$i]
-        <p>$productAvgRatings[$i]/5</p>
-        <p>($productRateMess)</p>
-        </span>
-        </div>
-        <p> &curren; $productPrices[$i]</p>
-        </div>
-        </div>";
-    }
+            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+            echo "<div class='catalog-item'>
+            <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
+            <div class='catalog-item-description'>
+            <div class='catalog-item-description-name'>
+            <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
+            <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>
+            </div>
+            
+            <div class='catalog-item-description-brand'>
+            <p>$productBrands[$i]</p>
+            <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>
+            </div>
+            
+            <div class='catalog-item-description-star'>
+            <span>
+            $ratingDisplays[$i]
+            <p>$productAvgRatings[$i]/5</p>
+            <p>($productRateMess)</p>
+            </span>
+            </div>
+            <p> &curren; $productPrices[$i]</p>
+            </div>
+            </div>";
+        }
+      } else {
+        echo "<h3> No similar product to show </h3>";
+      }
     ?>
     <!-- START A SAMPLE PRODUCT-->
     <div class="catalog-item" style="display:none">

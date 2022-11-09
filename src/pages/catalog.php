@@ -3,16 +3,21 @@ session_start();
 require_once("connection.php");
 
 // TODO: IF THERE IS TIME, SHOW PRODUCTS RANDOMLY EACH TIME A USER LOG IN
-
+$randomProducts;
 
 /**
  *  IMPLEMENT SHOWING PRODUCTS ON HOME PAGE
  *  Thanh Vu 11/03/2022
  */
 
-try {
+// if user is not logged in, redirect to signin.php
+if (!isset($_SESSION["email"])) {
+  header("Location: signin.php");
+}
 
-  $stmt = $conn->query("SELECT * FROM Product");
+try {
+  $category = $_GET['category'] ?? 'Electronics';
+  $stmt = $conn->query("SELECT * FROM Product where category='$category'");
 
   // Get id product name, brand, price, image_path from product Id 
   while ($row = $stmt->fetch()) {
@@ -33,7 +38,8 @@ $voteCounts;
 $ratingDisplays;
 
 try {
-  for ($i = 0; $i < count($productIds); $i++) { 
+  $productNums = (!empty($productIds)) ? count($productIds) : 0;
+  for ($i = 0; $i < $productNums; $i++) { 
 
     $stmt = $conn->query("SELECT AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND Product.id = $productIds[$i]");
     $result = $stmt->fetch();
@@ -172,8 +178,7 @@ try {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
-// Set display to none if user is not logged in
-$displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
+
 // Close connection to save resources
 $conn = null;
 ?>
@@ -207,7 +212,7 @@ $conn = null;
               <div class="catalog-item-description">
                 <div class="catalog-item-description-name">
                 <p>Product Name</p>
-                  <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12"/>
+                  <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
                 </div>
 
                 <div class="catalog-item-description-brand">
@@ -232,37 +237,41 @@ $conn = null;
 
           <!-- end a new product -->
           <?php 
-            
-            for ($i = 0; $i < count($productNames); $i++) {
-              $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-              echo "<div class='col mb-5'>
-                      <div class='catalog-item'>
-                        <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
-                        <div class='catalog-item-description'>
-                          <div class='catalog-item-description-name'>
-                            <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-                            <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>
-                          </div>
-                      
-                          <div class='catalog-item-description-brand'>
-                            <p>$productBrands[$i]</p>
-                            <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>
-                          </div>
-                      
-                          <div class='catalog-item-description-star'>
-                            <span>
-                              $ratingDisplays[$i]
-                              <p>$productAvgRatings[$i]/5</p>
-                              <p>($productRateMess)</p>
-                            </span>
-                          </div>
-                          <p>&curren; $productPrices[$i]</p>
-                        </div>
-                      </div>
-                    </div>";    
-            }
+             if (!empty($productNames)) {
+                for ($i = 0; $i < count($productNames); $i++) {
+                    $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+                    echo "<div class='col mb-5'>
+                            <div class='catalog-item'>
+                              <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
+                              <div class='catalog-item-description'>
+                                <div class='catalog-item-description-name'>
+                                  <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
+                                  <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+                                </div>
+                            
+                                <div class='catalog-item-description-brand'>
+                                  <p>$productBrands[$i]</p>
+                                  <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
+                                </div>
+                            
+                                <div class='catalog-item-description-star'>
+                                  <span>
+                                    $ratingDisplays[$i]
+                                    <p>$productAvgRatings[$i]/5</p>
+                                    <p>($productRateMess)</p>
+                                  </span>
+                                </div>
+                                <p>&curren; $productPrices[$i]</p>
+                              </div>
+                            </div>
+                          </div>";    
+                  }
+             } else {
+                $message = "<h3>No Item In $category Category To Display</h3>";
+             }
           ?>       
         </div>
+        <?php echo (!empty($message)) ? $message : '' ?> 
       </div>
     </div>
     <?php include("partials/footer.php") ?>

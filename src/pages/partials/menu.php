@@ -1,3 +1,7 @@
+<?php 
+$displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
+?>
+
 <style>
     .menu {
         width: 100%;
@@ -13,8 +17,7 @@
         margin-left: 5px;
         margin-right: 5px;
         margin-bottom: 0px;
-        padding-left: 10px;
-        padding-right: 10px;
+        padding: 3px;
     }
 
     .menu :hover {
@@ -24,15 +27,23 @@
     }
 </style>
 
-<div class="menu">
-    <img height="43px" width="40px" src="../images/hamburger.png" alt="hamburger-icon" />
-    <p>Home Goods</p>
-    <p>Office Supplies</p>
-    <p>Health & Household</p>
-    <p>Books</p>
-    <p>Electronics</p>
-    <p>Toys</p>
-    <p>Home Improvement</p>
-    <p>Fashion</p>
-    <p>Kitchen</p>
+<div class="menu" <?php 
+    echo $displayNone
+?>>
+    <form id="formFashion" action="catalog.php?category=Fashion" method="post">
+    <p onclick="document.getElementById('formFashion').submit();">Fashion</p>
+    </form>
+
+    <form id="formElectronic" action="catalog.php?category=Electronics" method="post">
+    <p onclick="document.getElementById('formElectronic').submit();">Electronics</p>
+    </form>
+
+    <form id="formTumblers" action="catalog.php?category=Tumblers" method="post">
+    <p onclick="document.getElementById('formTumblers').submit();">Tumblers</p>
+    </form>
+    
+    <form id="formBags" action="catalog.php?category=Bags" method="post">
+    <p onclick="document.getElementById('formBags').submit();">Bags</p>
+    </form>
+
 </div>
