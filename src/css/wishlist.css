@@ -7,13 +7,16 @@ body a:hover {
   color: #ffa500;
 }
 
-main {
+.catalog {
+  min-height: 62vh;
+  width: 100%;
+  background-color: rgb(253, 240, 213);
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 15px 50px;
-  gap: 40px;
-  background-color: #fffdf4;
+}
+
+.catalog p {
+  padding: 0px;
+  margin: 0px;
 }
 
 .wishlist {
