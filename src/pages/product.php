@@ -397,6 +397,12 @@
     <div id="root">
       <?php include("partials/header.php") ?>
       <?php include("partials/menu.php") ?>
+      <!-- IF THERE IS AN ERROR for the user or password information, then display this -->
+      <?php 
+        echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
+        echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+        ?>
+        <!-- END display error -->
       <main>
         <div class="product">
             <div class="product-section">
@@ -554,14 +560,6 @@
                         <br>
                         <div style="margin:auto; margin-bottom:10px;">
                             <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
-                        </div>
-                            <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-                            <?php 
-                            echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
-                            echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
-                            ?>
-                            <!-- END display error -->
-                        </div>
                     </form>
                 </div>
         </div>
