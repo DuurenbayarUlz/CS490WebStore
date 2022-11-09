@@ -124,12 +124,6 @@ main {
   font-size: 8px;
 }
 
-.review-button{
-  background-color: #ffd580 !important;
-  border: 2px solid black !important;
-  border-radius:3px !important;
-}
-
 .review-brick{
   display:block;
   background-color: antiquewhite;
