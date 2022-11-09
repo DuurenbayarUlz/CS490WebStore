@@ -514,36 +514,43 @@
         <div class="review-brick">
             <div class="review-panel">
                 <div class="panel-head">
-                    <h4>Rating</h4>
+                    <h4 style="padding:0% 0% 0% 2%;">Rating</h4>
                 </div>
-                <div class="ratings">
-                    <strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
-                    $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
-                    echo $productRateMess;
-                    ?>]
+                <div style="padding:2% 0% 0% 2%;">
+                    <div>
+                        <strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
+                        $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
+                        echo $productRateMess;
+                        ?>]
+                    </div>
                 </div>
-                        <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '"> 
-                                <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
-                                <input type="range" id="rng" name="points" min="1" max="5" step="1">
-                                <!-- The value of the hidden input field is the productID -->
-                                <input type="hidden" name="id" value=<?php echo $productId?>>
-                            <br>
-                                <p>Would you buy this again?</p>
-                                <input type="radio" id="yes" name="buyAgain" value=1>
-                                <label for="yes">Yes</label>
-                                <input type="radio" id="no" name="buyAgain" value=2>
-                                <label for="no">No</label>
-                            <br>
-                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
-            
-                            <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-                            <?php 
-                            echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
-                            echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
-                            ?>
-                            <!-- END display error -->
-
-                        </form>
+                <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '"> 
+                    <div style="width:80%; margin:auto;">
+                        <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
+                        <input type="range" id="rng" name="points" min="1" max="5" step="1">
+                        <!-- The value of the hidden input field is the productID -->
+                        <input type="hidden" name="id" value=<?php echo $productId?>>
+                    </div>
+                    <div style="margin-left:10px; text-align:left;">
+                        <br>
+                        <p>Would you buy this again?</p>
+                        <input type="radio" id="yes" name="buyAgain" value=1>
+                        <label for="yes">Yes</label>
+                        <input type="radio" id="no" name="buyAgain" value=2>
+                        <label for="no">No</label>
+                    </div>
+                    <br>
+                    <div style="margin:auto; margin-bottom:10px;">
+                        <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
+                    </div>
+                        <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+                        <?php 
+                        echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
+                        echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+                        ?>
+                        <!-- END display error -->
+                    </div>
+                </form>
             </div>
         </div>
         <!-- END VOTING SECTION -->
