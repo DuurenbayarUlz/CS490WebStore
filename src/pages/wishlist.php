@@ -250,17 +250,21 @@
     <?php include("partials/header.php") ?>
     <?php include("partials/menu.php") ?>
 
-    <main>
+    <div class="catalog">
       <?php include("../pages/partials/sidebar.php") ?>
-      <div class="wishlist">
-        <h2>My Wishlist</h2>
-        <?php 
-          if (!empty($productNames)) {
-            
-            for ($i = 0; $i < count($productNames); $i++) { 
-              $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-              echo "
-                <div class='wishlist-item'>
+      <div>
+        <?php
+        if (!empty($productNames)) {
+          for ($i = 0; $i < count($productNames); $i++) {
+            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+            echo "
+              <div style='display: flex; width: 100%; justify-content: space-between'>
+                  <h2>My Wishlist</h2>
+                  <form action='wishlist.php' method='get'>
+                    <button style='width: 150px' type='submit' value='1' name='removeAll' class='btn btn-outline-dark'> Remove all</button>
+                  </form>
+              </div>
+              <div class='wishlist-item'>
                   <img class='item-image' src='$productImagePaths[$i]' width=500 height=500>
                   <div class='item-details'>
                     <a href='product.php?id=$productIds[$i]'><p class='product'>$productNames[$i]</p>
@@ -276,22 +280,17 @@
                   </div>
                 <div class='form-group text-center'>
                   <form action='wishlist.php' method='get'>
-                    <button type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Remove From WishList</button>
+                    <button style='width: 50px; height: 50px; border-radius: 50%' type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-outline-dark'> X </button>
                   </form>
                 </div>
-                  <form action='wishlist.php' method='get'>
-                  <div class='form-group text-center'>
-                    <button type='submit' value='1' name='removeAll' class='btn btn-info'><span class='glyphicon glyphicon-ok'></span> Remove All From Wishlist</button>               
-                  </div> 
-                  </form>  
               </div>";
-            }
+          }
         } else {
-            echo "<h3>No wishlist items to display</h3>";
-          }     
+          	echo "<h3>No wishlist items to display</h3>";
+        }
         ?>
-      </div> 
-    </main>
+      </div>
+    </div>
     <?php include("partials/footer.php") ?>
   </div>
 </body>

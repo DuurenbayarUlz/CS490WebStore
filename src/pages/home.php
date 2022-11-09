@@ -18,10 +18,9 @@ try {
   $stmt = $conn->query("SELECT webstoreBalance FROM User where id = $userId");
   $result = $stmt->fetch();
   $userBalance = $result['webstoreBalance'] ?? -1;
-
-} catch(PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
-  }
+} catch (PDOException $e) {
+  header("Location: error.php?error=Connection failed:" . $e->getMessage());
+}
 
 ?>
 
@@ -41,6 +40,7 @@ try {
 <body>
   <div id="root">
     <?php include("partials/header.php") ?>
+	
     <div class="catalog">
       <div>
         <?php include("../pages/partials/sidebar.php") ?>

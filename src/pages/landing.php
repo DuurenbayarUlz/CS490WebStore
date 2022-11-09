@@ -20,8 +20,7 @@ try {
     $productBrands[] = $row['brand'];
     $productImagePaths[] = $row['image_path'];
   }
-
-} catch(PDOException $e) {
+} catch (PDOException $e) {
   echo "Error: " . $e->getMessage();
 }
 

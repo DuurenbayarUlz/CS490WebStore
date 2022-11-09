@@ -11,6 +11,7 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
         align-items: center;
         flex-direction: row;
         overflow: hidden;
+        justify-content: center;
     }
 
     .menu p {
@@ -20,10 +21,9 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
         padding: 3px;
     }
 
-    .menu :hover {
+    .menu form :hover {
         cursor: pointer;
         border: 2px solid rgb(253, 240, 213);
-        border-radius: 5px;
     }
 </style>
 
@@ -31,19 +31,19 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
     echo $displayNone
 ?>>
     <form id="formFashion" action="catalog.php?category=Fashion" method="post">
-    <p onclick="document.getElementById('formFashion').submit();">Fashion</p>
+        <p onclick="document.getElementById('formFashion').submit();">Fashion</p>
     </form>
 
     <form id="formElectronic" action="catalog.php?category=Electronics" method="post">
-    <p onclick="document.getElementById('formElectronic').submit();">Electronics</p>
+        <p onclick="document.getElementById('formElectronic').submit();">Electronics</p>
     </form>
 
     <form id="formTumblers" action="catalog.php?category=Tumblers" method="post">
-    <p onclick="document.getElementById('formTumblers').submit();">Tumblers</p>
+    	<p onclick="document.getElementById('formTumblers').submit();">Tumblers</p>
     </form>
-    
+            
     <form id="formBags" action="catalog.php?category=Bags" method="post">
-    <p onclick="document.getElementById('formBags').submit();">Bags</p>
+        <p onclick="document.getElementById('formBags').submit();">Bags</p>
     </form>
 
 </div>

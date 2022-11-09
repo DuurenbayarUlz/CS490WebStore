@@ -29,10 +29,10 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
 
     .header-navigation {
         display: flex;
-        width: 30vw;
-        max-width: 300px;
+        width: 35vw;
+        max-width: 360px;
         height: 100%;
-        justify-content: space-between;
+        justify-content: flex-end;
         align-items: center;
         margin-right: 30px;
     }
@@ -41,6 +41,7 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
         margin-bottom: 0;
         cursor: pointer;
         padding-left: 5px;
+		font-size: 15px;
     }
 
     .header-logo h3 a,
@@ -65,8 +66,10 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
     .header-navigation-wishlist,
     .header-navigation-account {
         display: flex;
+        margin-left: 20px;
     }
 </style>
+
 <!-- AVOID FORM RESUBMISSION UPON PAGE REFRESH-->
 <script>
 if ( window.history.replaceState ) {
@@ -87,8 +90,8 @@ if ( window.history.replaceState ) {
         <div class="header-navigation">
             <div class="header-navigation-account">
                 <img src="../images/profile.png" alt="heart-icon" height="18" width="18" />
-                <?php 
-                            echo (!isset($_SESSION["email"])) ? "<p><a href='signin.php'>Sign In</a></p>" : "<p><a href='home.php'>My account</a></p>";
+                <?php
+                echo (!isset($_SESSION["email"])) ? "<p><a href='signin.php'>Sign In</a></p>" : "<p><a href='home.php'>My account</a></p>";
                 ?>
             </div>
             <div class="header-navigation-wishlist" 
@@ -98,11 +101,9 @@ if ( window.history.replaceState ) {
                 <img src="../images/HeartIcon2.png" alt="heart-icon" height="18" width="18" />
                 <p><a href="wishlist.php">Wishlist</a></p>
             </div>
-            <div class="header-navigation-cart"
-            <?php 
-                echo $displayNone;
-            ?>
-            >
+            <div class="header-navigation-cart" <?php
+                                                echo $displayNone;
+                                                ?>>
                 <img src="../images/shopping-cart.png" alt="heart-icon" height="18" width="18" />
                 <p><a href="cart.php">My Cart</a></p>
             </div>
