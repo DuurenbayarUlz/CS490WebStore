@@ -518,7 +518,7 @@
             </div>
         </div>
         <!-- VOTING SECTION -->
-        <button id="review-button" class="review-button" ONCLICK="ShowAndHide()">Review this product</button>
+        <button id="review-button" class="btn btn-secondary" ONCLICK="ShowAndHide()">Review this product</button>
         <script>
         function ShowAndHide() {
             var x = document.getElementById('review');
