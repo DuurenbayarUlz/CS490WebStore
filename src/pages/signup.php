@@ -9,24 +9,31 @@ include("connection.php");
  *  Thanh revised SQL query to bind statement and display alert 02/11/22
  */
 
-if (isset($_POST["signup"])) {
-  try {
-    $email = trim($_POST["email"]);
-    $full_name = trim($_POST["full_name"]);
-    $pass_word = strip_tags(trim($_POST["pass_word"]));
-    $hashed_password = password_hash($pass_word, PASSWORD_DEFAULT);
 
-    $stmt = $conn->query("SELECT email FROM User WHERE email = '$email'");
-    if ($stmt->rowCount() > 0) {
-      $emailExisted = "<div class='alert alert-warning alert-dismissable'>
-                        <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                        <strong>Error: </strong> Username $email has been taken!
-                      </div>";
-    } else {
-      /**
-	  *  IMPLEMENT PASSWORD HASHING
-	  *  Thanh Vu revised to add form validation
-	  */
+if (isset($_POST["signup"])) {
+  if ($_POST["full_name"] == "" or $_POST["pass_word"] == "" or $_POST["email"] == "") {
+    $messageEmpty = "<div class='alert alert-warning alert-dismissable'>
+    <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+    <strong>Error: </strong> Email, Password or Username cannot be blank. 
+  </div>";
+  } else {
+    try {
+      $email = trim($_POST["email"]);
+      $full_name = trim($_POST["full_name"]);
+      $pass_word = strip_tags(trim($_POST["pass_word"]));
+      $hashed_password = password_hash($pass_word, PASSWORD_DEFAULT);
+
+      $stmt = $conn->query("SELECT email FROM User WHERE email = '$email'");
+      if ($stmt->rowCount() > 0) {
+        $emailExisted = "<div class='alert alert-warning alert-dismissable'>
+                          <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                          <strong>Error: </strong> Username $email has been taken!
+                        </div>";
+      } else {
+          /**
+           *  IMPLEMENT PASSWORD HASHING
+           *  Thanh Vu revised to add form validation
+           */
 	 
 	 $conn->beginTransaction();
 	 $sql = ("INSERT INTO User (email, full_name, pass_word) VALUES (?, ?, ?)");
@@ -42,8 +49,9 @@ if (isset($_POST["signup"])) {
 		New user $email has been created! 
 	 </div>";
     }
-  } catch (PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    } catch (PDOException $e) {
+      header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
   }
 }
 
@@ -84,12 +92,14 @@ $conn = null;
             <h3>Sign up</h3>
             <div style="display: flex; flex-direction: column; margin-top: 20px; justify-content: space-between">
             
-              <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-              <?php
-                echo (!empty($emailExisted)) ?  $emailExisted : '';
-                echo (!empty($userCreated)) ?  $userCreated  : '';
-              ?>
-              <!-- END display error -->
+            <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+            <?php
+              echo (!empty($messageEmpty)) ?  $messageEmpty : '';
+              echo (!empty($messageEmptyPass)) ?  $messageEmptyPass : '';
+              echo (!empty($emailExisted)) ?  $emailExisted : '';
+              echo (!empty($userCreated )) ?  $userCreated  : '';
+            ?>
+            <!-- END display error -->
 
               <form method="POST">
                 <div style="margin-bottom: 10px">
@@ -101,7 +111,7 @@ $conn = null;
                   <input type="text" name="full_name" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-bottom: 10px">
-                  <p>Password (8 characters minimum)</p>
+                  <p>Password</p>
                   <input type="password" name="pass_word" class="form-control" pattern=".{8,12}" required title="Password must be 8 to 12 characters" />
                 </div>
                 <div style="margin-top: 30px">
