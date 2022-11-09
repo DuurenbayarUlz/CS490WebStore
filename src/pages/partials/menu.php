@@ -27,9 +27,7 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
     }
 </style>
 
-<div class="menu" <?php 
-    echo $displayNone
-?>>
+<div class="menu">
     <form id="formFashion" action="catalog.php?category=Fashion" method="post">
         <p onclick="document.getElementById('formFashion').submit();">Fashion</p>
     </form>
