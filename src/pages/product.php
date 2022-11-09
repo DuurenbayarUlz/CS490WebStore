@@ -411,7 +411,7 @@
                         <h3><?php echo $productBrand;?></h3>
                     </div>
                     <div class="product-section-description-rating">
-                        <h4>Rating: <?php echo $productAvgRating; ?>/5</h4>
+                        <h4>Rating: <?php echo $productAvgRating; ?>/5 <a style="font-size:medium; text-decoration:underline; margin-left:5px;" href="#review-button">Write a review</a></h4>
                     </div>
                     <div class="product-section-description-price">
                         <h4>Price: &curren;<?php echo $productPrice;?></h4>
@@ -511,47 +511,59 @@
             </div>
         </div>
         <!-- VOTING SECTION -->
-        <div class="review-brick">
-            <div class="review-panel">
-                <div class="panel-head">
-                    <h4 style="padding:0% 0% 0% 2%;">Rating</h4>
-                </div>
-                <div style="padding:2% 0% 0% 2%;">
-                    <div>
-                        <strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
-                        $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
-                        echo $productRateMess;
-                        ?>]
+        <button id="review-button" class="review-button" ONCLICK="ShowAndHide()">Review this product</button>
+        <script>
+        function ShowAndHide() {
+            var x = document.getElementById('review');
+            var y = document.getElementById('review-button');
+            if (x.style.display == 'none') {
+                x.style.display = 'block';
+                y.style.display = 'none';
+            }
+        }
+        </script>
+        <div id="review" style="display:none;">
+            <div class="review-brick">
+                <div class="review-panel">
+                    <div class="panel-head">
+                        <h4 style="padding:0% 0% 0% 2%;">Rating</h4>
                     </div>
-                </div>
-                <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '"> 
-                    <div style="width:80%; margin:auto;">
-                        <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
-                        <input type="range" id="rng" name="points" min="1" max="5" step="1">
-                        <!-- The value of the hidden input field is the productID -->
-                        <input type="hidden" name="id" value=<?php echo $productId?>>
+                    <div style="padding:2% 0% 0% 2%;">
+                        <div>
+                            <strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
+                            $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
+                            echo $productRateMess;
+                            ?>]
+                        </div>
                     </div>
-                    <div style="margin-left:10px; text-align:left;">
+                    <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '"> 
+                        <div style="width:80%; margin:auto;">
+                            <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
+                            <input type="range" id="rng" name="points" min="1" max="5" step="1">
+                            <!-- The value of the hidden input field is the productID -->
+                            <input type="hidden" name="id" value=<?php echo $productId?>>
+                        </div>
+                        <div style="margin-left:10px; text-align:left;">
+                            <br>
+                            <p>Would you buy this again?</p>
+                            <input type="radio" id="yes" name="buyAgain" value=1>
+                            <label for="yes">Yes</label>
+                            <input type="radio" id="no" name="buyAgain" value=2>
+                            <label for="no">No</label>
+                        </div>
                         <br>
-                        <p>Would you buy this again?</p>
-                        <input type="radio" id="yes" name="buyAgain" value=1>
-                        <label for="yes">Yes</label>
-                        <input type="radio" id="no" name="buyAgain" value=2>
-                        <label for="no">No</label>
-                    </div>
-                    <br>
-                    <div style="margin:auto; margin-bottom:10px;">
-                        <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
-                    </div>
-                        <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-                        <?php 
-                        echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
-                        echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
-                        ?>
-                        <!-- END display error -->
-                    </div>
-                </form>
-            </div>
+                        <div style="margin:auto; margin-bottom:10px;">
+                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
+                        </div>
+                            <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+                            <?php 
+                            echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
+                            echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+                            ?>
+                            <!-- END display error -->
+                        </div>
+                    </form>
+                </div>
         </div>
         <!-- END VOTING SECTION -->
         </main>
