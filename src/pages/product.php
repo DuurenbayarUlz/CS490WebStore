@@ -411,7 +411,7 @@
                         <h3><?php echo $productBrand;?></h3>
                     </div>
                     <div class="product-section-description-rating">
-                        <h4>Rating: <?php echo $productAvgRating; ?>/5 <a style="font-size:medium; text-decoration:underline; margin-left:5px;" href="#review" ONCLICK="ShowAndHide()">Write a review</a></h4>
+                        <h4>Rating: <?php echo $productAvgRating; ?>/5 <a style="font-size:medium; text-decoration:underline; margin-left:5px;" href="#review" ONCLICK="ShowAndHide()">Leave a review</a></h4>
                     </div>
                     <div class="product-section-description-price">
                         <h4>Price: &curren;<?php echo $productPrice;?></h4>
