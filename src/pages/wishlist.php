@@ -239,15 +239,20 @@ $conn = null;
       <div>
         <?php
         if (!empty($productNames)) {
-          for ($i = 0; $i < count($productNames); $i++) {
-            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-            echo "
+          echo "
               <div style='display: flex; width: 100%; justify-content: space-between'>
                   <h2>My Wishlist</h2>
                   <form action='wishlist.php' method='get'>
                     <button style='width: 150px' type='submit' value='1' name='removeAll' class='btn btn-outline-dark'> Remove all</button>
                   </form>
-              </div>
+              </div>";
+        }
+        ?>
+        <?php
+        if (!empty($productNames)) {
+          for ($i = 0; $i < count($productNames); $i++) {
+            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+            echo "
               <div class='wishlist-item'>
                   <img class='item-image' src='$productImagePaths[$i]' width=500 height=500>
                   <div class='item-details'>
