@@ -398,9 +398,14 @@
       <?php include("partials/header.php") ?>
       <?php include("partials/menu.php") ?>
       <!-- IF THERE IS AN ERROR for the user or password information, then display this -->
-      <?php 
+        <?php 
         echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
         echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+        ?>
+        <!-- END display error -->
+        <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+        <?php 
+        echo (!empty($messageProductExisted)) ? $messageProductExisted : '';
         ?>
         <!-- END display error -->
       <main>
@@ -446,11 +451,7 @@
                             <button type="submit" class="btn btn-secondary" value='1' name='addCartQuant'>Add to Cart</button>
                         </form>
                     </div>
-                    <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-                        <?php 
-                        echo (!empty($messageProductExisted)) ? $messageProductExisted : '';
-                        ?>
-                    <!-- END display error -->
+                    
                 </div>
             </div>
         </div>
@@ -552,7 +553,7 @@
                         <div style="margin-left:10px; text-align:left;">
                             <br>
                             <p>Would you buy this again?</p>
-                            <input type="radio" id="yes" name="buyAgain" value=1>
+                            <input type="radio" id="yes" name="buyAgain" value=1 checked>
                             <label for="yes">Yes</label>
                             <input type="radio" id="no" name="buyAgain" value=2>
                             <label for="no">No</label>
