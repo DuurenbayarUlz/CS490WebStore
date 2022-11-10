@@ -76,18 +76,20 @@ try {
   *   THANH VU 11/10/22
   */
 
-
 $stars = 1;
-
   try {
 
     if (!empty($_POST['min_price'])) {
       $category = $_GET['category'] ?? '';
-      $stars = $_POST['stars'];
-      $checkCategory = (!empty($_GET['category'])) ? "AND (Product.category = '$category')" : '';
-      $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path
+      $stars = $_POST['stars'] ?? 0;
+      if ($stars == 0){
+        $sql = "SELECT * FROM Product WHERE price between $min and $max AND category = '$category'";
+      } else {
+        $checkCategory = (!empty($_GET['category'])) ? "AND (Product.category = '$category')" : '';
+        $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path
                 from (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) " . $checkCategory . " GROUP BY product_id) as T
             where T.RatingAverage between $stars and 5";
+      }
       $stmt = $conn->query($sql);
       // Get id product name, brand, price, image_path from product Id 
       unset($productNames);
@@ -343,10 +345,12 @@ $conn = null;
                     </div>
                     <div>
                     <select name="stars" id="stars" value>
+                      <option value="0" selected disabled hidden>Select a Rating</option>
                       <option value=4>4 Stars & Up</option>
                       <option value=3>3 Stars & Up</option>
                       <option value=2>2 Stars & Up</option>
                       <option value=1>1 Star & Up</option>                  
+                      <option value=0>Include No Rating</option>                  
                     </select>             
                     <button style='width: 150px' type='submit' class='btn btn-outline-dark'> Submit </button>
                     </div>

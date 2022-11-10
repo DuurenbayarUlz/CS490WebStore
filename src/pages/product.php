@@ -228,14 +228,13 @@ $buyAgainNum = 0;
 
 try {
 
-
     if (isset($_SESSION["email"]) && !empty($_GET['id'])) {
-        $userId = $_SESSION['userid'];   
-        
+        $userId = $_SESSION['userid'];
         // CHECK IF USER IS LOGGED IN AND HAVE VOTED BEFORE TO DISPLAY IN PRODUCT DETAIL 
         $stmt = $conn->query("SELECT user_id, product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
         $result = $stmt->fetch();
         $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
+        $buyAgainDisplayWithoutVote = ($stmt->rowCount() > 0) ? ""  : "style='display:none'";
     
         if (empty($result['would_buy_again'])) {
             $messageBuyAgainDisplay = "<p>You have not answered whether you would buy $productName again</p>";
@@ -245,7 +244,7 @@ try {
             $messageBuyAgainDisplay = "<p>You have decided not to buy $productName again</p>";  
         } 
 
-        // UPDATE PEOPLE WHO WOULD BUY A PRODUCT AGAIN
+        // DISPLAY PEOPLE WHO WOULD BUY A PRODUCT AGAIN
         $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId AND would_buy_again = 'Y'");     
         $result = $stmt->fetch();
         $buyAgainNum = $result['BuyAgain'] ?? '0'; 
@@ -257,19 +256,22 @@ try {
     // Case 2: if vote is selected but there is no product id
     } elseif (!empty($_GET['points']) && empty($_GET['id'])) { 
         die();  // kill all actions to avoid null record in database
-    // Case 3: if vote is selected and user is signed in
     } elseif (!empty($_GET['points']) && isset($_SESSION["userid"])) {
         // get points from query param
         $point = $_GET['points'] ?? 0;
         $userId = $_SESSION['userid'];   
-        // Check if vote has already been casted:
+       
         $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
+
+         // IF VOTE HAS BEEN CASTED
         if ($stmt->rowCount() > 0) {
+            $buyAgainDisplayWithoutVote =  "";
             $messageVoteCasted = "<div class='alert alert-warning alert-dismissable'>
             <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
             <strong>Error: </strong> You have already rated $productName!
                 </div>";
         } else { // VOTE HAS NOT BEEN CASTED
+            $messageVoteCasted = "";
             $conn->beginTransaction(); 
             $sql = ("INSERT INTO ProductRating (user_id, product_id, rating) VALUES (?, ?, ?)");
             $statement = $conn->prepare($sql);
@@ -278,29 +280,33 @@ try {
             $statement->bindValue(3, $point);
             $statement->execute();
             $conn->commit();
-
+        $buyAgainDisplayWithoutVote = "";
         //UPDATE WHETHER YOU HAVE RATED THIS PRODUCT
         $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
         $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
         }
     } 
     
-
+/**
+ *  IMPLEMENT BUY AGAIN FORM
+ * THanh 11/10
+ */
     // Case 1: If buy again is selected but user is not signed in:
     if (!empty($_GET['buyAgain']) && !isset($_SESSION["email"])) { 
         header("Location: signin.php");
-    // Case 2: if buyAgain is selected but there is no product id    
+    // Case 2: if buyAgain is selected but no product id
     } elseif (!empty($_GET['buyAgain']) && empty($_GET['id'])) { 
         die();  // kill all actions to avoid null record in database
-    // Case 3: if buy Again is selected and user is signed in
+        // Case 3: if vote is selected and user is signed in
     } elseif (!empty($_GET['buyAgain']) && isset($_SESSION["userid"])) {
         // BUY AGAIN insert function
-        $buyAgain = $_GET['buyAgain'] ?? -10;
+        $buyAgain = $_GET['buyAgain'] ?? 'Y';
         $userId = $_SESSION['userid'];
         
-        // Check if you have already selected to buy again
         $stmt = $conn->query("SELECT product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
         $result = $stmt->fetch();
+
+        // Check if you have already rated or not
         if ($stmt->rowCount() > 0) {
             $conn->beginTransaction(); 
             $sql = ("UPDATE ProductRating SET would_buy_again = ? where user_id = ? AND product_id = ?");
@@ -311,7 +317,7 @@ try {
             $statement->execute();
             $conn->commit();
            
-            //UPDATE WHETHER YOU HAVE ANSWERED QUESTION WOULD BUY AGAIN:
+            //UPDATE USER'S ANSWER:
             $stmt = $conn->query("SELECT user_id, product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
             $result = $stmt->fetch();
             if (empty($result['would_buy_again'])) {
@@ -543,7 +549,7 @@ try {
                         <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
                     </div>
                     </form>
-                    <form action="product.php" method="get">
+                    <form action="product.php" method="get" <?php echo (!empty($buyAgainDisplayWithoutVote)) ? $buyAgainDisplayWithoutVote : '' ?>>
                         <p>Buy Again:        
                             <select name="buyAgain" id="buyAgain">
                                 <option value=Y>Yes</option>
@@ -560,8 +566,7 @@ try {
                     <?php 
                     echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
                     echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
-                    echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';
-                    
+                    echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';  
                     ?>
                     <!-- END display error -->
             </li>

@@ -74,6 +74,7 @@ if ( window.history.replaceState ) {
                 <form action="" method="post">
                     <label for="amount">Add coins to the account:</label>
                     <select name="amounts" id="amount">
+                        <option value="none" selected disabled hidden>Select Refill Amount</option>
                         <option value=500>500</option>
                         <option value=200>200</option>
                         <option value=100>100</option>
