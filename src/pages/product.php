@@ -245,9 +245,10 @@ try {
             $messageBuyAgainDisplay = "<p>You have decided not to buy $productName again</p>";  
         } 
 
-        $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId");
+        // UPDATE PEOPLE WHO WOULD BUY A PRODUCT AGAIN
+        $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId AND would_buy_again = 'Y'");     
         $result = $stmt->fetch();
-        $buyAgainNum = $result['BuyAgain'] ?? '0';  
+        $buyAgainNum = $result['BuyAgain'] ?? '0'; 
     }
 
     // Case 1: if vote is selected but user is not signed in

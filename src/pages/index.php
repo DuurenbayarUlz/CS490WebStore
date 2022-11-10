@@ -2,7 +2,6 @@
 session_start();
 require_once("connection.php");
 
-// TODO: IF THERE IS TIME, SHOW PRODUCTS RANDOMLY EACH TIME A USER LOG IN
 
 
 /**
@@ -26,6 +25,7 @@ try {
   	header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
+
 /**
  *  IMPLEMENT SHOWING BY CATEGORY
  */
@@ -33,7 +33,7 @@ try {
 
 try {
   if (!empty($_GET['category'])) {
-    $category = $_GET['category'] ?? 'Electronics';
+    $category = $_GET['category'] ?? '';
     $stmt = $conn->query("SELECT * FROM Product where category='$category'");
 
     // Get id product name, brand, price, image_path from product Id 
@@ -58,11 +58,12 @@ try {
 
 
 /**
-   *  IMPLEMENT SLIDER PRICE FUNCTION
-   */
+*  IMPLEMENT SLIDER FILTER PRICE FUNCTION
+*/
+
   // Set default value for min and max
   $min = 1;
-  $max = 100;
+  $max = 200;
 
   if (!empty($_POST['min_price'])) {
       $min = $_POST['min_price'];
@@ -72,11 +73,25 @@ try {
       $max = $_POST['max_price'];
   }
 
+
+  /**
+  *  IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
+  *   THANH VU 11/10/22
+  */
+
+
+$stars = 1;
+
   try {
 
     if (!empty($_POST['min_price'])) {
-      $category = $_GET['category'] ?? 'Electronics';
-      $stmt = $conn->query("SELECT * FROM Product where category='$category' AND price between $min and $max");
+      $category = $_GET['category'] ?? '';
+      $stars = $_POST['stars'];
+      $checkCategory = (!empty($_GET['category'])) ? "AND (Product.category = '$category')" : '';
+      $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path
+                from (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) " . $checkCategory . " GROUP BY product_id) as T
+            where T.RatingAverage between $stars and 5";
+      $stmt = $conn->query($sql);
       // Get id product name, brand, price, image_path from product Id 
       unset($productNames);
       unset($productIds);
@@ -95,7 +110,7 @@ try {
     header("Location: error.php?error=Connection failed:" . $e->getMessage());
   }
 
-
+  
 // get product rating from product id:
 $productAvgRatings;
 $voteCounts;
@@ -300,11 +315,19 @@ $conn = null;
                             value="<?php echo $max; ?>">
                     </div>
                     <div>
+                    <select name="stars" id="stars" value>
+                      <option value=4>4 Stars & Up</option>
+                      <option value=3>3 Stars & Up</option>
+                      <option value=2>2 Stars & Up</option>
+                      <option value=1>1 Stars & Up</option>                
+                    </select>             
                     <button style='width: 150px' type='submit' class='btn btn-outline-dark'> Submit </button>
                     </div>
                 </form>
             </div>
             <!-- slider ends -->
+
+
       <div class="container px-4 px-lg-5 pt-5">
         <div class="row gx-4 gx-lg-5 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6">
 	          <?php 
