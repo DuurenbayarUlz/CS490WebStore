@@ -311,7 +311,7 @@
             if ($stmt->rowCount() > 0) {
                 // GENERATE HTML NOTIFYING USER ABOUT EXISTING PRODUCT
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
-                                            <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                                            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                                             <strong>Error: </strong> Product already exists in wishlist. Go to <a href='wishlist.php'>Wishlist.</a>
                                          </div>";
             } else {
@@ -325,7 +325,7 @@
                 
                 //  GENERATE HTML NOTIFYING USER THAT PRODUCT HAS BEEN ADDED TO WISHLIST
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
-                                            <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                                            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                                             Added this product to wishlist!, Go to <a href='wishlist.php'>Wishlist.</a>
                                           </div>";
             }      
@@ -355,7 +355,7 @@
             if ($stmt->rowCount() > 0) {
                 // GENERATE HTML NOTIFYING USER ABOUT EXISTING PRODUCT
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
-                                            <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                                            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                                             <strong>Error: </strong> Product already exists in Cart. Go to <a href='cart.php'>Cart.</a>
                                          </div>";
             } else {
@@ -368,7 +368,7 @@
                 $conn->commit(); 
                 //  GENERATE HTML NOTIFYING USER THAT PRODUCT HAS BEEN ADDED TO cart
                 $messageProductExisted = "<div class='alert alert-warning alert-dismissable'>
-                                            <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                                            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                                             Added this product to cart!, Go to <a href='cart.php'>cart.</a>
                                           </div>";
             }      
@@ -377,7 +377,7 @@
         header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
 
-
+	$displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
 
     // Close connection to save resources
     $conn = null;
@@ -439,6 +439,21 @@
                     <div class="product-section-description-info">
                         <p><strong>About this item:</strong> <?php echo $productDescription;?></p>
                     </div>
+                    <?php
+		            switch ($buyAgainNum) {
+		                case 0:
+		                    echo '<p>No one would buy this product again</p>';
+		                    break;
+		                case 1: 
+		                    echo '<p>1 person would buy this product again</p>';
+		                    break;
+		                default: 
+		                    echo "<p>$buyAgainNum people would buy this product again</p>";
+		
+		            }  
+		            echo (!empty($messageVoteDisplay)) ? $messageVoteDisplay : '';
+		            echo (!empty($messageBuyAgainDisplay)) ? $messageBuyAgainDisplay : '';  
+		            ?>
                     <div class="actions">
                         <form action='product.php' method='get'>
                             <!-- Hidden input contains value of query param id=? so we can append further query param -->
@@ -462,59 +477,41 @@
                 <h4 style=" margin:0px">Similar Products:</h4>
             </div>
             <div class="product-row">
-                <?php
-                for ($i = 0; $i < count($productNames); $i++) { 
-                    $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-                    echo "<div class='catalog-item'>
-                    <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
-                    <div class='catalog-item-description'>
-                    <div class='catalog-item-description-name'>
-                    <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-                    <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
-                    </div>
+                <?php	
+      				if (!empty($productNames)) {	
+        			for ($i = 0; $i < count($productNames); $i++) {	
+        	
+	            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';	
+	            echo "<div class='catalog-item'>	
+	            <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />	
+	            <div class='catalog-item-description'>	
+	            <div class='catalog-item-description-name'>	
+	            <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>	
+	            <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>	
+	           </div>
                     
-                    <div class='catalog-item-description-brand'>
-                    <p>$productBrands[$i]</p>
-                    <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
-                    </div>
+                    <div class='catalog-item-description-brand'>	
+		            <p>$productBrands[$i]</p>	
+		            <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>	
+		            </div>
                     
                     <div class='catalog-item-description-star'>
                     <span>
-                    $ratingDisplays[$i]
-                    <p>$productAvgRatings[$i]/5</p>
-                    <p>($productRateMess)</p>
-                    </span>
-                    </div>
-                    <p> &curren; $productPrices[$i]</p>
+                    <div class='catalog-item-description-star'>	
+		            <span>	
+		            $ratingDisplays[$i]	
+		            <p>$productAvgRatings[$i]/5</p>	
+		            <p>($productRateMess)</p>	
+		            </span>	
+		            </div>	
+		            <p> &curren; $productPrices[$i]</p>
                     </div>
                     </div>";
-                }
+                }}
+             	else {
+		        echo "<h3> No similar product to show </h3>";
+		      }
                 ?>
-                <!-- START A SAMPLE PRODUCT-->
-                <div class="catalog-item" style="display:none">
-                    <img src="https://hcti.io/v1/image/a3abd534-a38d-47f8-819b-a33679090571" alt="Item" width="130" />
-                    <div class="catalog-item-description">
-                        <div class="catalog-item-description-name">
-                            <p>Product Name</p>
-                            <img src="../images/HeartIcon.png" alt="heart-icon" height="12" width="12" />
-                        </div>
-                        <div class="catalog-item-description-brand">
-                            <p>Brand</p>
-                            <img src="../images/PointerIcon.png" alt="heart-icon" height="12" width="13" />
-                        </div>
-                        <div class="catalog-item-description-star">
-                            <span>
-                                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                                <img src="../images/star-orange.png" alt="star-rating" title="rating" />
-                                <img src="../images/star-white.png" alt="star-rating" title="rating" />
-                                <p>(37)</p>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <!-- END A SAMPLE PRODUCT-->
             </div>
         </div>
         <!-- VOTING SECTION -->
@@ -543,25 +540,41 @@
                             ?>]
                         </div>
                     </div>
-                    <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '"> 
-                        <div style="width:80%; margin:auto;">
-                            <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
-                            <input type="range" id="rng" name="points" min="1" max="5" step="1">
-                            <!-- The value of the hidden input field is the productID -->
-                            <input type="hidden" name="id" value=<?php echo $productId?>>
-                        </div>
+                    <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
+                    <div class="form-group text-center">
+                        <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
+                        <input type="range" id="rng" name="points" min="1" max="5" step="1">
+                        <!-- The value of the hiddem input field is the productID -->
+                        <input type="hidden" name="id" value=<?php echo $productId?>>
+                    </div>
+                    <br>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
+                    </div>
+                    </form>
+                    <form action="product.php" method="get">
                         <div style="margin-left:10px; text-align:left;">
                             <br>
                             <p>Would you buy this again?</p>
-                            <input type="radio" id="yes" name="buyAgain" value=1 checked>
+                            <input type="radio" id="yes" name="buyAgain" value='Y' checked>
                             <label for="yes">Yes</label>
-                            <input type="radio" id="no" name="buyAgain" value=2>
+                            <input type="radio" id="no" name="buyAgain" value='N'>
                             <label for="no">No</label>
                         </div>
-                        <br>
-                        <div style="margin:auto; margin-bottom:10px;">
-                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
+                      
+                        <!-- The value of the hiddem input field is the productID -->
+                        <input type="hidden" name="id" value=<?php echo $productId?>>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> Do you want to buy again!</button>
+                        </div>
                     </form>
+                    <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+                    <?php 
+                    echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
+                    echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+                    echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';  
+                    ?>
+                    <!-- END display error -->
                 </div>
         </div>
         <!-- END VOTING SECTION -->
