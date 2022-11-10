@@ -2,8 +2,6 @@
 session_start();
 require_once("connection.php");
 
-
-
 /**
  *  IMPLEMENT SHOWING PRODUCTS ON HOME PAGE
  *  Thanh Vu 11/03/2022
@@ -24,7 +22,6 @@ try {
 } catch (PDOException $e) {
   	header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
-
 
 /**
  *  IMPLEMENT SHOWING BY CATEGORY
@@ -110,7 +107,37 @@ $stars = 1;
     header("Location: error.php?error=Connection failed:" . $e->getMessage());
   }
 
-  
+ 
+/**
+ *  IMPLEMENT SEARCH BAR
+ */
+$search = "";
+try {
+  if (!empty($_POST['search'])) {
+    $search = $_POST['search'];
+    $stmt = $conn->query("SELECT * FROM Product where name like '%$search%'");
+    // Get id product name, brand, price, image_path from product Id 
+    unset($productNames);
+    unset($productIds);
+    unset($productPrices);
+    unset($productBrands);
+    unset($productImagePaths);
+    while ($row = $stmt->fetch()) {
+      $productIds[] =  $row['id'];
+      $productNames[] = $row['name'];
+      $productPrices[] = $row['price'];
+      $productBrands[] = $row['brand'];
+      $productImagePaths[] = $row['image_path'];
+    }
+  }
+
+} catch(PDOException $e) {
+   header("Location: error.php?error=Connection failed:" . $e->getMessage());
+}
+
+
+
+
 // get product rating from product id:
 $productAvgRatings;
 $voteCounts;
@@ -319,7 +346,7 @@ $conn = null;
                       <option value=4>4 Stars & Up</option>
                       <option value=3>3 Stars & Up</option>
                       <option value=2>2 Stars & Up</option>
-                      <option value=1>1 Stars & Up</option>                
+                      <option value=1>1 Star & Up</option>                  
                     </select>             
                     <button style='width: 150px' type='submit' class='btn btn-outline-dark'> Submit </button>
                     </div>
@@ -365,7 +392,6 @@ $conn = null;
                 } else {
                   echo "<h3> No product to show </h3>";
                 }
-
           ?>       
         </div>
       </div>
@@ -373,5 +399,4 @@ $conn = null;
     <?php include("partials/footer.php") ?>
   </div>
 </body>
-
 </html>

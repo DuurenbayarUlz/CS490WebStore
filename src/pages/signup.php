@@ -30,10 +30,10 @@ if (isset($_POST["signup"])) {
                           <strong>Error: </strong> Username $email has been taken!
                         </div>";
       } else {
-          /**
-           *  IMPLEMENT PASSWORD HASHING
-           *  Thanh Vu revised to add form validation
-           */
+    /**
+     *  IMPLEMENT PASSWORD HASHING
+     *  Thanh Vu revised to add form validation
+     */
 	 
 	 $conn->beginTransaction();
 	 $sql = ("INSERT INTO User (email, full_name, pass_word) VALUES (?, ?, ?)");

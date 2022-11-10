@@ -78,14 +78,15 @@ if ( window.history.replaceState ) {
 </script>
 <!-- END SCRIPT - PAGE REFRESH-->
 
-
 <header>
     <div class="header">
         <div class="header-logo">
             <h3><a href="index.php">Webstore</a></h3>
         </div>
         <div class="header-input">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+            <form action="index.php" method="post">
+            <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search" />
+            </form>
         </div>
         <div class="header-navigation">
             <div class="header-navigation-account">
