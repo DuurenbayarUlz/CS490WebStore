@@ -308,7 +308,7 @@ $heartColor = "WHITE";
           $productId = $_POST['id'];;
           $stmt = $conn->query("SELECT * FROM ProductFavorite where product_id = $productId AND user_id = $userId");
           if ($stmt->rowCount() > 0) {
-            echo "<h2> Product already exists in Cart. Go to <a href='cart.php'>Cart.</a> </h2>";
+            echo "<h2> Product already exists in WishList. Go to <a href='wishlist.php'>Wish Lists.</a> </h2>";
           } else {
               $conn->beginTransaction(); 
               $sql = ("INSERT INTO ProductFavorite (user_id, product_id) VALUES (?, ?)");
