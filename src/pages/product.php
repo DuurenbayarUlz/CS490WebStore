@@ -434,7 +434,7 @@
                         <h4>Dimension: <?php echo $productDimension;?></h4>
                     </div>
                     <div class="product-section-description-stock">
-                        <h4>In stock: <?php echo ($productQuantity > 0) ? $productQuantity : 'Out of Stock'; ?></h4>
+                        <h4>Availibility: <?php echo ($productQuantity > 0) ? $productQuantity : 'Out of Stock'; ?></h4>
                     </div>
                     <div class="product-section-description-info">
                         <p><strong>About this item:</strong> <?php echo $productDescription;?></p>
