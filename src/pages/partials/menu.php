@@ -19,11 +19,13 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
         margin-right: 5px;
         margin-bottom: 0px;
         padding: 3px;
+        font-size: 15px;
     }
 
     .menu form :hover {
         cursor: pointer;
-        border: 2px solid rgb(253, 240, 213);
+        border: 1.5px solid rgb(253, 240, 213);
+        border-radius: 5px;
     }
 </style>
 
