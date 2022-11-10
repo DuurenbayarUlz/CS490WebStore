@@ -1,4 +1,4 @@
-<?php
+<?php 
 $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
 ?>
 
@@ -37,9 +37,9 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
     </form>
 
     <form id="formTumblers" action="catalog.php?category=Tumblers" method="post">
-        <p onclick="document.getElementById('formTumblers').submit();">Tumblers</p>
+    	<p onclick="document.getElementById('formTumblers').submit();">Tumblers</p>
     </form>
-
+            
     <form id="formBags" action="catalog.php?category=Bags" method="post">
         <p onclick="document.getElementById('formBags').submit();">Bags</p>
     </form>

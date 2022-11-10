@@ -27,8 +27,8 @@ try {
     $productBrands[] = $row['brand'];
     $productImagePaths[] = $row['image_path'];
   }
-} catch (PDOException $e) {
-  header("Location: error.php?error=Connection failed:" . $e->getMessage());
+} catch(PDOException $e) {
+   header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
 // get product rating from product id:
@@ -202,41 +202,40 @@ $conn = null;
     <div class="catalog">
       <div class="container px-4 px-lg-5 pt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5">
-          <?php
-          if (!empty($productNames)) {
-            for ($i = 0; $i < count($productNames); $i++) {
-              $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-              echo "<div class='col mb-5'>
-              <div class='catalog-item'>
-                <div class='catalog-item-image'>
-                  <img src='$productImagePaths[$i]' alt='Item' width='100%' height='130px' class='contain'/>
-                </div>
-                <div class='catalog-item-description'>
-                  <div class='catalog-item-description-name'>
-                    <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-                    <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
-                  </div>
-              
-                  <div class='catalog-item-description-brand'>
-                    <p>$productBrands[$i]</p>
-                    <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
-                  </div>
-              
-                  <div class='catalog-item-description-star'>
-                    <span>
-                      $ratingDisplays[$i]
-                      <p>$productAvgRatings[$i]/5</p>
-                    </span>
-                  </div>
-                  <p>\$ $productPrices[$i].99</p>
-                </div>
-              </div>
-              </div>";
-            }
-          } else {
-            $message = "<h3>No Item In $category Category To Display</h3>";
-          }
-          ?>
+          <?php 
+             if (!empty($productNames)) {
+                for ($i = 0; $i < count($productNames); $i++) {
+                    $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+                    echo "<div class='col mb-5'>
+                            <div class='catalog-item'>
+                              <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
+                              <div class='catalog-item-description'>
+                                <div class='catalog-item-description-name'>
+                                  <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
+                                  <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+                                </div>
+                            
+                                <div class='catalog-item-description-brand'>
+                                  <p>$productBrands[$i]</p>
+                                  <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
+                                </div>
+                            
+                                <div class='catalog-item-description-star'>
+                                  <span>
+                                    $ratingDisplays[$i]
+                                    <p>$productAvgRatings[$i]/5</p>
+                                    <p>($productRateMess)</p>
+                                  </span>
+                                </div>
+                                <p>&curren; $productPrices[$i]</p>
+                              </div>
+                            </div>
+                          </div>";    
+                  }
+             } else {
+                $message = "<h3>No Item In $category Category To Display</h3>";
+             }
+          ?>       
         </div>
         <?php echo (!empty($message)) ? $message : '' ?>
       </div>

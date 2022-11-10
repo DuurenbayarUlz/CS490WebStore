@@ -1,4 +1,4 @@
-<?php
+<?php 
 $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
 ?>
 <style>
@@ -41,7 +41,7 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
         margin-bottom: 0;
         cursor: pointer;
         padding-left: 5px;
-        font-size: 15px;
+		font-size: 15px;
     }
 
     .header-logo h3 a,
@@ -70,6 +70,14 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
     }
 </style>
 
+<!-- AVOID FORM RESUBMISSION UPON PAGE REFRESH-->
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>
+<!-- END SCRIPT - PAGE REFRESH-->
+
 
 <header>
     <div class="header">
@@ -86,9 +94,10 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
                 echo (!isset($_SESSION["email"])) ? "<p><a href='signin.php'>Sign In</a></p>" : "<p><a href='home.php'>My account</a></p>";
                 ?>
             </div>
-            <div class="header-navigation-wishlist" <?php
-                                                    echo $displayNone;
-                                                    ?>>
+            <div class="header-navigation-wishlist" 
+            <?php 
+                echo $displayNone;
+            ?>>
                 <img src="../images/HeartIcon2.png" alt="heart-icon" height="18" width="18" />
                 <p><a href="wishlist.php">Wishlist</a></p>
             </div>

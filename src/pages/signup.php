@@ -9,41 +9,49 @@ include("connection.php");
  *  Thanh revised SQL query to bind statement and display alert 02/11/22
  */
 
+
 if (isset($_POST["signup"])) {
-  try {
-    $email = trim($_POST["email"]);
-    $full_name = trim($_POST["full_name"]);
-    $pass_word = strip_tags(trim($_POST["pass_word"]));
-    $hashed_password = password_hash($pass_word, PASSWORD_DEFAULT);
+  if ($_POST["full_name"] == "" or $_POST["pass_word"] == "" or $_POST["email"] == "") {
+    $messageEmpty = "<div class='alert alert-warning alert-dismissable'>
+    <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+    <strong>Error: </strong> Email, Password or Username cannot be blank. 
+  </div>";
+  } else {
+    try {
+      $email = trim($_POST["email"]);
+      $full_name = trim($_POST["full_name"]);
+      $pass_word = strip_tags(trim($_POST["pass_word"]));
+      $hashed_password = password_hash($pass_word, PASSWORD_DEFAULT);
 
-    $stmt = $conn->query("SELECT email FROM User WHERE email = '$email'");
-    if ($stmt->rowCount() > 0) {
-      $emailExisted = "<div class='alert alert-warning alert-dismissable'>
-                        <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                        <strong>Error: </strong> Username $email has been taken!
-                      </div>";
-    } else {
-      /**
-       *  IMPLEMENT PASSWORD HASHING
-       *  Thanh Vu revised to add form validation
-       */
-
-      $conn->beginTransaction();
-      $sql = ("INSERT INTO User (email, full_name, pass_word) VALUES (?, ?, ?)");
-      $statement = $conn->prepare($sql);
-      $statement->bindValue(1, $email);
-      $statement->bindValue(2, $full_name);
-      $statement->bindValue(3, $hashed_password);
-      $statement->execute();
-      $conn->commit();
-
-      $userCreated = "<div class='alert alert-warning alert-dismissable'>
-        <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-        New user $email has been created! 
-      </div>";
+      $stmt = $conn->query("SELECT email FROM User WHERE email = '$email'");
+      if ($stmt->rowCount() > 0) {
+        $emailExisted = "<div class='alert alert-warning alert-dismissable'>
+                          <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                          <strong>Error: </strong> Username $email has been taken!
+                        </div>";
+      } else {
+          /**
+           *  IMPLEMENT PASSWORD HASHING
+           *  Thanh Vu revised to add form validation
+           */
+	 
+	 $conn->beginTransaction();
+	 $sql = ("INSERT INTO User (email, full_name, pass_word) VALUES (?, ?, ?)");
+	 $statement = $conn->prepare($sql);
+	 $statement->bindValue(1, $email);
+	 $statement->bindValue(2, $full_name);
+	 $statement->bindValue(3, $hashed_password);
+	 $statement->execute();
+	 $conn->commit();
+	
+	 $userCreated = "<div class='alert alert-warning alert-dismissable'>
+		<a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+		New user $email has been created! 
+	 </div>";
     }
-  } catch (PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    } catch (PDOException $e) {
+      header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
   }
 }
 
@@ -56,9 +64,9 @@ $conn = null;
 
 <!-- AVOID FORM RESUBMISSION UPON PAGE REFRESH-->
 <script>
-  if (window.history.replaceState) {
-    window.history.replaceState(null, null, window.location.href);
-  }
+ if (window.history.replaceState) {
+	window.history.replaceState(null, null, window.location.href);
+ }
 </script>
 <!-- END SCRIPT - PAGE REFRESH-->
 
@@ -83,22 +91,24 @@ $conn = null;
           <div class="d-flex flex-column">
             <h3>Sign up</h3>
             <div style="display: flex; flex-direction: column; margin-top: 20px; justify-content: space-between">
-
-              <!-- IF THERE IS AN ERROR for the user or password information, then display this -->
-              <?php
+            
+            <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+            <?php
+              echo (!empty($messageEmpty)) ?  $messageEmpty : '';
+              echo (!empty($messageEmptyPass)) ?  $messageEmptyPass : '';
               echo (!empty($emailExisted)) ?  $emailExisted : '';
-              echo (!empty($userCreated)) ?  $userCreated  : '';
-              ?>
-              <!-- END display error -->
+              echo (!empty($userCreated )) ?  $userCreated  : '';
+            ?>
+            <!-- END display error -->
 
               <form method="POST">
                 <div style="margin-bottom: 10px">
                   <p>Email address</p>
-                  <input type="email" name="email" class="form-control" placeholder="" required />
+                  <input type="email" name="email" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-bottom: 10px">
                   <p>Full name</p>
-                  <input type="text" name="full_name" class="form-control" placeholder="" required />
+                  <input type="text" name="full_name" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-bottom: 10px">
                   <p>Password</p>
@@ -117,7 +127,7 @@ $conn = null;
     <?php include("partials/footer.php") ?>
   </div>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 </body>
 
 </html>
