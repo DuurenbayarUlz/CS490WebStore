@@ -83,7 +83,9 @@ $stars = 1;
       $category = $_GET['category'] ?? '';
       $stars = $_POST['stars'] ?? 0;
       if ($stars == 0){
-        $sql = "SELECT * FROM Product WHERE price between $min and $max AND category = '$category'";
+        $checkCategory = (!empty($_GET['category'])) ? "AND category = '$category'" : '';
+        $sql = "SELECT * FROM Product WHERE price between $min and $max " . $checkCategory;
+        // . $checkCategory;
       } else {
         $checkCategory = (!empty($_GET['category'])) ? "AND (Product.category = '$category')" : '';
         $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path
@@ -285,6 +287,47 @@ try {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
+$productId = "";
+$heartColor = "WHITE";
+
+
+
+   /**
+     * IMPLEMENT ADD TO WISHLIST 
+     *  Thanh Vu 11/03/2022
+     * 11/04/2012 Added missing userId check in SQL query
+     */
+
+    try {
+      // Case 1: if vote is selected but user is not signed in
+      if (!empty($_POST['id']) && !isset($_SESSION["email"])) { 
+          header("Location: signin.php");
+      // Case 2: if vote is selected
+      } elseif (!empty($_POST['id']) && isset($_SESSION["userid"])){
+          $userId = $_SESSION["userid"];
+          $productId = $_POST['id'];;
+          $stmt = $conn->query("SELECT * FROM ProductFavorite where product_id = $productId AND user_id = $userId");
+          if ($stmt->rowCount() > 0) {
+            echo "<h2> Product already exists in Cart. Go to <a href='cart.php'>Cart.</a> </h2>";
+          } else {
+              $conn->beginTransaction(); 
+              $sql = ("INSERT INTO ProductFavorite (user_id, product_id) VALUES (?, ?)");
+              $statement = $conn->prepare($sql);
+              $statement->bindValue(1, $userId);
+              $statement->bindValue(2, $productId);
+              $statement->execute();
+              $conn->commit(); 
+              $heartColor = "red";
+              echo "<h2> Added this product to WishList. Go to <a href='wishlist.php'>Wishlist.</a> </h2>";
+          }      
+      }
+  } catch (PDOException $e) {
+      header("Location: error.php?error=Connection failed:" . $e->getMessage());
+  }
+
+
+ 
+
 // Set display to none if user is not logged in
 $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
 // Close connection to save resources
@@ -358,7 +401,6 @@ $conn = null;
             </div>
             <!-- slider ends -->
 
-
       <div class="container px-4 px-lg-5 pt-5">
         <div class="row gx-4 gx-lg-5 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6">
 	          <?php 
@@ -373,14 +415,16 @@ $conn = null;
                             <div class='catalog-item-description'>
                               <div class='catalog-item-description-name'>
                                 <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-                                <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>
-                              </div>
-                          
+              
+                                <form action='' method='post'>
+	                                <!-- Hidden input -->
+                                  <input type='hidden' name='id' value='$productIds[$i]'>
+	                                <input type='image' src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone>
+                                </form>
+                              </div>       
                               <div class='catalog-item-description-brand'>
-                                <p>$productBrands[$i]</p>
-                                <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>
-                              </div>
-                          
+                                <p>$productBrands[$i]</p>           
+                              </div>       
                               <div class='catalog-item-description-star'>
                                 <span>
                                   $ratingDisplays[$i]
