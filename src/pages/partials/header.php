@@ -81,7 +81,9 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
 <header>
     <div class="header">
         <div class="header-logo">
-            <img src='../images/KKart.png' alt="logo" height="150" width="180" />
+            <a href="index.php">
+                <img src='../images/KKart.png' alt="logo" height="150" width="180" />
+            </a>
         </div>
         <div class="header-input">
             <form action="index.php" method="post">

@@ -19,9 +19,8 @@ try {
     $productBrands[] = $row['brand'];
     $productImagePaths[] = $row['image_path'];
   }
-  
 } catch (PDOException $e) {
-  	header("Location: error.php?error=Connection failed:" . $e->getMessage());
+  header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
 
@@ -50,70 +49,69 @@ try {
       $productImagePaths[] = $row['image_path'];
     }
   }
-  
-} catch(PDOException $e) {
-   header("Location: error.php?error=Connection failed:" . $e->getMessage());
+} catch (PDOException $e) {
+  header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
 
 /**
-*  IMPLEMENT SLIDER FILTER PRICE FUNCTION
-*/
+ *  IMPLEMENT SLIDER FILTER PRICE FUNCTION
+ */
 
-  // Set default value for min and max
-  $min = 1;
-  $max = 200;
+// Set default value for min and max
+$min = 1;
+$max = 200;
 
-  if (!empty($_POST['min_price'])) {
-      $min = $_POST['min_price'];
-  }
+if (!empty($_POST['min_price'])) {
+  $min = $_POST['min_price'];
+}
 
-  if (!empty($_POST['max_price'])) {
-      $max = $_POST['max_price'];
-  }
+if (!empty($_POST['max_price'])) {
+  $max = $_POST['max_price'];
+}
 
 
-  /**
-  *  IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
-  *   THANH VU 11/10/22
-  */
+/**
+ *  IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
+ *   THANH VU 11/10/22
+ */
 
 $stars = 1;
-  try {
+try {
 
-    if (!empty($_POST['min_price'])) {
-      $category = $_GET['category'] ?? '';
-      $stars = $_POST['stars'] ?? 0;
-      if ($stars == 0){
-        $checkCategory = (!empty($_GET['category'])) ? "AND category = '$category'" : '';
-        $sql = "SELECT * FROM Product WHERE price between $min and $max " . $checkCategory;
-        // . $checkCategory;
-      } else {
-        $checkCategory = (!empty($_GET['category'])) ? "AND (Product.category = '$category')" : '';
-        $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path
+  if (!empty($_POST['min_price'])) {
+    $category = $_GET['category'] ?? '';
+    $stars = $_POST['stars'] ?? 0;
+    if ($stars == 0) {
+      $checkCategory = (!empty($_GET['category'])) ? "AND category = '$category'" : '';
+      $sql = "SELECT * FROM Product WHERE price between $min and $max " . $checkCategory;
+      // . $checkCategory;
+    } else {
+      $checkCategory = (!empty($_GET['category'])) ? "AND (Product.category = '$category')" : '';
+      $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path
                 from (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) " . $checkCategory . " GROUP BY product_id) as T
             where T.RatingAverage between $stars and 5";
-      }
-      $stmt = $conn->query($sql);
-      // Get id product name, brand, price, image_path from product Id 
-      unset($productNames);
-      unset($productIds);
-      unset($productPrices);
-      unset($productBrands);
-      unset($productImagePaths);
-      while ($row = $stmt->fetch()) {
-        $productIds[] =  $row['id'];
-        $productNames[] = $row['name'];
-        $productPrices[] = $row['price'];
-        $productBrands[] = $row['brand'];
-        $productImagePaths[] = $row['image_path'];
-      }
     }
-  } catch (PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    $stmt = $conn->query($sql);
+    // Get id product name, brand, price, image_path from product Id 
+    unset($productNames);
+    unset($productIds);
+    unset($productPrices);
+    unset($productBrands);
+    unset($productImagePaths);
+    while ($row = $stmt->fetch()) {
+      $productIds[] =  $row['id'];
+      $productNames[] = $row['name'];
+      $productPrices[] = $row['price'];
+      $productBrands[] = $row['brand'];
+      $productImagePaths[] = $row['image_path'];
+    }
   }
+} catch (PDOException $e) {
+  header("Location: error.php?error=Connection failed:" . $e->getMessage());
+}
 
- 
+
 /**
  *  IMPLEMENT SEARCH BAR
  */
@@ -136,9 +134,8 @@ try {
       $productImagePaths[] = $row['image_path'];
     }
   }
-
-} catch(PDOException $e) {
-   header("Location: error.php?error=Connection failed:" . $e->getMessage());
+} catch (PDOException $e) {
+  header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
 
@@ -294,41 +291,41 @@ $heartColor = "WHITE";
 
 
 
-   /**
-     * IMPLEMENT ADD TO WISHLIST 
-     *  Thanh Vu 11/03/2022
-     * 11/04/2012 Added missing userId check in SQL query
-     */
+/**
+ * IMPLEMENT ADD TO WISHLIST 
+ *  Thanh Vu 11/03/2022
+ * 11/04/2012 Added missing userId check in SQL query
+ */
 
-    try {
-      // Case 1: if vote is selected but user is not signed in
-      if (!empty($_POST['id']) && !isset($_SESSION["email"])) { 
-          header("Location: signin.php");
-      // Case 2: if vote is selected
-      } elseif (!empty($_POST['id']) && isset($_SESSION["userid"])){
-          $userId = $_SESSION["userid"];
-          $productId = $_POST['id'];;
-          $stmt = $conn->query("SELECT * FROM ProductFavorite where product_id = $productId AND user_id = $userId");
-          if ($stmt->rowCount() > 0) {
-            echo "<h2> Product already exists in WishList. Go to <a href='wishlist.php'>Wish Lists.</a> </h2>";
-          } else {
-              $conn->beginTransaction(); 
-              $sql = ("INSERT INTO ProductFavorite (user_id, product_id) VALUES (?, ?)");
-              $statement = $conn->prepare($sql);
-              $statement->bindValue(1, $userId);
-              $statement->bindValue(2, $productId);
-              $statement->execute();
-              $conn->commit(); 
-              $heartColor = "red";
-              echo "<h2> Added this product to WishList. Go to <a href='wishlist.php'>Wishlist.</a> </h2>";
-          }      
-      }
-  } catch (PDOException $e) {
-      header("Location: error.php?error=Connection failed:" . $e->getMessage());
+try {
+  // Case 1: if vote is selected but user is not signed in
+  if (!empty($_POST['id']) && !isset($_SESSION["email"])) {
+    header("Location: signin.php");
+    // Case 2: if vote is selected
+  } elseif (!empty($_POST['id']) && isset($_SESSION["userid"])) {
+    $userId = $_SESSION["userid"];
+    $productId = $_POST['id'];;
+    $stmt = $conn->query("SELECT * FROM ProductFavorite where product_id = $productId AND user_id = $userId");
+    if ($stmt->rowCount() > 0) {
+      echo "<h2> Product already exists in WishList. Go to <a href='wishlist.php'>Wish Lists.</a> </h2>";
+    } else {
+      $conn->beginTransaction();
+      $sql = ("INSERT INTO ProductFavorite (user_id, product_id) VALUES (?, ?)");
+      $statement = $conn->prepare($sql);
+      $statement->bindValue(1, $userId);
+      $statement->bindValue(2, $productId);
+      $statement->execute();
+      $conn->commit();
+      $heartColor = "red";
+      echo "<h2> Added this product to WishList. Go to <a href='wishlist.php'>Wishlist.</a> </h2>";
+    }
   }
+} catch (PDOException $e) {
+  header("Location: error.php?error=Connection failed:" . $e->getMessage());
+}
 
 
- 
+
 
 // Set display to none if user is not logged in
 $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
@@ -339,29 +336,29 @@ $conn = null;
 <!DOCTYPE html>
 <html lang="en">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <title>Webstore</title>
-  
-  <script type="text/javascript">
-  
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<title>Webstore</title>
+
+<script type="text/javascript">
   $(function() {
-    $( "#slider-range" ).slider({
+    $("#slider-range").slider({
       range: true,
       min: 1,
       max: 200,
-      values: [ <?php echo $min; ?>, <?php echo $max; ?> ],
-      slide: function( event, ui ) {
-        $( "#amount" ).html( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-		$( "#min" ).val(ui.values[ 0 ]);
-		$( "#max" ).val(ui.values[ 1 ]);
+      values: [<?php echo $min; ?>, <?php echo $max; ?>],
+      slide: function(event, ui) {
+        $("#amount").html("$" + ui.values[0] + " - $" + ui.values[1]);
+        $("#min").val(ui.values[0]);
+        $("#max").val(ui.values[1]);
       }
-      });
-    $( "#amount" ).html( "$" + $( "#slider-range" ).slider( "values", 0 ) +
-     " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+    });
+    $("#amount").html("$" + $("#slider-range").slider("values", 0) +
+      " - $" + $("#slider-range").slider("values", 1));
   });
-  </script>
+</script>
+
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -378,8 +375,8 @@ $conn = null;
     <?php include("partials/menu.php") ?>
 
     <div class="catalog">
-            <!-- slider begins -->    
-            <div class="form-price-range-filter">
+      <!-- slider begins -->
+      <!-- <div class="form-price-range-filter">
                 <form method="post" action="">
                     <div>
                         <input type="" id="min" name="min_price"
@@ -400,53 +397,52 @@ $conn = null;
                     <button style='width: 150px' type='submit' class='btn btn-outline-dark'> Submit </button>
                     </div>
                 </form>
-            </div>
-            <!-- slider ends -->
+            </div> -->
+      <!-- slider ends -->
 
       <div class="container px-4 px-lg-5 pt-5">
         <div class="row gx-4 gx-lg-5 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6">
-	          <?php 
-              if (!empty($productNames)) {
-                for ($i = 0; $i < count($productNames); $i++) {
-                  $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-                  echo "<div class='col mb-5'>
-                          <div class='catalog-item'>
-                            <div class='catalog-item-image'>
-                              <img src='$productImagePaths[$i]' alt='Item' width='100%' height='130px' class='contain'/>
-                            </div>	
-                            <div class='catalog-item-description'>
-                              <div class='catalog-item-description-name'>
-                                <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-              
-                                <form action='' method='post'>
-	                                <!-- Hidden input -->
-                                  <input type='hidden' name='id' value='$productIds[$i]'>
-	                                <input type='image' src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone>
-                                </form>
-                              </div>       
-                              <div class='catalog-item-description-brand'>
-                                <p>$productBrands[$i]</p>           
-                              </div>       
-                              <div class='catalog-item-description-star'>
-                                <span>
-                                  $ratingDisplays[$i]
-                                  <p>$productAvgRatings[$i]/5</p>
-                                  <p>($productRateMess)</p>
-                                </span>
-                              </div>
-                              <p>&curren; $productPrices[$i]</p>
-                            </div>
-                          </div>
-                        </div>";    
-                  } 
-                } else {
-                  echo "<h3> No product to show </h3>";
-                }
-          ?>       
+          <?php
+          if (!empty($productNames)) {
+            for ($i = 0; $i < count($productNames); $i++) {
+              $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+              echo "
+              <div class='col mb-5'>
+                <div class='catalog-item'>
+                  <div class='catalog-item-image'>
+                    <img src='$productImagePaths[$i]' alt='Item' width='100%' height='130px' class='contain'/>
+                  </div>
+                  <div class='catalog-item-description'>
+                    <div class='catalog-item-description-name'>
+                      <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
+                      <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+                    </div>
+                
+                    <div class='catalog-item-description-brand'>
+                      <p>$productBrands[$i]</p>
+                      <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
+                    </div>
+                
+                    <div class='catalog-item-description-star'>
+                      <span>
+                        $ratingDisplays[$i]
+                        <p>$productAvgRatings[$i]/5</p>
+                      </span>
+                    </div>
+                    <p>&curren; $productPrices[$i]</p>
+                  </div>
+                </div>
+              </div>";
+            }
+          } else {
+            echo "<h3> No product to show </h3>";
+          }
+          ?>
         </div>
       </div>
     </div>
     <?php include("partials/footer.php") ?>
   </div>
 </body>
+
 </html>
