@@ -14,8 +14,8 @@ if (!isset($_SESSION["email"])) {
 $userId = $_SESSION['userid'];
 
 try {
-    if (!empty($_GET['amounts'])) {
-        $refillAmount = $_GET['amounts'] ?? '0';
+    if (!empty($_POST['amounts'])) {
+        $refillAmount = $_POST['amounts'] ?? '0';
 
         $conn->beginTransaction(); 
         $sql = ("UPDATE User SET webstoreBalance = webstoreBalance + ? where id = ?");
@@ -71,9 +71,10 @@ if ( window.history.replaceState ) {
 
             <div>
                 <strong><p>Remaining Balance:</strong>&curren; <?php echo $userBalance ?></p>
-                <form action="refill-webcoins.php" method="get">
+                <form action="" method="post">
                     <label for="amount">Add coins to the account:</label>
                     <select name="amounts" id="amount">
+                        <option value="none" selected disabled hidden>Select Refill Amount</option>
                         <option value=500>500</option>
                         <option value=200>200</option>
                         <option value=100>100</option>

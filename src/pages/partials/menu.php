@@ -30,19 +30,19 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
 </style>
 
 <div class="menu">
-    <form id="formFashion" action="catalog.php?category=Fashion" method="post">
+    <form id="formFashion" action="index.php?category=Fashion" method="post">
         <p onclick="document.getElementById('formFashion').submit();">Fashion</p>
     </form>
 
-    <form id="formElectronic" action="catalog.php?category=Electronics" method="post">
+    <form id="formElectronic" action="index.php?category=Electronics" method="post">
         <p onclick="document.getElementById('formElectronic').submit();">Electronics</p>
     </form>
 
-    <form id="formTumblers" action="catalog.php?category=Tumblers" method="post">
+    <form id="formTumblers" action="index.php?category=Tumblers" method="post">
     	<p onclick="document.getElementById('formTumblers').submit();">Tumblers</p>
     </form>
             
-    <form id="formBags" action="catalog.php?category=Bags" method="post">
+    <form id="formBags" action="index.php?category=Bags" method="post">
         <p onclick="document.getElementById('formBags').submit();">Bags</p>
     </form>
 

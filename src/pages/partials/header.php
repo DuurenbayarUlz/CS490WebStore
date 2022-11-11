@@ -78,14 +78,15 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
 </script>
 <!-- END SCRIPT - PAGE REFRESH-->
 
-
 <header>
     <div class="header">
         <div class="header-logo">
             <h3><a href="index.php">Webstore</a></h3>
         </div>
         <div class="header-input">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+            <form action="index.php" method="post">
+            <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search" />
+            </form>
         </div>
         <div class="header-navigation">
             <div class="header-navigation-account">
@@ -96,11 +97,11 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
                 echo (!isset($_SESSION["email"])) ? "<p><a href='signin.php'>Sign In</a></p>" : "<p><a href='home.php'>My account</a></p>";
                 ?>
             </div>
-            <div class="header-navigation-wishlist" <?php
-                                                    echo $displayNone;
-                                                    ?>>
-                <!-- <img src="../images/HeartIcon2.png" alt="heart-icon" height="18" width="18" /> -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-bag-heart-fill" viewBox="0 0 16 16">
+            <div class="header-navigation-wishlist" 
+            <?php 
+                echo $displayNone;
+            ?>>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-bag-heart-fill" viewBox="0 0 16 16">
                     <path d="M11.5 4v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5ZM8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1Zm0 6.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132Z" />
                 </svg>
                 <p><a href="wishlist.php">Wishlist</a></p>
