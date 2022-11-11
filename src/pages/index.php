@@ -19,9 +19,11 @@ try {
     $productBrands[] = $row['brand'];
     $productImagePaths[] = $row['image_path'];
   }
+  
 } catch (PDOException $e) {
   	header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
+
 
 /**
  *  IMPLEMENT SHOWING BY CATEGORY

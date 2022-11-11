@@ -54,7 +54,7 @@
             $productBrands[] = $row['brand'];
             $productImagePaths[] = $row['image_path'];
         }
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
 
@@ -218,108 +218,22 @@
     }
 
     
+    /**
+    * Implement product rating
+    *  Thanh Vu 11/03/2022
+    */
+    $buyAgainNum = 0;
 
-    
-/**
-* Implement product rating
-*  Thanh Vu 11/03/2022
-*/
-$buyAgainNum = 0;
+    try {
 
-try {
-
-    if (isset($_SESSION["email"]) && !empty($_GET['id'])) {
-        $userId = $_SESSION['userid'];
-        // CHECK IF USER IS LOGGED IN AND HAVE VOTED BEFORE TO DISPLAY IN PRODUCT DETAIL 
-        $stmt = $conn->query("SELECT user_id, product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
-        $result = $stmt->fetch();
-        $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
-        $buyAgainDisplayWithoutVote = ($stmt->rowCount() > 0) ? ""  : "style='display:none'";
-    
-        if (empty($result['would_buy_again'])) {
-            $messageBuyAgainDisplay = "<p>You have not answered whether you would buy $productName again</p>";
-        } else if ($result['would_buy_again'] == 'Y') {
-            $messageBuyAgainDisplay = "<p>You have decided to buy $productName again</p>";    
-        } else if ($result['would_buy_again'] == 'N') {
-            $messageBuyAgainDisplay = "<p>You have decided not to buy $productName again</p>";  
-        } 
-
-        // DISPLAY PEOPLE WHO WOULD BUY A PRODUCT AGAIN
-        $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId AND would_buy_again = 'Y'");     
-        $result = $stmt->fetch();
-        $buyAgainNum = $result['BuyAgain'] ?? '0'; 
-    }
-
-    // Case 1: if vote is selected but user is not signed in
-    if (!empty($_GET['points']) && !isset($_SESSION["email"])) { 
-        header("Location: signin.php");
-    // Case 2: if vote is selected but there is no product id
-    } elseif (!empty($_GET['points']) && empty($_GET['id'])) { 
-        die();  // kill all actions to avoid null record in database
-    } elseif (!empty($_GET['points']) && isset($_SESSION["userid"])) {
-        // get points from query param
-        $point = $_GET['points'] ?? 0;
-        $userId = $_SESSION['userid'];   
-       
-        $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
-
-         // IF VOTE HAS BEEN CASTED
-        if ($stmt->rowCount() > 0) {
-            $buyAgainDisplayWithoutVote =  "";
-            $messageVoteCasted = "<div class='alert alert-warning alert-dismissable'>
-            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-            <strong>Error: </strong> You have already rated $productName!
-                </div>";
-        } else { // VOTE HAS NOT BEEN CASTED
-            $messageVoteCasted = "";
-            $conn->beginTransaction(); 
-            $sql = ("INSERT INTO ProductRating (user_id, product_id, rating) VALUES (?, ?, ?)");
-            $statement = $conn->prepare($sql);
-            $statement->bindValue(1, $userId);
-            $statement->bindValue(2, $productId);
-            $statement->bindValue(3, $point);
-            $statement->execute();
-            $conn->commit();
-        $buyAgainDisplayWithoutVote = "";
-        //UPDATE WHETHER YOU HAVE RATED THIS PRODUCT
-        $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
-        $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
-        }
-    } 
-    
-/**
- *  IMPLEMENT BUY AGAIN FORM
- * THanh 11/10
- */
-    // Case 1: If buy again is selected but user is not signed in:
-    if (!empty($_GET['buyAgain']) && !isset($_SESSION["email"])) { 
-        header("Location: signin.php");
-    // Case 2: if buyAgain is selected but no product id
-    } elseif (!empty($_GET['buyAgain']) && empty($_GET['id'])) { 
-        die();  // kill all actions to avoid null record in database
-        // Case 3: if vote is selected and user is signed in
-    } elseif (!empty($_GET['buyAgain']) && isset($_SESSION["userid"])) {
-        // BUY AGAIN insert function
-        $buyAgain = $_GET['buyAgain'] ?? 'Y';
-        $userId = $_SESSION['userid'];
-        
-        $stmt = $conn->query("SELECT product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
-        $result = $stmt->fetch();
-
-        // Check if you have already rated or not
-        if ($stmt->rowCount() > 0) {
-            $conn->beginTransaction(); 
-            $sql = ("UPDATE ProductRating SET would_buy_again = ? where user_id = ? AND product_id = ?");
-            $statement = $conn->prepare($sql);
-            $statement->bindValue(1, $buyAgain);
-            $statement->bindValue(2, $userId);
-            $statement->bindValue(3, $productId);
-            $statement->execute();
-            $conn->commit();
-           
-            //UPDATE USER'S ANSWER:
+        if (isset($_SESSION["email"]) && !empty($_GET['id'])) {
+            $userId = $_SESSION['userid'];
+            // CHECK IF USER IS LOGGED IN AND HAVE VOTED BEFORE TO DISPLAY IN PRODUCT DETAIL 
             $stmt = $conn->query("SELECT user_id, product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
             $result = $stmt->fetch();
+            $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
+            $buyAgainDisplayWithoutVote = ($stmt->rowCount() > 0) ? ""  : "style='display:none'";
+        
             if (empty($result['would_buy_again'])) {
                 $messageBuyAgainDisplay = "<p>You have not answered whether you would buy $productName again</p>";
             } else if ($result['would_buy_again'] == 'Y') {
@@ -328,22 +242,107 @@ try {
                 $messageBuyAgainDisplay = "<p>You have decided not to buy $productName again</p>";  
             } 
 
-            // UPDATE PEOPLE WHO WOULD BUY A PRODUCT AGAIN
+            // DISPLAY PEOPLE WHO WOULD BUY A PRODUCT AGAIN
             $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId AND would_buy_again = 'Y'");     
             $result = $stmt->fetch();
             $buyAgainNum = $result['BuyAgain'] ?? '0'; 
-
-        } else {
-            $messageRateFirst = "<div class='alert alert-warning alert-dismissable'>
-            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-            <strong>Error: </strong> You have to rate $productName first!
-                </div>";
-          }
         }
 
-} catch (PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
-}
+        // Case 1: if vote is selected but user is not signed in
+        if (!empty($_GET['points']) && !isset($_SESSION["email"])) { 
+            header("Location: signin.php");
+        // Case 2: if vote is selected but there is no product id
+        } elseif (!empty($_GET['points']) && empty($_GET['id'])) { 
+            die();  // kill all actions to avoid null record in database
+        } elseif (!empty($_GET['points']) && isset($_SESSION["userid"])) {
+            // get points from query param
+            $point = $_GET['points'] ?? 0;
+            $userId = $_SESSION['userid'];   
+        
+            $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
+
+            // IF VOTE HAS BEEN CASTED
+            if ($stmt->rowCount() > 0) {
+                $buyAgainDisplayWithoutVote =  "";
+                $messageVoteCasted = "<div class='alert alert-warning alert-dismissable'>
+                <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                <strong>Error: </strong> You have already rated $productName!
+                    </div>";
+            } else { // VOTE HAS NOT BEEN CASTED
+                $messageVoteCasted = "";
+                $conn->beginTransaction(); 
+                $sql = ("INSERT INTO ProductRating (user_id, product_id, rating) VALUES (?, ?, ?)");
+                $statement = $conn->prepare($sql);
+                $statement->bindValue(1, $userId);
+                $statement->bindValue(2, $productId);
+                $statement->bindValue(3, $point);
+                $statement->execute();
+                $conn->commit();
+            $buyAgainDisplayWithoutVote = "";
+            //UPDATE WHETHER YOU HAVE RATED THIS PRODUCT
+            $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
+            $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
+            }
+        } 
+            
+        /**
+         *  IMPLEMENT BUY AGAIN FORM
+         * THanh 11/10
+         */
+        
+        // Case 1: If buy again is selected but user is not signed in:
+        if (!empty($_GET['buyAgain']) && !isset($_SESSION["email"])) { 
+            header("Location: signin.php");
+        // Case 2: if buyAgain is selected but no product id
+        } elseif (!empty($_GET['buyAgain']) && empty($_GET['id'])) { 
+            die();  // kill all actions to avoid null record in database
+            // Case 3: if vote is selected and user is signed in
+        } elseif (!empty($_GET['buyAgain']) && isset($_SESSION["userid"])) {
+            // BUY AGAIN insert function
+            $buyAgain = $_GET['buyAgain'] ?? 'Y';
+            $userId = $_SESSION['userid'];
+            
+            $stmt = $conn->query("SELECT product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
+            $result = $stmt->fetch();
+
+            // Check if you have already rated or not
+            if ($stmt->rowCount() > 0) {
+                $conn->beginTransaction(); 
+                $sql = ("UPDATE ProductRating SET would_buy_again = ? where user_id = ? AND product_id = ?");
+                $statement = $conn->prepare($sql);
+                $statement->bindValue(1, $buyAgain);
+                $statement->bindValue(2, $userId);
+                $statement->bindValue(3, $productId);
+                $statement->execute();
+                $conn->commit();
+            
+                //UPDATE USER'S ANSWER:
+                $stmt = $conn->query("SELECT user_id, product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
+                $result = $stmt->fetch();
+                if (empty($result['would_buy_again'])) {
+                    $messageBuyAgainDisplay = "<p>You have not answered whether you would buy $productName again</p>";
+                } else if ($result['would_buy_again'] == 'Y') {
+                    $messageBuyAgainDisplay = "<p>You have decided to buy $productName again</p>";    
+                } else if ($result['would_buy_again'] == 'N') {
+                    $messageBuyAgainDisplay = "<p>You have decided not to buy $productName again</p>";  
+                } 
+
+                // UPDATE PEOPLE WHO WOULD BUY A PRODUCT AGAIN
+                $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId AND would_buy_again = 'Y'");     
+                $result = $stmt->fetch();
+                $buyAgainNum = $result['BuyAgain'] ?? '0'; 
+
+            } else {
+                $messageRateFirst = "<div class='alert alert-warning alert-dismissable'>
+                <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+                <strong>Error: </strong> You have to rate $productName first!
+                    </div>";
+            }
+            }
+
+    } catch (PDOException $e) {
+        header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
 
     // Get Rating and Vote numbers from productid
     try {
@@ -525,19 +524,73 @@ try {
                   echo (!empty($messageProductExisted)) ? $messageProductExisted : '';        
                 ?>
             <!-- END display error -->
+         </div>
+      </div>
 
-            <!-- VOTING SECTION -->
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h4>Rating</h4>
-        </div>
-        <ul class="list-group">
-            <li class="list-group-item"><strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
-            $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
-            echo $productRateMess;
-            ?>] </li>
-            <li class="list-group-item">
-                <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
+      <!-- BEGIN SIMILAR PRODUCT SECTION -->
+        <div class=" similar-product">
+                <h4 style=" margin:5px">Similar Products:</h4>
+            <div class="product-row">
+                <?php	
+      				if (!empty($productNames)) {	
+        			for ($i = 0; $i < count($productNames); $i++) {	
+        	
+	            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';	
+	            echo "<div class='catalog-item'>	
+	                    <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />	
+	                    <div class='catalog-item-description'>	
+                            <div class='catalog-item-description-name'>	
+                                <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>	
+                                <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>	
+                            </div>
+                            <div class='catalog-item-description-brand'>	
+                                <p>$productBrands[$i]</p>	
+                                <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>	
+                            </div>
+                            <div class='catalog-item-description-star'>	
+                                <span>	
+                                    $ratingDisplays[$i]	
+                                    <p>$productAvgRatings[$i]/5</p>	
+                                    <p>($productRateMess)</p>	
+                                </span>	
+                            </div>	
+                            <p> &curren; $productPrices[$i]</p>
+                        </div>
+                        </div>";
+                }}
+             	else {
+		        echo "<h3> No similar product to show </h3>";
+		      }
+                ?>
+            </div>
+         </div>
+       <!-- VOTING SECTION -->
+       <button id="review-button" class="btn btn-secondary" ONCLICK="ShowAndHide()">Review this product</button>
+        <script>
+        function ShowAndHide() {
+            var x = document.getElementById('review');
+            var y = document.getElementById('review-button');
+            if (x.style.display == 'none') {
+                x.style.display = 'block';
+                y.style.display = 'none';
+            }
+        }
+        </script>
+        <div id="review" style="display:none;">
+            <div class="review-brick">
+                <div class="review-panel">
+                    <div class="panel-head">
+                        <h4 style="padding:0% 0% 0% 2%;">Rating</h4>
+                    </div>
+                    <div style="padding:2% 0% 0% 2%;">
+                        <div>
+                            <strong class="text-primary"><?php echo $productAvgRating?>/5</strong> [<?php 
+                            $productRateMess = ($voteCount > 1) ? $voteCount . ' rates' :  $voteCount . ' rate';
+                            echo $productRateMess;
+                            ?>]
+                        </div>
+                    </div>
+                    <form action="product.php" method="get" oninput="x.value=' ' + rng.value + ' '">
                     <div class="form-group text-center">
                         <output id="x" for="rng"> 3 </output> <span class="glyphicon glyphicon-thumbs-up"></span> <br>
                         <input type="range" id="rng" name="points" min="1" max="5" step="1">
@@ -550,18 +603,21 @@ try {
                     </div>
                     </form>
                     <form action="product.php" method="get" <?php echo (!empty($buyAgainDisplayWithoutVote)) ? $buyAgainDisplayWithoutVote : '' ?>>
-                        <p>Buy Again:        
-                            <select name="buyAgain" id="buyAgain">
-                                <option value=Y>Yes</option>
-                                <option value=N>No</option>
-                            </select></p>
+                        <div style="margin-left:10px; text-align:left;">
+                            <br>
+                            <p>Would you buy this again?</p>
+                            <input type="radio" id="yes" name="buyAgain" value='Y' checked>
+                            <label for="yes">Yes</label>
+                            <input type="radio" id="no" name="buyAgain" value='N'>
+                            <label for="no">No</label>
+                        </div>
+                      
                         <!-- The value of the hiddem input field is the productID -->
                         <input type="hidden" name="id" value=<?php echo $productId?>>
                         <div class="form-group text-center">
                             <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> Do you want to buy again!</button>
                         </div>
                     </form>
-
                     <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
                     <?php 
                     echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
@@ -569,54 +625,12 @@ try {
                     echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';  
                     ?>
                     <!-- END display error -->
-            </li>
-        </ul>
-    </div>
-            <!-- END VOTING SECTION -->
-         </div>
-      </div>
-      <div style="padding-left: 100px">
-         <h4 style=" margin:0px">Similar Products:</h4>
-      </div>
-
-      <!-- BEGIN SIMILAR PRODUCT SECTION -->
-      <div class=" similar-product" style="display: flex">
-
-    <?php
-      if (!empty($productNames)) {
-        for ($i = 0; $i < count($productNames); $i++) {
-        
-            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-            echo "<div class='catalog-item'>
-            <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />
-            <div class='catalog-item-description'>
-            <div class='catalog-item-description-name'>
-            <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-            <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>
-            </div>
-            
-            <div class='catalog-item-description-brand'>
-            <p>$productBrands[$i]</p>
-            <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>
-            </div>
-            
-            <div class='catalog-item-description-star'>
-            <span>
-            $ratingDisplays[$i]
-            <p>$productAvgRatings[$i]/5</p>
-            <p>($productRateMess)</p>
-            </span>
-            </div>
-            <p> &curren; $productPrices[$i]</p>
-            </div>
-            </div>";
-        }
-      } else {
-        echo "<h3> No similar product to show </h3>";
-      }
-    ?>
+                </div>
+        </div>
+        <!-- END VOTING SECTION -->
 <?php include("partials/footer.php") ?>
 </div>
+
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
