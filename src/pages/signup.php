@@ -9,11 +9,12 @@ include("connection.php");
  *  Thanh revised SQL query to bind statement and display alert 02/11/22
  */
 
+
 if (isset($_POST["signup"])) {
   if ($_POST["full_name"] == "" or $_POST["pass_word"] == "" or $_POST["email"] == "") {
     $messageEmpty = "<div class='alert alert-warning alert-dismissable'>
     <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-    <strong>Error: </strong> Email or password cannot be empty. 
+    <strong>Error: </strong> Email, Password or Username cannot be blank. 
   </div>";
   } else {
     try {
@@ -29,26 +30,25 @@ if (isset($_POST["signup"])) {
                           <strong>Error: </strong> Username $email has been taken!
                         </div>";
       } else {
-          /**
-           *  IMPLEMENT PASSWORD HASHING
-           *  Thanh Vu revised to add form validation
-           */
-
-          $conn->beginTransaction(); 
-          $sql = ("INSERT INTO User (email, full_name, pass_word) VALUES (?, ?, ?)");
-          $statement = $conn->prepare($sql);
-          $statement->bindValue(1, $email);
-          $statement->bindValue(2, $full_name);
-          $statement->bindValue(3, $hashed_password);
-          $statement->execute();
-          $conn->commit(); 
-
-          $userCreated = "<div class='alert alert-warning alert-dismissable'>
-          <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-          New user $email has been created! 
-        </div>";
-
-      }
+    /**
+     *  IMPLEMENT PASSWORD HASHING
+     *  Thanh Vu revised to add form validation
+     */
+	 
+	 $conn->beginTransaction();
+	 $sql = ("INSERT INTO User (email, full_name, pass_word) VALUES (?, ?, ?)");
+	 $statement = $conn->prepare($sql);
+	 $statement->bindValue(1, $email);
+	 $statement->bindValue(2, $full_name);
+	 $statement->bindValue(3, $hashed_password);
+	 $statement->execute();
+	 $conn->commit();
+	
+	 $userCreated = "<div class='alert alert-warning alert-dismissable'>
+		<a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+		New user $email has been created! 
+	 </div>";
+    }
     } catch (PDOException $e) {
       header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
@@ -64,9 +64,9 @@ $conn = null;
 
 <!-- AVOID FORM RESUBMISSION UPON PAGE REFRESH-->
 <script>
-if ( window.history.replaceState ) {
-  window.history.replaceState( null, null, window.location.href );
-}
+ if (window.history.replaceState) {
+	window.history.replaceState(null, null, window.location.href);
+ }
 </script>
 <!-- END SCRIPT - PAGE REFRESH-->
 
@@ -92,30 +92,30 @@ if ( window.history.replaceState ) {
             <h3>Sign up</h3>
             <div style="display: flex; flex-direction: column; margin-top: 20px; justify-content: space-between">
             
-              <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-              <?php 
-                echo (!empty($messageEmpty)) ?  $messageEmpty : '';
-                echo (!empty($messageEmptyPass)) ?  $messageEmptyPass : '';
-                echo (!empty($emailExisted)) ?  $emailExisted : '';
-                echo (!empty($userCreated )) ?  $userCreated  : '';
-              ?>
-              <!-- END display error -->
+            <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+            <?php
+              echo (!empty($messageEmpty)) ?  $messageEmpty : '';
+              echo (!empty($messageEmptyPass)) ?  $messageEmptyPass : '';
+              echo (!empty($emailExisted)) ?  $emailExisted : '';
+              echo (!empty($userCreated )) ?  $userCreated  : '';
+            ?>
+            <!-- END display error -->
 
               <form method="POST">
                 <div style="margin-bottom: 10px">
                   <p>Email address</p>
-                  <input type="email" name="email" class="form-control" placeholder="" />
+                  <input type="email" name="email" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-bottom: 10px">
                   <p>Full name</p>
-                  <input type="text" name="full_name" class="form-control" placeholder="" />
+                  <input type="text" name="full_name" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-bottom: 10px">
                   <p>Password</p>
-                  <input type="password" name="pass_word" class="form-control" placeholder="" />
+                  <input type="password" name="pass_word" class="form-control" pattern=".{8,12}" required title="Password must be 8 to 12 characters" />
                 </div>
                 <div style="margin-top: 30px">
-                  <button type="submit" class="btn btn-secondary" name="signup">Sign up</button>
+                  <button type="submit" class="btn btn-secondary" name="signup" required>Sign up</button>
                   <a href="signin.php">Sign in</a>
                 </div>
               </form>
@@ -127,14 +127,7 @@ if ( window.history.replaceState ) {
     <?php include("partials/footer.php") ?>
   </div>
 
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
 </body>
 
 </html>

@@ -93,11 +93,11 @@ if ( window.history.replaceState ) {
             <form method="POST">
                 <div style="margin-bottom: 10px">
                   <p>Email address</p>
-                  <input type="email" name="email" class="form-control" placeholder="" />
+                  <input type="email" name="email" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-bottom: 10px">
                   <p>Password</p>
-                  <input type="password" name="pass_word" class="form-control" placeholder="" />
+                  <input type="password" name="pass_word" class="form-control" placeholder="" required/>
                 </div>
                 <div style="margin-top: 30px">
                   <button type="submit" class="btn btn-secondary" name="signin">Sign in</button>

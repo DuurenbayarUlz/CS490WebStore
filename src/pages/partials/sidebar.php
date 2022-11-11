@@ -37,7 +37,7 @@
   <ul>
     <li><a href="home.php">Account</a></li>
     <li><a href="wishlist.php">Wishlist</a></li>
-    <li><a href="#">Order History</a></li>
+    <li><a href="order.php">Order History</a></li>
     <li><a href="refill-webcoins.php">Refill Webcoins</a></li>
   </ul>
 </div>

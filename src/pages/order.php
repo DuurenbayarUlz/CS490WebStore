@@ -1,62 +1,24 @@
 <?php
-session_start();
-require_once("connection.php");
-if (!isset($_SESSION["email"])) {
-  header("Location: signin.php");
-}
+  session_start();
+  require_once("connection.php");
+
+  if (!isset($_SESSION["email"])) {
+    header("Location: signin.php");
+  }
 
   // get email of logged in user
   $userId = $_SESSION["userid"];
 
+
   /**
-  * IMPLEMENT REMOVING FROM WISHLIST
+  * IMPLEMENT SHOWING PRODUCTS from Order
   * Thanh Vu
-  * revised by: Thanh Vu 11/03/2022 - add this function 
-  */
-
-  try {
-    if (!empty($_GET['productRemoveId'])){
-      $productRemoveId = $_GET['productRemoveId'] ?? '0';
-      $conn->beginTransaction(); 
-      $sql = ("DELETE FROM ProductFavorite where product_id = ? and user_id = ?");
-      $statement = $conn->prepare($sql);
-      $statement->bindValue(1, $productRemoveId);
-      $statement->bindValue(2, $userId);
-      $statement->execute();
-      $conn->commit(); 
-    }
-  } catch(PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
-  }
-
-  /**
-  * IMPLEMENT REMOVING ALL FROM WISHLIST
-  * Thanh Vu
-  * revised by: Thanh Vu 11/03/2022 - add this function 
-  */
-
-  try {
-    if (!empty($_GET['removeAll'])){
-      $conn->beginTransaction(); 
-      $sql = ("DELETE FROM ProductFavorite where user_id = ?");
-      $statement = $conn->prepare($sql);
-      $statement->bindValue(1, $userId);
-      $statement->execute();
-      $conn->commit(); 
-    }
-  } catch(PDOException $e) {
-    header("Location: error.php?error=Connection failed:" . $e->getMessage());
-  }
-
-  /**
-  * IMPLEMENT SHOWING PRODUCTS
-  * Sophie Decker and Thanh Vu
   * revised by: Thanh Vu 11/03/2022 - restructuring DB query 
   */
 
   try {
     $stmt = $conn->query("SELECT * from Product
-    INNER JOIN ProductFavorite ON Product.id = ProductFavorite.product_id AND ProductFavorite.user_id = $userId
+    INNER JOIN OrderDetails ON Product.id = OrderDetails.product_id AND OrderDetails.user_id = $userId;
     ");
     
     while ($row = $stmt->fetch()) {
@@ -101,7 +63,8 @@ if (!isset($_SESSION["email"])) {
 
           switch ($productAvgRating) {
             case 0: 
-                $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />                <img src='../images/star-white.png' alt='star-rating' title='rating' />
+                $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />
+                <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
@@ -249,26 +212,17 @@ if (!isset($_SESSION["email"])) {
     <?php include("partials/header.php") ?>
     <?php include("partials/menu.php") ?>
 
-    <div class="catalog">
+    <main>
       <?php include("../pages/partials/sidebar.php") ?>
-      <div>
-        <?php
-        if (!empty($productNames)) {
-          echo "
-              <div style='display: flex; width: 100%; justify-content: space-between'>
-                  <h2>My Wishlist</h2>
-                  <form action='wishlist.php' method='get'>
-                    <button style='width: 150px' type='submit' value='1' name='removeAll' class='btn btn-outline-dark'> Remove all</button>
-                  </form>
-              </div>";
-        }
-        ?>
-        <?php
-        if (!empty($productNames)) {
-          for ($i = 0; $i < count($productNames); $i++) {
-            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-            echo "
-              <div class='wishlist-item'>
+      <div class="wishlist">
+        <h2>My Order</h2>
+        <?php 
+          if (!empty($productNames)) {
+            
+            for ($i = 0; $i < count($productNames); $i++) { 
+              $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+              echo "
+                <div class='wishlist-item'>
                   <img class='item-image' src='$productImagePaths[$i]' width=500 height=500>
                   <div class='item-details'>
                     <a href='product.php?id=$productIds[$i]'><p class='product'>$productNames[$i]</p>
@@ -282,19 +236,14 @@ if (!isset($_SESSION["email"])) {
                     </div>
                     <p class='price'>&curren; $productPrices[$i]</p>
                   </div>
-                <div class='form-group text-center'>
-                  <form action='wishlist.php' method='get'>
-                    <button style='width: 50px; height: 50px; border-radius: 50%' type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-outline-dark'> X </button>
-                  </form>
-                </div>
               </div>";
-          }
+            }
         } else {
-          	echo "<h3>No wishlist items to display</h3>";
-        }
+            echo "<h3>You have not purchased anything yet</h3>";
+          }     
         ?>
-      </div>
-    </div>
+      </div> 
+    </main>
     <?php include("partials/footer.php") ?>
   </div>
 </body>
