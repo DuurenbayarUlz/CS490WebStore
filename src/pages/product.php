@@ -79,6 +79,7 @@
 
 
     try {
+    	$productNums = (!empty($productIds)) ? count($productIds) : 0;
         for ($i = 0; $i < count($productIds); $i++) { 
           $stmt = $conn->query("SELECT AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND Product.id = $productIds[$i]");
           $result = $stmt->fetch();
@@ -215,67 +216,126 @@
       
     /**
     * Implement product rating
-    *  Thanh Vu 11/03/2022
-    */
+    *  Thanh Vu 11/03/2022 */
 
-        // Get number of people would buy product again
-    try {
-        $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId");
+$buyAgainNum = 0;
+
+try {
+
+    if (isset($_SESSION["email"]) && !empty($_GET['id'])) {
+        $userId = $_SESSION['userid'];
+        // CHECK IF USER IS LOGGED IN AND HAVE VOTED BEFORE TO DISPLAY IN PRODUCT DETAIL 
+        $stmt = $conn->query("SELECT user_id, product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
         $result = $stmt->fetch();
-        $buyAgainNum = $result['BuyAgain'] ?? '0'; 
-    } catch (PDOException $e) {
-        header("Location: error.php?error=Connection failed:" . $e->getMessage());
-    }
+        $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
+        $buyAgainDisplayWithoutVote = ($stmt->rowCount() > 0) ? ""  : "style='display:none'";
+    
+        if (empty($result['would_buy_again'])) {
+            $messageBuyAgainDisplay = "<p>You have not answered whether you would buy $productName again</p>";
+        } else if ($result['would_buy_again'] == 'Y') {
+            $messageBuyAgainDisplay = "<p>You have said you would buy $productName again</p>";    
+        } else if ($result['would_buy_again'] == 'N') {
+            $messageBuyAgainDisplay = "<p>You have said you would not buy $productName again</p>";  
+        } 
 
+        // DISPLAY PEOPLE WHO WOULD BUY A PRODUCT AGAIN
+        $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId AND would_buy_again = 'Y'");     
 
+        $result = $stmt->fetch();
+        $buyAgainNum = $result['BuyAgain'] ?? '0';
+    // Case 1: if vote is selected but user is not signed in
+    if (!empty($_GET['points']) && !isset($_SESSION["email"])) { 
+        header("Location: signin.php");
+    // Case 2: if vote is selected but there is no product id
+    } elseif (!empty($_GET['points']) && empty($_GET['id'])) { 
+        die();  // kill all actions to avoid null record in database
+    } elseif (!empty($_GET['points']) && isset($_SESSION["userid"])) {
+        // get points from query param
+        $point = $_GET['points'] ?? 0;
+        $userId = $_SESSION['userid'];   
+       
+        $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
 
-    try {
-        // Case 1: if vote is selected but user is not signed in
-        if (!empty($_GET['points']) && !isset($_SESSION["email"])) { 
-            header("Location: signin.php");
-        // Case 2: if vote is selected but there is no product id
-        } elseif (!empty($_GET['points']) && empty($_GET['id'])) { 
-            die();  // kill all actions to avoid null record in database
-        // Case 3: if vote is selected and user is signed in
-        } elseif (!empty($_GET['points']) && isset($_SESSION["userid"])) {
-            // get points from query param
-            $point = $_GET['points'] ?? 0;
-            $userId = $_SESSION['userid'];
-            $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
-            if ($stmt->rowCount() > 0) { 
-                $buyAgainNumMess = ($buyAgainNum <= 1) ? ($buyAgainNum . ' person') : ($buyAgainNum . ' people');
-                $chosenOption = ($_GET['buyAgain'] == 1) ? 'buy again' : 'not buy again';
-                $messageVoteCasted = "<div class='alert alert-warning alert-dismissable'>
-                <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                <strong>Error: </strong> You have already rated this product and chose to $chosenOption  <br>Did you know that $buyAgainNumMess would purchase this product gain.
-              </div>";
-            } else {
-                $buyAgain = $_GET['buyAgain'];
-                $conn->beginTransaction(); 
-                $sql = ("INSERT INTO ProductRating (user_id, product_id, rating, would_buy_again) VALUES (?, ?, ?, ?)");
-                $statement = $conn->prepare($sql);
-                $statement->bindValue(1, $userId);
-                $statement->bindValue(2, $productId);
-                $statement->bindValue(3, $point);
-                $statement->bindValue(4, $buyAgain);
-                $statement->execute();
-                $conn->commit();
-                
-                /**
-                 *  IMPLEMENT RATING: WOULD BUY AGAIN
-                 */
-                
-
-                $newVoteCasted = "<div class='alert alert-warning alert-dismissable'>
-                <a href='signin.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                Thank you for your Rating. Did you know that $buyAgainNum people would buy this product again. 
-              </div>";
-            }
+         // IF VOTE HAS BEEN CASTED
+        if ($stmt->rowCount() > 0) {
+            $buyAgainDisplayWithoutVote =  "";
+            $messageVoteCasted = "<div class='alert alert-warning alert-dismissable'>
+            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+            <strong>Error: </strong> You have already rated $productName!
+                </div>";
+        } else { // VOTE HAS NOT BEEN CASTED
+            $messageVoteCasted = "";
+            $conn->beginTransaction(); 
+            $sql = ("INSERT INTO ProductRating (user_id, product_id, rating) VALUES (?, ?, ?)");
+            $statement = $conn->prepare($sql);
+            $statement->bindValue(1, $userId);
+            $statement->bindValue(2, $productId);
+            $statement->bindValue(3, $point);
+            $statement->execute();
+            $conn->commit();
+        $buyAgainDisplayWithoutVote = "";
+        //UPDATE WHETHER YOU HAVE RATED THIS PRODUCT
+        $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
+        $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
         }
-    } catch (PDOException $e) {
-        header("Location: error.php?error=Connection failed:" . $e->getMessage());
-    }
+    } 
+}
+    /**
+     * IMPLEMENT BUY AGAIN FORM
+     * Thanh 11/10
+     */
 
+    // Case 1: If buy again is selected but user is not signed in:
+    if (!empty($_GET['buyAgain']) && !isset($_SESSION["email"])) { 
+        header("Location: signin.php");
+    // Case 2: if buyAgain is selected but no product id
+    } elseif (!empty($_GET['buyAgain']) && empty($_GET['id'])) { 
+        die();  // kill all actions to avoid null record in database
+        // Case 3: if vote is selected and user is signed in
+    } elseif (!empty($_GET['buyAgain']) && isset($_SESSION["userid"])) {
+        // BUY AGAIN insert function
+        $buyAgain = $_GET['buyAgain'] ?? 'Y';
+        $userId = $_SESSION['userid'];
+        
+        $stmt = $conn->query("SELECT product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
+        $result = $stmt->fetch();        // Check if you have already rated or not
+        if ($stmt->rowCount() > 0) {
+            $conn->beginTransaction(); 
+            $sql = ("UPDATE ProductRating SET would_buy_again = ? where user_id = ? AND product_id = ?");
+            $statement = $conn->prepare($sql);
+            $statement->bindValue(1, $buyAgain);
+            $statement->bindValue(2, $userId);
+            $statement->bindValue(3, $productId);
+            $statement->execute();
+            $conn->commit();
+           
+            //UPDATE USER'S ANSWER:
+            $stmt = $conn->query("SELECT user_id, product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
+            $result = $stmt->fetch();
+            if (empty($result['would_buy_again'])) {
+                $messageBuyAgainDisplay = "<p>You have not answered whether you would buy $productName again</p>";
+            } else if ($result['would_buy_again'] == 'Y') {
+                $messageBuyAgainDisplay = "<p>You have decided to buy $productName again</p>";    
+            } else if ($result['would_buy_again'] == 'N') {
+                $messageBuyAgainDisplay = "<p>You have decided not to buy $productName again</p>";  
+            } 
+
+            // UPDATE PEOPLE WHO WOULD BUY A PRODUCT AGAIN
+            $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId AND would_buy_again = 'Y'");     
+            $result = $stmt->fetch();
+            $buyAgainNum = $result['BuyAgain'] ?? '0'; 
+
+        } else {
+            $messageRateFirst = "<div class='alert alert-warning alert-dismissable'>
+            <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
+            <strong>Error: </strong> You have to rate $productName first!
+                </div>";
+          }
+        }
+    }
+    catch (PDOException $e) {
+    header("Location: error.php?error=Connection failed:" . $e->getMessage());
+    }
     // Get Rating and Vote numbers from productid
     try {
         $stmt = $conn->query("SELECT AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND Product.id = $productId");
@@ -291,7 +351,8 @@
     }
     
     $voteCount = $result['Votes'];
-    
+
+
     /**
      * IMPLEMENT ADD TO WISHLIST 
      *  Thanh Vu 11/03/2022
@@ -337,9 +398,7 @@
 
      /**
      * IMPLEMENT ADD TO CART 
-     *  Thanh Vu 11/05/2022 created this function
-     * 
-     */
+     *  Thanh Vu 11/05/2022 created this function */
     
     try {
         // Case 1: if vote is selected but user is not signed in
@@ -382,6 +441,7 @@
     // Close connection to save resources
     $conn = null;
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -399,16 +459,23 @@
       <?php include("partials/menu.php") ?>
       <!-- IF THERE IS AN ERROR for the user or password information, then display this -->
         <?php 
-        echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
-        echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+            echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
+            echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
         ?>
         <!-- END display error -->
         <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
         <?php 
-        echo (!empty($messageProductExisted)) ? $messageProductExisted : '';
+            echo (!empty($messageProductExisted)) ? $messageProductExisted : '';
         ?>
         <!-- END display error -->
-      <main>
+        <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+        <?php 
+            echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
+            echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+            echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';  
+        ?>
+        <!-- END display error -->
+    <main>
         <div class="product">
             <div class="product-section">
                 <div class="product-section-image">
@@ -423,6 +490,20 @@
                     </div>
                     <div class="product-section-description-rating">
                         <h4>Rating: <?php echo $productAvgRating; ?>/5 <a style="font-size:medium; text-decoration:underline; margin-left:5px;" href="#review" ONCLICK="ShowAndHide()">Leave a review</a></h4>
+                        <br>
+                        <?php
+                            switch ($buyAgainNum) {
+                                case 0:
+                                    echo '<p>No one would buy this product again</p>';
+                                    break;
+                                case 1: 
+                                    echo '<p>1 person would buy this product again</p>';
+                                    break;
+                                default: 
+                                    echo "<p>$buyAgainNum people would buy this product again</p>";
+                
+                            }  
+                        ?>
                     </div>
                     <div class="product-section-description-price">
                         <h4>Price: &curren;<?php echo $productPrice;?></h4>
@@ -439,21 +520,6 @@
                     <div class="product-section-description-info">
                         <p><strong>About this item:</strong> <?php echo $productDescription;?></p>
                     </div>
-                    <?php
-		            switch ($buyAgainNum) {
-		                case 0:
-		                    echo '<p>No one would buy this product again</p>';
-		                    break;
-		                case 1: 
-		                    echo '<p>1 person would buy this product again</p>';
-		                    break;
-		                default: 
-		                    echo "<p>$buyAgainNum people would buy this product again</p>";
-		
-		            }  
-		            echo (!empty($messageVoteDisplay)) ? $messageVoteDisplay : '';
-		            echo (!empty($messageBuyAgainDisplay)) ? $messageBuyAgainDisplay : '';  
-		            ?>
                     <div class="actions">
                         <form action='product.php' method='get'>
                             <!-- Hidden input contains value of query param id=? so we can append further query param -->
@@ -466,54 +532,57 @@
                             <button type="submit" class="btn btn-secondary" value='1' name='addCartQuant'>Add to Cart</button>
                         </form>
                     </div>
-                    
+                    <div class="review-status">
+                        <?php
+                            echo (!empty($messageVoteDisplay)) ? $messageVoteDisplay : '';
+                            echo (!empty($messageBuyAgainDisplay)) ? $messageBuyAgainDisplay : '';  
+                        ?>
+                    </div>
                 </div>
             </div>
         </div>
         
+        
+        <hr id="line">
         <!-- BEGIN SIMILAR PRODUCT SECTION -->
-        <div class=" similar-product">
-            <div style="padding-left: 100px">
+        <div class="similar-product">
+            <div>
                 <h4 style=" margin:0px">Similar Products:</h4>
             </div>
             <div class="product-row">
-                <?php	
-      				if (!empty($productNames)) {	
-        			for ($i = 0; $i < count($productNames); $i++) {	
-        	
-	            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';	
-	            echo "<div class='catalog-item'>	
-	            <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />	
-	            <div class='catalog-item-description'>	
-	            <div class='catalog-item-description-name'>	
-	            <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>	
-	            <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>	
-	           </div>
-                    
-                    <div class='catalog-item-description-brand'>	
-		            <p>$productBrands[$i]</p>	
-		            <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>	
-		            </div>
-                    
-                    <div class='catalog-item-description-star'>
-                    <span>
-                    <div class='catalog-item-description-star'>	
-		            <span>	
-		            $ratingDisplays[$i]	
-		            <p>$productAvgRatings[$i]/5</p>	
-		            <p>($productRateMess)</p>	
-		            </span>	
-		            </div>	
-		            <p> &curren; $productPrices[$i]</p>
-                    </div>
-                    </div>";
-                }}
-             	else {
-		        echo "<h3> No similar product to show </h3>";
-		      }
-                ?>
+            <?php	
+                if (!empty($productNames)) {	
+                    for ($i = 0; $i < count($productNames); $i++) {	
+                        $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';	
+                        echo "<div class='catalog-item'>	
+                            <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />	
+                            <div class='catalog-item-description'>	
+                                <div class='catalog-item-description-name'>	
+                                    <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>	
+                                    <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>	
+                                </div>
+                                <div class='catalog-item-description-brand'>	
+                                    <p>$productBrands[$i]</p>	
+                                    <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>	
+                                </div>
+                                <div class='catalog-item-description-star'>	
+                                    <span>	
+                                    $ratingDisplays[$i]	
+                                    <p>$productAvgRatings[$i]/5</p>	
+                                    <p>($productRateMess)</p>	
+                                    </span>	
+                                </div>	
+                                <p> &curren; $productPrices[$i]</p>
+                            </div>
+                        </div>";
+                        }}
+                else {
+                    echo "<h3> No similar product to show </h3>";
+                }
+            ?>
             </div>
         </div>
+        <hr id="line2">
         <!-- VOTING SECTION -->
         <button id="review-button" class="btn btn-secondary" ONCLICK="ShowAndHide()">Review this product</button>
         <script>
@@ -565,29 +634,23 @@
                         <!-- The value of the hiddem input field is the productID -->
                         <input type="hidden" name="id" value=<?php echo $productId?>>
                         <div class="form-group text-center">
-                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> Do you want to buy again!</button>
+                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> SUBMIT</button>
                         </div>
                     </form>
-                    <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-                    <?php 
-                    echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
-                    echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
-                    echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';  
-                    ?>
-                    <!-- END display error -->
                 </div>
+            </div>
         </div>
         <!-- END VOTING SECTION -->
-        </main>
+    </main>
         <?php include("partials/footer.php") ?>
     </div>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 </body>
 </html>
