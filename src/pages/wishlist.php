@@ -266,26 +266,26 @@ $conn = null;
         for ($i = 0; $i < count($productNames); $i++) {
           $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
           echo "
-                        <div class='wishlist-item'>
-                            <img class='item-image' src='$productImagePaths[$i]' width=250>
-                            <div class='item-details'>
-                                <a href='product.php?id=$productIds[$i]'><p class='product'>$productNames[$i]</p></a>
-                                <p class='brand'>$productBrands[$i]</p>
-                                <div class='catalog-item-description-star'>
-                                    <span>
-                                        $ratingDisplays[$i]
-                                        <p>$productAvgRatings[$i]/5</p>
-                                        <p>($productRateMess)</p>
-                                    </span>
-                                </div>
-                                <p class='price'>&curren; $productPrices[$i]</p>
-                            </div>
-                            <div class='form-group text-center'>
-                                <form action='wishlist.php' method='get'>
-                                    <button class='delete' type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-outline-dark'> X </button>
-                                </form>
-                            </div>
-                        </div>";
+            <div class='wishlist-item'>
+                <img class='item-image' src='$productImagePaths[$i]' width=250>
+                <div class='item-details'>
+                    <a href='product.php?id=$productIds[$i]'><p class='product'>$productNames[$i]</p></a>
+                    <p class='brand'>$productBrands[$i]</p>
+                    <div class='catalog-item-description-star'>
+                        <span>
+                            $ratingDisplays[$i]
+                            <p>$productAvgRatings[$i]/5</p>
+                            <p>($productRateMess)</p>
+                        </span>
+                    </div>
+                    <p class='price'>&curren; $productPrices[$i]</p>
+                </div>
+                <div class='form-group text-center'>
+                    <form action='wishlist.php' method='get'>
+                        <button class='delete' type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-outline-dark'> X </button>
+                    </form>
+                </div>
+            </div>";
         }
       } else {
         echo "<h3>No wishlist items to display</h3>";
