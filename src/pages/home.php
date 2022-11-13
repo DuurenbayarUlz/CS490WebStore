@@ -157,7 +157,6 @@ $conn = null;
                     <button type="submit" class="btn btn-secondary" name="deleteAcc" style="margin-top: 10px">Delete</button>
                 </form>
             </div>
-
         </div>
 
     </div>

@@ -127,11 +127,6 @@ a {
     width: 150px;
   }
 
-  .cart-item .delete {
-    height: 20px;
-    width: 20px;
-  }
-
   .catalog-item-description-star img {
     width: 12px;
     height: 12px;
@@ -146,8 +141,8 @@ a {
   }
 
   .cart-item .form-group button {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: 1px solid black;
   }

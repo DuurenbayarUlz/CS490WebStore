@@ -412,7 +412,7 @@ $conn = null;
               
               <div class='form-group text-center'>
                 <form action='cart.php' method='get'>
-                  <button class = 'delete' type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-outline-dark'><span class='glyphicon glyphicon-ok'></span> X </button>
+                  <button type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-outline-dark'><span class='glyphicon glyphicon-ok'></span> X </button>
                 </form>
               </div>
             </div>";
