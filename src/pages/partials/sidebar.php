@@ -1,12 +1,4 @@
 <style>
-  .catalog {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    padding: 100px;
-    width: 100%;
-  }
-
   .sidebar ul {
     min-width: 150px;
     display: flex;
@@ -31,12 +23,19 @@
   .catalog p {
     margin: 0px;
   }
+
+  @media screen and (max-width: 720px) {
+    .sidebar ul {
+      min-width: 250px;
+    }
+  }
 </style>
 
 <div class="sidebar">
   <ul>
     <li><a href="home.php">Account</a></li>
     <li><a href="wishlist.php">Wishlist</a></li>
+    <li><a href="cart.php">Cart</a></li>
     <li><a href="order.php">Order History</a></li>
     <li><a href="refill-webcoins.php">Refill Webcoins</a></li>
   </ul>

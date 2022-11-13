@@ -1,7 +1,7 @@
 <style>
     .footer {
         width: 100%;
-        height: 30vh;
+        height: 22vh;
         padding: 20px;
         display: flex;
         background-color: orange;
@@ -33,7 +33,7 @@
     }
 
     .footer-social {
-        width: 100%;
+        width: 70%;
         display: flex;
         flex-direction: column;
         align-items: flex-end;
@@ -51,11 +51,25 @@
         margin-right: 20px;
         border-radius: 50%;
     }
+
+    @media screen and (max-width: 720px) {
+        .footer p {
+            font-size: 12px;
+        }
+
+        .footer h6 {
+            font-size: 14px;
+        }
+
+        .footer-social {
+            display: none;
+        }
+    }
 </style>
 
 <div class="footer">
     <div class="footer-category">
-        <h6>Shop by Category</h6>
+        <h6>Category</h6>
         <div class="footer-category-line"></div>
         <p>Office Supplies</p>
         <p>Books</p>
@@ -65,29 +79,14 @@
     <div class="footer-about">
         <h6>About</h6>
         <div class="footer-about-line"></div>
-        <a href="about.php">About us</a>
-    <?php 
-        
-            echo (isset($_SESSION["email"])) ? "<a href=refill-webcoins.php> <p>Refill Webcoins</p></a>" : "";
-    ?> 
+        <p><a href="about.php">About us</a></p>
+        <?php
+
+        echo (isset($_SESSION["email"])) ? "<a href=refill-webcoins.php> <p>Refill Webcoins</p></a>" : "";
+        ?>
     </div>
-    <div class="footer-social">
-        <div class="footer-social-logos">
-            <div class="footer-social-logo-item">
-                <img src="../images/fb.png" alt="fb-icon" />
-            </div>
-            <div class="footer-social-logo-item">
-                <img src="../images/insta-logo.png" alt="insta-icon" />
-            </div>
-            <div class="footer-social-logo-item">
-                <img src="../images/youtube.png" alt="youtube" />
-            </div>
-            <div class="footer-social-logo-item">
-                <img src="../images/twitter.png" alt="twitter" />
-            </div>
-        </div>
-        <div class="footer-social-copyright">
-            © 2022 | Web development | Group 2
-        </div>
+    <div class="footer-social"></div>
+    <div class="footer-social-copyright">
+        <p>© 2022 Web development Group 2</p>
     </div>
 </div>

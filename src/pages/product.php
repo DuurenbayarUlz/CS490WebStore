@@ -232,8 +232,7 @@
             $stmt = $conn->query("SELECT user_id, product_id, would_buy_again from ProductRating where user_id = $userId AND product_id = $productId");
             $result = $stmt->fetch();
             $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
-            $buyAgainDisplayWithoutVote = ($stmt->rowCount() > 0) ? ""  : "style='display:none'";
-        
+            
             if (empty($result['would_buy_again'])) {
                 $messageBuyAgainDisplay = "<p>You have not answered whether you would buy $productName again</p>";
             } else if ($result['would_buy_again'] == 'Y') {
@@ -245,7 +244,7 @@
             // DISPLAY PEOPLE WHO WOULD BUY A PRODUCT AGAIN
             $stmt = $conn->query("SELECT COUNT(would_buy_again) as BuyAgain FROM ProductRating where product_id = $productId AND would_buy_again = 'Y'");     
             $result = $stmt->fetch();
-            $buyAgainNum = $result['BuyAgain'] ?? '0'; 
+            $buyAgainNum = $result['BuyAgain'] ?? '0';
         }
 
         // Case 1: if vote is selected but user is not signed in
@@ -263,7 +262,6 @@
 
             // IF VOTE HAS BEEN CASTED
             if ($stmt->rowCount() > 0) {
-                $buyAgainDisplayWithoutVote =  "";
                 $messageVoteCasted = "<div class='alert alert-warning alert-dismissable'>
                 <a href='product.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
                 <strong>Error: </strong> You have already rated $productName!
@@ -278,7 +276,6 @@
                 $statement->bindValue(3, $point);
                 $statement->execute();
                 $conn->commit();
-            $buyAgainDisplayWithoutVote = "";
             //UPDATE WHETHER YOU HAVE RATED THIS PRODUCT
             $stmt = $conn->query("SELECT user_id, product_id from ProductRating where user_id = $userId AND product_id = $productId");
             $messageVoteDisplay = ($stmt->rowCount() > 0) ? "<p>You have already rated this product</p>" : "<p>You have not rated this product</p>";
@@ -359,7 +356,7 @@
     }
     
     $voteCount = $result['Votes'];
-    
+
     /**
      * IMPLEMENT ADD TO WISHLIST 
      *  Thanh Vu 11/03/2022
@@ -408,7 +405,7 @@
      *  Thanh Vu 11/05/2022 created this function
      * 
      */
-    
+
     try {
         // Case 1: if vote is selected but user is not signed in
         if (!empty($_GET['addCartQuant']) && !isset($_SESSION["email"])) { 
@@ -450,6 +447,7 @@
     // Close connection to save resources
     $conn = null;
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -462,110 +460,130 @@
       <title>Product</title>
    </head>
    <body>
-      <div id="root">
+    <div id="root">
       <?php include("partials/header.php") ?>
-      <div class="product">
-      <div class="product-section">
-         <div class="product-section-image">
-            <img src="<?php echo $productImagePath;?>" alt="product" style="object-fit: contain;" height="100%" width="100%" />
-         </div>
-         <div class="product-section-description">
-            <div class="product-section-description-title">
-               <h2><?php echo $productName;?></h2>
+      <?php include("partials/menu.php") ?>
+        <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+        <?php 
+            echo (!empty($messageProductExisted)) ? $messageProductExisted : '';
+        ?>
+        <!-- END display error -->
+        <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
+        <?php 
+            echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
+            echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
+            echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';  
+        ?>
+        <!-- END display error -->
+    <main>
+        <div class="product">
+            <div class="product-section">
+                <div class="product-section-image">
+                    <img src="<?php echo $productImagePath;?>" alt="product" style="object-fit: contain;" height="100%" width="100%" />
+                </div>
+                <div class="product-section-description">
+                    <div class="product-section-description-title">
+                        <h2><?php echo $productName;?></h2>
+                    </div>
+                    <div class="product-section-description-brand">
+                        <h3><?php echo $productBrand;?></h3>
+                    </div>
+                    <div class="product-section-description-rating">
+                        <h4>Rating: <?php echo $productAvgRating; ?>/5 <a style="font-size:medium; text-decoration:underline; margin-left:5px;" href="#review" ONCLICK="ShowAndHide()">Leave a review</a></h4>
+                        <br>
+                        <?php
+                            switch ($buyAgainNum) {
+                                case 0:
+                                    echo '<p>No one would buy this product again</p>';
+                                    break;
+                                case 1: 
+                                    echo '<p>1 person would buy this product again</p>';
+                                    break;
+                                default: 
+                                    echo "<p>$buyAgainNum people would buy this product again</p>";
+                            }  
+                        ?>
+                    </div>
+                    <div class="product-section-description-price">
+                        <h4>Price: &curren;<?php echo $productPrice;?></h4>
+                    </div>
+                    <div class="product-section-description-weight">
+                        <h4>Weight: <?php echo $productWeight;?></h4>
+                    </div>
+                    <div class="product-section-description-dimension">
+                        <h4>Dimension: <?php echo $productDimension;?></h4>
+                    </div>
+                    <div class="product-section-description-stock">
+                        <h4>Availability: <?php echo ($productQuantity > 0) ? $productQuantity : 'Out of Stock'; ?></h4>
+                    </div>
+                    <div class="product-section-description-info">
+                        <p><strong>About this item:</strong> <?php echo $productDescription;?></p>
+                    </div>
+                    <div class="actions">
+                        <form action='product.php' method='get'>
+                            <!-- Hidden input contains value of query param id=? so we can append further query param -->
+                            <input type="hidden" name="id" value="<?php echo $productId;?>">
+                            <button type="submit" class="btn btn-secondary" value=<?php echo $productId;?> name='addWishListId'>Add to Wishlist</button>
+                        </form>
+                        <form action='product.php' method='get'>
+                            <!-- Hidden input contains value of query param id=? so we can append further query param -->
+                            <input type="hidden" name="id" value="<?php echo $productId?>">
+                            <button type="submit" class="btn btn-secondary" value='1' name='addCartQuant'>Add to Cart</button>
+                        </form>
+                    </div>
+                    <div class="review-status"  <?php echo $displayNone;?>>
+                        <?php
+                            echo (!empty($messageVoteDisplay)) ? $messageVoteDisplay : '';
+                            echo (!empty($messageBuyAgainDisplay)) ? $messageBuyAgainDisplay : '';  
+                        ?>
+                    </div>
+                </div>
             </div>
-            <div class="product-section-description-brand">
-               <h3>Brand: <?php echo $productBrand;?></h3>
+        </div>
+        
+        
+        <hr id="line">
+        <!-- BEGIN SIMILAR PRODUCT SECTION -->
+        <div class="similar-product">
+            <div>
+                <h4 style=" margin:0px">Similar Products:</h4>
             </div>
-            <div class="product-section-description-rating">
-               <h4>Rating: <?php echo $productAvgRating; ?>/5</h4>
-            </div>
-            <div class="product-section-description-price">
-               <h4>Price: &curren; <?php echo $productPrice;?></h4>
-            </div>
-            <div class="product-section-description-weight">
-               <h4>Weight: <?php echo $productWeight;?></h4>
-            </div>
-            <div class="product-section-description-dimension">
-               <h4>Dimension: <?php echo $productDimension;?></h4>
-            </div>
-            <div class="product-section-description-stock">
-               <h4>Units: <?php echo ($productQuantity > 0) ? $productQuantity : 'Out of Stock'; ?></h4>
-            </div>
-            <div class="product-section-description-info">
-               <p><strong>About this item:</strong> <?php echo $productDescription;?></p>
-            </div>
-            <?php
-            switch ($buyAgainNum) {
-                case 0:
-                    echo '<p>No one would buy this product again</p>';
-                    break;
-                case 1: 
-                    echo '<p>1 person would buy this product again</p>';
-                    break;
-                default: 
-                    echo "<p>$buyAgainNum people would buy this product again</p>";
-
-            }  
-            echo (!empty($messageVoteDisplay)) ? $messageVoteDisplay : '';
-            echo (!empty($messageBuyAgainDisplay)) ? $messageBuyAgainDisplay : '';  
-            ?>
-                <form action='product.php' method='get'>
-                  <!-- Hidden input contains value of query param id=? so we can append further query param -->
-                  <input type="hidden" name="id" value="<?php echo $productId;?>">
-                  <button type="submit" class="btn btn-secondary" value=<?php echo $productId;?> name='addWishListId'>Add to Wishlist</button>
-               </form>
-               <form action='product.php' method='get'>
-                  <!-- Hidden input contains value of query param id=? so we can append further query param -->
-                  <input type="hidden" name="id" value="<?php echo $productId?>">
-                  <button type="submit" class="btn btn-secondary" value='1' name='addCartQuant'>Add to Cart</button>
-               </form>
-            <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-                <?php 
-                  echo (!empty($messageProductExisted)) ? $messageProductExisted : '';        
-                ?>
-            <!-- END display error -->
-         </div>
-      </div>
-
-      <!-- BEGIN SIMILAR PRODUCT SECTION -->
-        <div class=" similar-product">
-                <h4 style=" margin:5px">Similar Products:</h4>
             <div class="product-row">
-                <?php	
-      				if (!empty($productNames)) {	
-        			for ($i = 0; $i < count($productNames); $i++) {	
-        	
-	            $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';	
-	            echo "<div class='catalog-item'>	
-	                    <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />	
-	                    <div class='catalog-item-description'>	
-                            <div class='catalog-item-description-name'>	
-                                <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>	
-                                <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>	
-                            </div>
-                            <div class='catalog-item-description-brand'>	
-                                <p>$productBrands[$i]</p>	
-                                <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>	
-                            </div>
-                            <div class='catalog-item-description-star'>	
-                                <span>	
+            <?php	
+                if (!empty($productNames)) {	
+                    for ($i = 0; $i < count($productNames); $i++) {	
+                        $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';	
+                        echo "<div class='catalog-item'>	
+                            <img src='$productImagePaths[$i]' alt='Item' width='130' height='130' />	
+                            <div class='catalog-item-description'>	
+                                <div class='catalog-item-description-name'>	
+                                    <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>	
+                                    <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone/>	
+                                </div>
+                                <div class='catalog-item-description-brand'>	
+                                    <p>$productBrands[$i]</p>	
+                                    <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' $displayNone/>	
+                                </div>
+                                <div class='catalog-item-description-star'>	
+                                    <span>	
                                     $ratingDisplays[$i]	
                                     <p>$productAvgRatings[$i]/5</p>	
                                     <p>($productRateMess)</p>	
-                                </span>	
-                            </div>	
-                            <p> &curren; $productPrices[$i]</p>
-                        </div>
+                                    </span>	
+                                </div>	
+                                <p> &curren; $productPrices[$i]</p>
+                            </div>
                         </div>";
-                }}
-             	else {
-		        echo "<h3> No similar product to show </h3>";
-		      }
-                ?>
+                        }}
+                else {
+                    echo "<h3> No similar product to show </h3>";
+                }
+            ?>
             </div>
-         </div>
-       <!-- VOTING SECTION -->
-       <button id="review-button" class="btn btn-secondary" ONCLICK="ShowAndHide()">Review this product</button>
+        </div>
+        <hr id="line2">
+        <!-- VOTING SECTION -->
+        <button id="review-button" class="btn btn-secondary" ONCLICK="ShowAndHide()">Review this product</button>
         <script>
         function ShowAndHide() {
             var x = document.getElementById('review');
@@ -602,7 +620,7 @@
                         <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> RATE!</button>
                     </div>
                     </form>
-                    <form action="product.php" method="get" <?php echo (!empty($buyAgainDisplayWithoutVote)) ? $buyAgainDisplayWithoutVote : '' ?>>
+                    <form action="product.php" method="get">
                         <div style="margin-left:10px; text-align:left;">
                             <br>
                             <p>Would you buy this again?</p>
@@ -615,29 +633,23 @@
                         <!-- The value of the hiddem input field is the productID -->
                         <input type="hidden" name="id" value=<?php echo $productId?>>
                         <div class="form-group text-center">
-                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> Do you want to buy again!</button>
+                            <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span> SUBMIT</button>
                         </div>
                     </form>
-                    <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
-                    <?php 
-                    echo (!empty($newVoteCasted)) ? $newVoteCasted : '';
-                    echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
-                    echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';  
-                    ?>
-                    <!-- END display error -->
                 </div>
+            </div>
         </div>
         <!-- END VOTING SECTION -->
-<?php include("partials/footer.php") ?>
-</div>
+    </main>
+        <?php include("partials/footer.php") ?>
+    </div>
 
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 </body>
 </html>
