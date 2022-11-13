@@ -1,11 +1,11 @@
 <?php
 session_start();
 require_once("connection.php");
+
 if (!isset($_SESSION["email"])) {
   header("Location: signin.php");
 }
 
-// get email of logged in user
 $userId = $_SESSION["userid"];
 
 /**
@@ -267,7 +267,7 @@ $conn = null;
           $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
           echo "
             <div class='wishlist-item'>
-                <img class='item-image' src='$productImagePaths[$i]' width=250>
+                <img class='item-image' src='$productImagePaths[$i]' width=250 height=250>
                 <div class='item-details'>
                     <a href='product.php?id=$productIds[$i]'><p class='product'>$productNames[$i]</p></a>
                     <p class='brand'>$productBrands[$i]</p>
