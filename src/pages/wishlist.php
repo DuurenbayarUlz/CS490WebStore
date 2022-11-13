@@ -283,7 +283,7 @@ $conn = null;
                 </div>
                 <div class='form-group text-center'>
                     <form action='wishlist.php' method='get'>
-                        <button class='delete' type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-outline-dark'> X </button>
+                        <button type='submit' value='$productIds[$i]' name='productRemoveId' class='btn btn-outline-dark'> X </button>
                     </form>
                 </div>
             </div>";
