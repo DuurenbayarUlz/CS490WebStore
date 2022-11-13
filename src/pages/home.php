@@ -153,7 +153,7 @@ $conn = null;
                 </form>
                 <form method="post" action="">
                     <p style="margin-top: 30px">Delete account</p>
-                    <button style="margin-bottom: 30px" type="submit" class="btn btn-secondary" name="deleteAcc" style="margin-top: 10px">Delete</button>
+                    <button type="submit" class="btn btn-secondary" name="deleteAcc" style="margin-top: 10px">Delete</button>
                 </form>
             </div>
 

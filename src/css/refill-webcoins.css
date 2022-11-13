@@ -8,14 +8,11 @@
   width: 100%;
   background-color: rgb(253, 240, 213);
   display: flex;
-}
-
-.sidebar-container {
   padding: 40px;
 }
 
 .form-container {
-  margin-top: 40px;
+  margin-left: 40px;
 }
 
 @media screen and (max-width: 720px) {

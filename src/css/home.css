@@ -8,9 +8,6 @@
   width: 100%;
   background-color: rgb(253, 240, 213);
   display: flex;
-}
-
-.sidebar-container {
   padding: 40px;
 }
 
@@ -19,6 +16,7 @@
   flex-direction: column;
   justify-content: center;
   width: 250px;
+  margin-left: 40px;
 }
 
 .form-container input {
