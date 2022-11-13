@@ -15,6 +15,7 @@
         $productId = $_GET['id'];
     }
 
+    
     // get product name, brand, price, units_in_storage from product id
     try {
         $stmt = $conn->query("SELECT * FROM Product where id = '$productId'");
