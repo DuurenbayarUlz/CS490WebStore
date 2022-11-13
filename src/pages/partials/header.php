@@ -67,6 +67,8 @@ $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
         .header-navigation {
             width: 100%;
             margin-right: 0;
+            justify-content: flex-end;
+            margin-right: 30px;
         }
 
         .form-control {

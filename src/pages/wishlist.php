@@ -247,7 +247,6 @@ if (!isset($_SESSION["email"])) {
 <body>
   <div id="root">
     <?php include("partials/header.php") ?>
-    <?php include("partials/menu.php") ?>
 
     <div class="catalog">
       <?php include("../pages/partials/sidebar.php") ?>

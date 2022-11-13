@@ -1,7 +1,7 @@
 <style>
     .footer {
         width: 100%;
-        height: 30vh;
+        height: 22vh;
         padding: 20px;
         display: flex;
         background-color: orange;
