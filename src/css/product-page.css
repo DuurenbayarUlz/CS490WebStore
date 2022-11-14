@@ -86,7 +86,6 @@
 .catalog-item {
   display: flex;
   flex-direction: column;
-  height: 220px;
   width: 160px;
   border-radius: 10px;
   border: 1px solid grey;
@@ -100,7 +99,6 @@
 
 .catalog-item-description {
   width: 100%;
-  height: 90px;
   display: flex;
   flex-direction: column;
   border-radius: 0px 0px 10px 10px;
@@ -184,6 +182,10 @@
 }
 
 @media screen and (max-width: 960px) {
+  .product-container{
+    padding:5%;
+  }
+  
   .product-section {
     flex-direction: column;
   }
@@ -223,7 +225,6 @@
 
   .catalog-item {
     margin-right: 0px;
-    height: 210px;
     width: 140px;
   }
 
