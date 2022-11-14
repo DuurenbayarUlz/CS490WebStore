@@ -7,8 +7,15 @@ require_once("connection.php");
  *  FUNCTIONS IMPLEMENTED by Thanh Vu
  */
 
+$isSignedIn = isset($_SESSION["email"]);
+$userId = $_SESSION["userid"] ?? '';
+
 try {
-  $stmt = $conn->query("SELECT * FROM Product");
+ 
+  $sql = ($isSignedIn) 
+                        ? "SELECT * FROM Product LEFT JOIN ProductFavorite ON ProductFavorite.product_id = Product.id AND user_id = $userId" 
+                        : "SELECT * FROM Product"; 
+  $stmt = $conn->query($sql);
 
   // Get id product name, brand, price, image_path from product Id 
   while ($row = $stmt->fetch()) {
@@ -17,6 +24,7 @@ try {
     $productPrices[] = $row['price'];
     $productBrands[] = $row['brand'];
     $productImagePaths[] = $row['image_path'];
+    $productFavoriteIds[] = $row['product_id'];
   }
 } catch (PDOException $e) {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
@@ -29,7 +37,11 @@ try {
 try {
   if (!empty($_GET['category'])) {
     $category = $_GET['category'] ?? '';
-    $stmt = $conn->query("SELECT * FROM Product where category='$category'");
+
+    $sql = ($isSignedIn) 
+                        ? "SELECT * FROM (SELECT * FROM Product where category='$category') AS PC LEFT JOIN ProductFavorite on ProductFavorite.product_id = PC.id and user_id = $userId" 
+                        : "SELECT * FROM Product where category='$category'"; 
+    $stmt = $conn->query($sql);
 
     // Get id product name, brand, price, image_path from product Id 
     unset($productNames);
@@ -37,6 +49,7 @@ try {
     unset($productPrices);
     unset($productBrands);
     unset($productImagePaths);
+    unset($productFavoriteIds);
 
     while ($row = $stmt->fetch()) {
       $productIds[] =  $row['id'];
@@ -44,6 +57,7 @@ try {
       $productPrices[] = $row['price'];
       $productBrands[] = $row['brand'];
       $productImagePaths[] = $row['image_path'];
+      $productFavoriteIds[] = $row['product_id'];
     }
   }
 } catch (PDOException $e) {
@@ -72,22 +86,34 @@ if (!empty($_POST['max_price'])) {
  *  IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
  *   THANH VU 11/10/22
  */
-
+$checkCategory = (!empty($_GET['category']));
 $stars = 1;
 try {
-
   if (!empty($_POST['min_price'])) {
     $category = $_GET['category'] ?? '';
     $stars = $_POST['stars'] ?? 0;
     if ($stars == 0) {
-      $checkCategory = (!empty($_GET['category'])) ? "AND category = '$category'" : '';
-      $sql = "SELECT * FROM Product WHERE price between $min and $max " . $checkCategory;
-      // . $checkCategory;
+      if ($checkCategory && $isSignedIn) {
+        $sql = "SELECT * FROM (SELECT * FROM Product WHERE price between $min and $max AND category = '$category') AS PC LEFT JOIN ProductFavorite on ProductFavorite.product_id = PC.id and user_id = $userId";
+      } else if (!$checkCategory && $isSignedIn) {
+        $sql = "SELECT * FROM (SELECT * FROM Product WHERE price between $min and $max )  AS PC LEFT JOIN ProductFavorite on ProductFavorite.product_id = PC.id and user_id = $userId";
+      } else if ($checkCategory && !$isSignedIn) {
+        $sql = "SELECT * FROM Product WHERE price between $min and $max AND category = '$category'";
+      } else {
+        $sql = "SELECT * FROM Product WHERE price between $min and $max";
+      }
     } else {
-      $checkCategory = (!empty($_GET['category'])) ? "AND (Product.category = '$category')" : '';
-      $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path
-                from (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) " . $checkCategory . " GROUP BY product_id) as T
-            where T.RatingAverage between $stars and 5";
+      if ($checkCategory && $isSignedIn) {
+        $sql = "SELECT * FROM (SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path FROM (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes 
+        FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) AND (Product.category = 'Electronics') GROUP BY product_id) as T where T.RatingAverage between $stars and 5) AS PR LEFT JOIN ProductFavorite on ProductFavorite.product_id = PR.id and user_id = $userId";
+      } else if (!$checkCategory && $isSignedIn) {
+        $sql = "SELECT * FROM (SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path FROM (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes 
+        FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) GROUP BY product_id) as T where T.RatingAverage between $stars and 5) AS PR LEFT JOIN ProductFavorite on ProductFavorite.product_id = PR.id and user_id = $userId";
+      } else if ($checkCategory && !$isSignedIn) {
+        $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path from (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) AND (Product.category = '$category') GROUP BY product_id) as T where T.RatingAverage between $stars and 5";
+      } else {
+        $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path from (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) GROUP BY product_id) as T where T.RatingAverage between $stars and 5";
+      }
     }
     $stmt = $conn->query($sql);
     // Get id product name, brand, price, image_path from product Id 
@@ -96,12 +122,15 @@ try {
     unset($productPrices);
     unset($productBrands);
     unset($productImagePaths);
+    unset($productFavoriteIds);
+
     while ($row = $stmt->fetch()) {
       $productIds[] =  $row['id'];
       $productNames[] = $row['name'];
       $productPrices[] = $row['price'];
       $productBrands[] = $row['brand'];
       $productImagePaths[] = $row['image_path'];
+      $productFavoriteIds[] = $row['product_id'];
     }
   }
 } catch (PDOException $e) {
@@ -117,26 +146,29 @@ $search = "";
 try {
   if (!empty($_POST['search'])) {
     $search = $_POST['search'];
-    $stmt = $conn->query("SELECT * FROM Product where name like '%$search%'");
+    $sql = ($isSignedIn) 
+                        ? "SELECT * FROM (SELECT * FROM Product where name like '%$search%') AS PC LEFT JOIN ProductFavorite on ProductFavorite.product_id = PC.id and user_id = $userId" 
+                        : "SELECT * FROM Product where name like '%$search%'"; 
+    $stmt = $conn->query($sql);
     // Get id product name, brand, price, image_path from product Id 
     unset($productNames);
     unset($productIds);
     unset($productPrices);
     unset($productBrands);
     unset($productImagePaths);
+    unset($productFavoriteIds);
     while ($row = $stmt->fetch()) {
       $productIds[] =  $row['id'];
       $productNames[] = $row['name'];
       $productPrices[] = $row['price'];
       $productBrands[] = $row['brand'];
       $productImagePaths[] = $row['image_path'];
+      $productFavoriteIds[] = $row['product_id'];
     }
   }
 } catch (PDOException $e) {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
-
-
 
 
 // get product rating from product id:
@@ -371,7 +403,7 @@ $conn = null;
 
     <div class="catalog">
       <!-- slider begins -->
-    <!--  <div>
+      <div>
         <form method="post" action="">
           <div style="display: flex; flex-direction: column;">
             <div style="display: flex;  width:200px; justify-content: space-between; align-items: center;">
@@ -399,7 +431,7 @@ $conn = null;
             </div>
           </div>
         </form>
-      </div> -->
+      </div> 
       <!-- slider ends -->
 
       <div class="container px-4 px-lg-5 pt-5">
@@ -408,6 +440,7 @@ $conn = null;
           if (!empty($productNames)) {
             for ($i = 0; $i < count($productNames); $i++) {
               $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+              $productsInWishList = (!empty($productFavoriteIds[$i])) ? "<img src='../images/HeartIcon-Red.png' alt='heart-icon' height='12' width='12' />" : "<img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />";
               echo "
               <div class='col mb-5'>
                 <div class='catalog-item'>
@@ -417,7 +450,7 @@ $conn = null;
                   <div class='catalog-item-description'>
                     <div class='catalog-item-description-name'>
                       <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-                      <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+                      $productsInWishList
                     </div>
                 
                     <div class='catalog-item-description-brand'>
