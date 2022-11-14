@@ -404,7 +404,7 @@ $conn = null;
               <div class='col mb-5'>
                 <div class='catalog-item'>
                   <div class='catalog-item-image'>
-                    <img src='$productImagePaths[$i]' alt='Item' width='100%' height='130px' class='contain'/>
+                    <a href='product.php?id=$productIds[$i]'><img src='$productImagePaths[$i]' alt='Item' width='100%' height='130px' class='contain'/></a>
                   </div>
                   <div class='catalog-item-description'>
                     <div class='catalog-item-description-name'>
