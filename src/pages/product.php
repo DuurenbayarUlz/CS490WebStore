@@ -453,15 +453,16 @@ $conn = null;
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../css/product-page.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/product-page.css" />
     <title>Product</title>
 </head>
 
 <body>
     <?php include("partials/header.php") ?>
+    <?php include("partials/menu.php")?>
     <?php echo (!empty($messageProductExisted)) ? $messageProductExisted : ''; ?>
 
     <?php
@@ -469,7 +470,7 @@ $conn = null;
     echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
     echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';
     ?>
-
+<main style="background-color:rgb(253, 240, 213);">
     <div class="product-container">
         <div class="product-section">
             <div class="product-section-image">
@@ -484,6 +485,7 @@ $conn = null;
                 </div>
                 <div class="product-section-description-rating">
                     <h4>Rating: <?php echo $productAvgRating; ?>/5 <a style="font-size:medium; text-decoration:underline; margin-left:5px;" href="#review" ONCLICK="ShowAndHide()">Leave a review</a></h4>
+                    <div class="review-status">
                     <?php
                     switch ($buyAgainNum) {
                         case 0:
@@ -496,6 +498,7 @@ $conn = null;
                             echo "<p>$buyAgainNum people would buy this product again</p>";
                     }
                     ?>
+                    </div>
                 </div>
                 <div class="product-section-description-price">
                     <h4>Price: &curren;<?php echo $productPrice; ?></h4>
@@ -638,6 +641,7 @@ $conn = null;
             </div>
         </div>
     </div>
+</main>
     <?php include("partials/footer.php") ?>
 </body>
 
