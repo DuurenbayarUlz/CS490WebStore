@@ -444,6 +444,112 @@
     }
 
     $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
+    switch ($productAvgRating) {
+        case 0: 
+            $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;
+        case ($productAvgRating > 1 && $productAvgRating <= 1.5):
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;
+        case ($productAvgRating >= 1.5 &&$productAvgRating < 2):
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange-51-99' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;
+        case ($productAvgRating > 2 &&$productAvgRating <= 2.5):
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;
+        case ($productAvgRating >= 2.5 &&$productAvgRating < 3):
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange-51-99.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;
+        case ($productAvgRating > 3 &&$productAvgRating <= 3.5):
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;
+        case ($productAvgRating >= 3.5 &&$productAvgRating < 4):
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange-51-99.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;
+        case ($productAvgRating > 4 &&$productAvgRating <= 4.5):
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />";
+            break;
+        case ($productAvgRating > 4.5 &&$productAvgRating < 5):
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange-51-99.png' alt='star-rating' title='rating' />";
+            break;            
+          case 1:
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;  
+          case 2:
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;  
+          case 3:
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;  
+          case 4:
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+            break;  
+          case 5:
+            $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />
+            <img src='../images/star-orange.png' alt='star-rating' title='rating' />";
+            break;  
+          default: 
+            $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />
+            <img src='../images/star-white.png' alt='star-rating' title='rating' />";
+    }
 
     // Close connection to save resources
     $conn = null;
@@ -465,6 +571,7 @@
 
 <body>
       <?php include("partials/header.php") ?>
+      <?php include("partials/menu.php")?>
 
         <!-- IF THERE IS AN ERROR for the user or password information, then display this --> 
         <?php 
@@ -473,6 +580,7 @@
             echo (!empty($messageVoteCasted)) ?  $messageVoteCasted : '';
             echo (!empty($messageRateFirst)) ?  $messageRateFirst : '';  
         ?>
+<main style="background-color:rgb(253, 240, 213);">
         <!-- END display error -->
     <div class="product-container">
         <div class="product-section">
@@ -487,20 +595,21 @@
                     <h3>Brand: <?php echo $productBrand; ?></h3>
                 </div>
                 <div class="product-section-description-rating">
-                    <h4>Rating: <?php echo $productAvgRating; ?>/5 <a style="font-size:medium; text-decoration:underline; margin-left:5px;" href="#review" ONCLICK="ShowAndHide()">Leave a review</a></h4>
-                        <br>
+                    <h4>Rating: <?php echo $ratingDisplay; ?> <?php echo $productAvgRating; ?>/5 [<?php echo $voteCount; ?> Reviews] <a style="font-size:medium; text-decoration:underline; margin-left:5px;" href="#review" ONCLICK="ShowAndHide()">Leave a review</a></h4>
+                    <div class="review-status" <?php echo $displayNone ?>>
                         <?php
                             switch ($buyAgainNum) {
                                 case 0:
-                                    echo '<p>No one answered whether to buy this product again</p>';
+                                    echo '<p>No one answered whether they would buy this product again</p>';
                                     break;
-                                case 1: 
-                                    echo '<p>1 person said he would buy this product again</p>';
+                                case 1:
+                                    echo '<p>1 person would buy this product again</p>';
                                     break;
-                                default: 
+                                default:
                                     echo "<p>$buyAgainNum people would buy this product again</p>";
-                            }  
+                            }
                         ?>
+                    </div>
                 </div>
                 <div class="product-section-description-price">
                     <h4>Price: &curren;<?php echo $productPrice; ?></h4>
@@ -644,6 +753,7 @@
         </div>
         <!-- END VOTING SECTION -->
             </div>
+</main>
         <?php include("partials/footer.php") ?>
 
 </body>
