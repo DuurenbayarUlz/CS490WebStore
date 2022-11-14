@@ -24,7 +24,9 @@ try {
     $productPrices[] = $row['price'];
     $productBrands[] = $row['brand'];
     $productImagePaths[] = $row['image_path'];
-    $productFavoriteIds[] = $row['product_id'];
+    if ($isSignedIn){
+      $productFavoriteIds[] = $row['product_id'];
+    }
   }
 } catch (PDOException $e) {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
@@ -57,7 +59,10 @@ try {
       $productPrices[] = $row['price'];
       $productBrands[] = $row['brand'];
       $productImagePaths[] = $row['image_path'];
-      $productFavoriteIds[] = $row['product_id'];
+      if ($isSignedIn) {
+        $productFavoriteIds[] = $row['product_id'];
+      }
+      
     }
   }
 } catch (PDOException $e) {
@@ -130,7 +135,9 @@ try {
       $productPrices[] = $row['price'];
       $productBrands[] = $row['brand'];
       $productImagePaths[] = $row['image_path'];
-      $productFavoriteIds[] = $row['product_id'];
+      if($isSignedIn) {
+        $productFavoriteIds[] = $row['product_id'];
+      }
     }
   }
 } catch (PDOException $e) {
@@ -163,7 +170,10 @@ try {
       $productPrices[] = $row['price'];
       $productBrands[] = $row['brand'];
       $productImagePaths[] = $row['image_path'];
-      $productFavoriteIds[] = $row['product_id'];
+      
+      if($isSignedIn) {
+        $productFavoriteIds[] = $row['product_id'];
+      }
     }
   }
 } catch (PDOException $e) {
@@ -441,6 +451,9 @@ $conn = null;
             for ($i = 0; $i < count($productNames); $i++) {
               $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
               $productsInWishList = (!empty($productFavoriteIds[$i])) ? "<img src='../images/HeartIcon-Red.png' alt='heart-icon' height='12' width='12' />" : "<img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />";
+              if (!$isSignedIn) {
+                $productsInWishList = '';
+              }
               echo "
               <div class='col mb-5'>
                 <div class='catalog-item'>
