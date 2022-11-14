@@ -428,17 +428,6 @@ $conn = null;
               $productsInWishList = (!empty($productFavoriteIds[$i])) 
                                 ? "<input type='image' src='../images/HeartIcon-Red.png' alt='heart-icon' height='12' width='12'>" 
                                 : "<input type='image' src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12'>";
-              // $productsInWishList = (!empty($productFavoriteIds[$i])) 
-              //                   ? "<form action='' method='post'>
-              //                        <!-- Hidden input -->
-              //                        <input type='hidden' name='id' value='$productIds[$i]'>
-              //                        <input type='image' src='../images/HeartIcon-Red.png' alt='heart-icon' height='12' width='12' $displayNone>
-              //                      </form>" 
-              //                   : "<form action='' method='post'>
-              //                         <!-- Hidden input -->
-              //                         <input type='hidden' name='id' value='$productIds[$i]'>
-              //                         <input type='image' src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone>
-              //                      </form>";
               if (!$isSignedIn) {
                 $productsInWishList = '';
               }
