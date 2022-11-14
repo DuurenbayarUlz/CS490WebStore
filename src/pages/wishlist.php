@@ -1,11 +1,11 @@
 <?php
 session_start();
 require_once("connection.php");
-
 if (!isset($_SESSION["email"])) {
   header("Location: signin.php");
 }
 
+// get email of logged in user
 $userId = $_SESSION["userid"];
 
 /**
@@ -90,142 +90,143 @@ $voteCounts;
 $ratingDisplays;
 
 
-try {
-  $productNums = (!empty($productIds)) ? count($productIds) : 0;
-  for ($i = 0; $i < $productNums; $i++) {
-    $stmt = $conn->query("SELECT AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND Product.id = $productIds[$i]");
-    $result = $stmt->fetch();
+    try {
+        $productNums = (!empty($productIds)) ? count($productIds) : 0;
+        for ($i = 0; $i < $productNums; $i++) { 
+          $stmt = $conn->query("SELECT AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND Product.id = $productIds[$i]");
+          $result = $stmt->fetch();
+          
+          $productAvgRating = empty($result['RatingAverage']) ? 0 : number_format($result['RatingAverage'], 2, '.', '');
+          $voteCount = $result['Votes'];
 
-    $productAvgRating = empty($result['RatingAverage']) ? 0 : number_format($result['RatingAverage'], 2, '.', '');
-    $voteCount = $result['Votes'];
-
-    switch ($productAvgRating) {
-      case 0:
-        $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />                <img src='../images/star-white.png' alt='star-rating' title='rating' />
+          switch ($productAvgRating) {
+            case 0: 
+                $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />                <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case ($productAvgRating > 1 && $productAvgRating <= 1.5):
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;
+            case ($productAvgRating > 1 && $productAvgRating <= 1.5):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case ($productAvgRating >= 1.5 && $productAvgRating < 2):
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;
+            case ($productAvgRating >= 1.5 &&$productAvgRating < 2):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange-51-99' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case ($productAvgRating > 2 && $productAvgRating <= 2.5):
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;
+            case ($productAvgRating > 2 &&$productAvgRating <= 2.5):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case ($productAvgRating >= 2.5 && $productAvgRating < 3):
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;
+            case ($productAvgRating >= 2.5 &&$productAvgRating < 3):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange-51-99.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case ($productAvgRating > 3 && $productAvgRating <= 3.5):
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;
+            case ($productAvgRating > 3 &&$productAvgRating <= 3.5):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case ($productAvgRating >= 3.5 && $productAvgRating < 4):
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;
+            case ($productAvgRating >= 3.5 &&$productAvgRating < 4):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange-51-99.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case ($productAvgRating > 4 && $productAvgRating <= 4.5):
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;
+            case ($productAvgRating > 4 &&$productAvgRating <= 4.5):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange-half.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case ($productAvgRating > 4.5 && $productAvgRating < 5):
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;
+            case ($productAvgRating > 4.5 &&$productAvgRating < 5):
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange-51-99.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case 1:
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;            
+              case 1:
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case 2:
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;  
+              case 2:
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case 3:
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;  
+              case 3:
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case 4:
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;  
+              case 4:
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      case 5:
-        $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;  
+              case 5:
+                $ratingDisplay = "<img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />
                 <img src='../images/star-orange.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
-        break;
-      default:
-        $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />
+                $ratingDisplays[] = $ratingDisplay;
+                break;  
+              default: 
+                $ratingDisplay = "<img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />
                 <img src='../images/star-white.png' alt='star-rating' title='rating' />";
-        $ratingDisplays[] = $ratingDisplay;
+                $ratingDisplays[] = $ratingDisplay;
+        }
+  
+          $productAvgRatings[] = $productAvgRating;
+          $voteCounts[] = $voteCount;
+        }
+        
+    } catch(PDOException $e) {
+        header("Location: error.php?error=Connection failed:" . $e->getMessage());
     }
-
-    $productAvgRatings[] = $productAvgRating;
-    $voteCounts[] = $voteCount;
-  }
-} catch (PDOException $e) {
-  header("Location: error.php?error=Connection failed:" . $e->getMessage());
-}
 
 // Close connection to save resources
 $conn = null;

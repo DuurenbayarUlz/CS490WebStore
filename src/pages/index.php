@@ -22,7 +22,10 @@ try {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
-// IMPLEMENT CATEGORY FUNCTION
+/**
+ *  IMPLEMENT SHOWING BY CATEGORY
+ */
+
 try {
   if (!empty($_GET['category'])) {
     $category = $_GET['category'] ?? '';
@@ -48,7 +51,11 @@ try {
 }
 
 
-//  IMPLEMENT SLIDER FILTER PRICE FUNCTION
+/**
+ *  IMPLEMENT SLIDER FILTER PRICE FUNCTION
+ */
+
+// Set default value for min and max
 $min = 1;
 $max = 200;
 
@@ -61,7 +68,11 @@ if (!empty($_POST['max_price'])) {
 }
 
 
-// IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
+/**
+ *  IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
+ *   THANH VU 11/10/22
+ */
+
 $stars = 1;
 try {
 
@@ -98,7 +109,10 @@ try {
 }
 
 
-// IMPLEMENT SEARCH BAR FUNCTION
+/**
+ *  IMPLEMENT SEARCH BAR
+ */
+ 
 $search = "";
 try {
   if (!empty($_POST['search'])) {
@@ -125,7 +139,7 @@ try {
 
 
 
-// GET PRODUCT RATING
+// get product rating from product id:
 $productAvgRatings;
 $voteCounts;
 $ratingDisplays;
@@ -275,7 +289,12 @@ $heartColor = "WHITE";
 
 
 
-// IMPLEMENT ADD TO WISHLIST FUNCTIONALITY
+/**
+ * IMPLEMENT ADD TO WISHLIST 
+ *  Thanh Vu 11/03/2022
+ * 11/04/2012 Added missing userId check in SQL query
+ */
+
 try {
   // Case 1: if vote is selected but user is not signed in
   if (!empty($_POST['id']) && !isset($_SESSION["email"])) {
@@ -352,7 +371,7 @@ $conn = null;
 
     <div class="catalog">
       <!-- slider begins -->
-      <!-- <div>
+    <!--  <div>
         <form method="post" action="">
           <div style="display: flex; flex-direction: column;">
             <div style="display: flex;  width:200px; justify-content: space-between; align-items: center;">

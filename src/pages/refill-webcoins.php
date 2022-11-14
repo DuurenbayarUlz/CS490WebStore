@@ -83,10 +83,12 @@ $conn = null;
                     <option value=100>100</option>
                 </select>
                 <br>
+            <!-- IF ERROR, DISPLAY THIS --> 
                 <?php
-                echo (!empty($messageRefilled)) ? $messageRefilled : '';
+              	echo (!empty($messageRefilled)) ? $messageRefilled : '';
                 ?>
 
+            <!-- END display error -->  
                 <button type="submit" value="Submit" class="btn btn-secondary" style="margin-top: 10px">Add</button>
             </form>
         </div>
