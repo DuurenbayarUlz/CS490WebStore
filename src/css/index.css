@@ -73,17 +73,36 @@ p {
   font-size: 8px;
 }
 
-.filter-amount {
-  background-color: red;
+.filter-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 10px;
 }
 
-@media screen and (max-width: 960px) {
-  .header-navigation p {
-    font-size: 14px;
-    margin-left: 5px;
-  }
+.filter-amount {
+  display: flex;
+  align-items: center;
+}
 
-  .menu button {
-    min-width: 120px;
+.catalog ol {
+  padding: 0px;
+  margin: 0px;
+}
+
+@media screen and (max-width: 450px) {
+  .catalog-item {
+    height: 230px;
+    width: 160px;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .filter-container {
+    flex-direction: column;
   }
 }
