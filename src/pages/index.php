@@ -22,10 +22,7 @@ try {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
-/**
- *  IMPLEMENT SHOWING BY CATEGORY
- */
-
+// IMPLEMENT CATEGORY FUNCTION
 try {
   if (!empty($_GET['category'])) {
     $category = $_GET['category'] ?? '';
@@ -51,11 +48,7 @@ try {
 }
 
 
-/**
- *  IMPLEMENT SLIDER FILTER PRICE FUNCTION
- */
-
-// Set default value for min and max
+//  IMPLEMENT SLIDER FILTER PRICE FUNCTION
 $min = 1;
 $max = 200;
 
@@ -68,11 +61,7 @@ if (!empty($_POST['max_price'])) {
 }
 
 
-/**
- *  IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
- *   THANH VU 11/10/22
- */
-
+// IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
 $stars = 1;
 try {
 
@@ -109,10 +98,7 @@ try {
 }
 
 
-/**
- *  IMPLEMENT SEARCH BAR
- */
- 
+// IMPLEMENT SEARCH BAR FUNCTION
 $search = "";
 try {
   if (!empty($_POST['search'])) {
@@ -139,7 +125,7 @@ try {
 
 
 
-// get product rating from product id:
+// GET PRODUCT RATING
 $productAvgRatings;
 $voteCounts;
 $ratingDisplays;
@@ -289,12 +275,7 @@ $heartColor = "WHITE";
 
 
 
-/**
- * IMPLEMENT ADD TO WISHLIST 
- *  Thanh Vu 11/03/2022
- * 11/04/2012 Added missing userId check in SQL query
- */
-
+// IMPLEMENT ADD TO WISHLIST FUNCTIONALITY
 try {
   // Case 1: if vote is selected but user is not signed in
   if (!empty($_POST['id']) && !isset($_SESSION["email"])) {
@@ -370,40 +351,51 @@ $conn = null;
     <?php include("partials/menu.php") ?>
 
     <div class="catalog">
-      <!-- slider begins -->
-    <!--  <div>
-        <form method="post" action="">
-          <div style="display: flex; flex-direction: column;">
-            <div style="display: flex;  width:200px; justify-content: space-between; align-items: center;">
-              <div style="display: flex">
-                <p>Min</p>
-                <input style="width: 50px; height: 25px; border-radius: 8px; padding-left: 10px" type="" id="min" class="filter-amount" name="min_price" value="<?php echo $min; ?>">
-              </div>
-              <div style="display: flex">
-                <p>Max</p>
-                <input style="width: 50px; height: 25px; border-radius: 8px; padding-left: 10px" type="" id="max" name="max_price" value="<?php echo $max; ?>">
+      <div style="padding-top: 10px;">
+        <details>
+          <summary>Filter the product</summary>
+          <ol type="A">
+            <form method="post" action="">
+              <div class="filter-container">
+                <div class="filter-amount">
+                  <div style="display:flex">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Min</span>
+                    </div>
+                    <input type="text" class="form-control" type="" style="width:60px; margin-right:10px" aria-describedby="inputGroup-sizing-sm" id="min" class="filter-amount" name="min_price" value="<?php echo $min; ?>">
+                  </div>
+                  <div id="slider-range" style="width: 120px"></div>
+                  <div style="display: flex">
+                    <div class="input-group-prepend" style="margin-left:10px">
+                      <span class="input-group-text" id="inputGroup-sizing-sm">Max</span>
+                    </div>
+                    <input type="text" class="form-control" type="" style="width:60px" aria-describedby="inputGroup-sizing-sm" id="max" name="max_price" value="<?php echo $max; ?>">
+                  </div>
+                </div>
+                <div style="margin-top: 10px">
+                  <select class="custom-select" name="stars" id="stars" value>
+                    <option value="0" selected disabled hidden>Rating</option>
+                    <option value=4>4 Stars & Up</option>
+                    <option value=3>3 Stars & Up</option>
+                    <option value=2>2 Stars & Up</option>
+                    <option value=1>1 Star & Up</option>
+                    <option value=0>Include No Rating</option>
+                  </select>
+                  <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
+                </div>
               </div>
 
-            </div>
-            <div id="slider-range" style="width: 180px"></div>
-            <div style="margin-top: 10px;">
-              <select name="stars" id="stars" value>
-                <option value="0" selected disabled hidden>Select a Rating</option>
-                <option value=4>4 Stars & Up</option>
-                <option value=3>3 Stars & Up</option>
-                <option value=2>2 Stars & Up</option>
-                <option value=1>1 Star & Up</option>
-                <option value=0>Include No Rating</option>
-              </select>
-              <button style='width: 80px' type='submit'> Submit </button>
-            </div>
-          </div>
-        </form>
-      </div> -->
+            </form>
+          </ol>
+        </details>
+      </div>
+      <!-- slider begins -->
+      <div>
+      </div>
       <!-- slider ends -->
 
       <div class="container px-4 px-lg-5 pt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6">
           <?php
           if (!empty($productNames)) {
             for ($i = 0; $i < count($productNames); $i++) {
