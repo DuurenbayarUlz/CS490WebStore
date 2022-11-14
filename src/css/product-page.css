@@ -1,3 +1,7 @@
+.alert{
+  margin-bottom: 0 !important;
+}
+
 .product-container {
   width: 100%;
   display: flex;
