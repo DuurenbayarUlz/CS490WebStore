@@ -7,6 +7,9 @@
 
 .product-section {
   display: flex;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
 }
 
 .product-section-image {
@@ -92,6 +95,7 @@
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   margin-right: 30px;
+  background-color: white;
 }
 
 .catalog-item-description {
@@ -99,7 +103,6 @@
   height: 90px;
   display: flex;
   flex-direction: column;
-  background-color: white;
   border-radius: 0px 0px 10px 10px;
   padding: 5px;
 }
