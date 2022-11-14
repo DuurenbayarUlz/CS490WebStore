@@ -344,10 +344,17 @@ try {
     // Case 2: if vote is selected
   } elseif (!empty($_POST['id']) && isset($_SESSION["userid"])) {
     $userId = $_SESSION["userid"];
-    $productId = $_POST['id'];;
+    $productId = $_POST['id'];
     $stmt = $conn->query("SELECT * FROM ProductFavorite where product_id = $productId AND user_id = $userId");
     if ($stmt->rowCount() > 0) {
-      echo "<h2> Product already exists in WishList. Go to <a href='wishlist.php'>Wish Lists.</a> </h2>";
+      $conn->beginTransaction();
+      $sql = ("DELETE FROM ProductFavorite WHERE product_id = ? AND user_id = ?");
+      $statement = $conn->prepare($sql);
+      $statement->bindValue(1, $productId);
+      $statement->bindValue(2, $userId);
+      $statement->execute();
+      $conn->commit();
+      $productFavoriteIds[$productId - 1] = NULL;
     } else {
       $conn->beginTransaction();
       $sql = ("INSERT INTO ProductFavorite (user_id, product_id) VALUES (?, ?)");
@@ -357,7 +364,7 @@ try {
       $statement->execute();
       $conn->commit();
       $heartColor = "red";
-      echo "<h2> Added this product to WishList. Go to <a href='wishlist.php'>Wishlist.</a> </h2>";
+      $productFavoriteIds[$productId - 1] = $productId;
     }
   }
 } catch (PDOException $e) {
@@ -450,7 +457,17 @@ $conn = null;
           if (!empty($productNames)) {
             for ($i = 0; $i < count($productNames); $i++) {
               $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
-              $productsInWishList = (!empty($productFavoriteIds[$i])) ? "<img src='../images/HeartIcon-Red.png' alt='heart-icon' height='12' width='12' />" : "<img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />";
+              $productsInWishList = (!empty($productFavoriteIds[$i])) 
+                                ? "<form action='' method='post'>
+                                     <!-- Hidden input -->
+                                     <input type='hidden' name='id' value='$productIds[$i]'>
+                                     <input type='image' src='../images/HeartIcon-Red.png' alt='heart-icon' height='12' width='12' $displayNone>
+                                   </form>" 
+                                : "<form action='' method='post'>
+                                      <!-- Hidden input -->
+                                      <input type='hidden' name='id' value='$productIds[$i]'>
+                                      <input type='image' src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' $displayNone>
+                                   </form>";
               if (!$isSignedIn) {
                 $productsInWishList = '';
               }
@@ -468,7 +485,6 @@ $conn = null;
                 
                     <div class='catalog-item-description-brand'>
                       <p>$productBrands[$i]</p>
-                      <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
                     </div>
                 
                     <div class='catalog-item-description-star'>
