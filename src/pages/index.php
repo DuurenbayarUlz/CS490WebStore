@@ -387,14 +387,14 @@ $conn = null;
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="inputGroup-sizing-sm">Min</span>
                     </div>
-                    <input type="text" class="form-control" type="" style="width:60px; margin-right:10px" aria-describedby="inputGroup-sizing-sm" id="min" class="filter-amount" name="min_price" value="<?php echo $min; ?>">
+                    <input type="number" class="form-control" type="" style="width:95px; margin-right:10px" aria-describedby="inputGroup-sizing-sm" id="min" class="filter-amount" name="min_price" value="<?php echo $min; ?>">
                   </div>
                   <div id="slider-range" style="width: 120px"></div>
                   <div style="display: flex">
                     <div class="input-group-prepend" style="margin-left:10px">
                       <span class="input-group-text" id="inputGroup-sizing-sm">Max</span>
                     </div>
-                    <input type="text" class="form-control" type="" style="width:60px" aria-describedby="inputGroup-sizing-sm" id="max" name="max_price" value="<?php echo $max; ?>">
+                    <input type="number" class="form-control" type="" style="width:95px" aria-describedby="inputGroup-sizing-sm" id="max" name="max_price" value="<?php echo $max; ?>">
                   </div>
                 </div>
                 <div style="margin-top: 10px">
