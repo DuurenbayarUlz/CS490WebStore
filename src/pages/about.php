@@ -25,12 +25,16 @@ require_once("connection.php");
       <div class="column">
         <div class="card">
           <div class="container">
-            <div style="height:120px; display:flex; justify-content:center; align-items:center">
-              <h2>Duure</h2>
+            <img src="https://hips.hearstapps.com/hmg-prod/images/hlh070121fobtoc-001-1623949349.png" alt="dom" height="200px" width="100%">
+            <div style="padding: 8px">
+              <div style="display:flex; justify-content:center">
+                <h2>Duure</h2>
+              </div>
+              <p class="title">Front-End Lead & Back-End Dev</p>
+              <p>Year: Senior</p>
+              <p>Major: CS & Econ</p>
             </div>
-            <p class="title">Front-End Lead & Back-End Dev</p>
-            <p>Year: Senior</p>
-            <p>Major: CS & Econ</p>
+
           </div>
         </div>
       </div>

@@ -91,6 +91,15 @@ p {
   padding: 0px;
   margin: 0px;
 }
+.form-wrapper {
+  padding-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.form-wrapper p {
+  font-size: 12px;
+}
 
 @media screen and (max-width: 450px) {
   .catalog-item {
@@ -102,5 +111,9 @@ p {
 @media screen and (max-width: 720px) {
   .filter-container {
     flex-direction: column;
+  }
+
+  .slider-form-desktop {
+    display: none;
   }
 }
