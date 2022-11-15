@@ -3,6 +3,10 @@
   padding: 0;
 }
 
+.alert{
+  margin-bottom: 0 !important;
+}
+
 .account-container {
   min-height: 70vh;
   width: 100%;

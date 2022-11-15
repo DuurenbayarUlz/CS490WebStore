@@ -25,32 +25,26 @@ try {
 /**
  * IMPLEMENT CHANGE USERNAME
  */
-$email = "";
+$fullName = "";
 
 if (!empty($_POST['email'])){
-  $email = $_POST['email'];
-  $stmt = $conn->query("SELECT email FROM User WHERE email = '$email'");
-    if ($stmt->rowCount() > 0) {
-        echo "<div class='alert alert-warning alert-dismissable'>
-                          <a href='home.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                          <strong>Error: </strong> Username $email has been taken!
-                        </div>";
-    } else {
+  $fullName = $_POST['email'];
+  $stmt = $conn->query("SELECT full_name FROM User WHERE full_name = '$fullName'");
+  
         $conn->beginTransaction();
-        $sql = ("UPDATE User SET email = ? where id = ?");
+        $sql = ("UPDATE User SET full_name = ? where id = ?");
         $statement = $conn->prepare($sql);
-        $statement->bindValue(1, $email);
+        $statement->bindValue(1, $fullName);
         $statement->bindValue(2, $userId);
         $statement->execute();
         $conn->commit();
 
         echo "<div class='alert alert-warning alert-dismissable'>
                           <a href='home.php' class='close' data-dismiss='alert' aria-label='close'>&times;</a> 
-                          Changed Username successfully to $email
+                          Changed Username successfully to $fullName
                         </div>";
-        unset($_SESSION["email"]);
-        $_SESSION["email"] = $email;
-     }
+        unset($_SESSION['username']);
+        $_SESSION["username"] = $fullName;
 }
 
 /**
@@ -106,10 +100,32 @@ try {
 try {
   if (isset($_POST['deleteAcc'])) {
     $conn->beginTransaction(); 
-    $sql = ("DELETE FROM User WHERE id = ?");
+    
+    $sql = ("DELETE FROM ProductFavorite WHERE user_id = ?");
     $statement = $conn->prepare($sql);
     $statement->bindValue(1, $userId);
     $statement->execute();
+    $sql = ("DELETE FROM ProductRating WHERE user_id = ?");
+    $statement = $conn->prepare($sql);
+    $statement->bindValue(1, $userId);
+    $statement->execute();
+
+    $sql = ("DELETE FROM OrderDetails WHERE user_id = ?");
+    $statement = $conn->prepare($sql);
+    $statement->bindValue(1, $userId);
+    $statement->execute();
+
+    $sql = ("DELETE FROM Cart WHERE user_id = ?");
+    $statement = $conn->prepare($sql);
+    $statement->bindValue(1, $userId);
+    $statement->execute();
+
+
+    $sqlUser = ("DELETE FROM User WHERE id = ?");
+    $statement = $conn->prepare($sql);
+    $statement->bindValue(1, $userId);
+    $statement->execute();
+
     $conn->commit(); 
 
     session_destroy();
@@ -155,8 +171,8 @@ $conn = null;
             </div>
             <div>
                 <form method="post" action="">
-                    <p style="margin-top: 30px">Change Username:</p>
-                    <input type="email" name="email" class="form-control" placeholder="new username" required />
+                    <p style="margin-top: 30px">Change Full Name:</p>
+                    <input type="text" name="email" class="form-control" placeholder="new username" required />
                     <button type="submit" class="btn btn-secondary" style="margin-top: 10px">Submit</button>
                 </form>
                 <form method="post" action="">

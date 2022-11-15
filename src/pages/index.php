@@ -7,8 +7,15 @@ require_once("connection.php");
  *  FUNCTIONS IMPLEMENTED by Thanh Vu
  */
 
+$isSignedIn = isset($_SESSION["email"]);
+$userId = $_SESSION["userid"] ?? '';
+
 try {
-  $stmt = $conn->query("SELECT * FROM Product");
+ 
+  $sql = ($isSignedIn) 
+                        ? "SELECT * FROM Product LEFT JOIN ProductFavorite ON ProductFavorite.product_id = Product.id AND user_id = $userId" 
+                        : "SELECT * FROM Product"; 
+  $stmt = $conn->query($sql);
 
   // Get id product name, brand, price, image_path from product Id 
   while ($row = $stmt->fetch()) {
@@ -17,16 +24,27 @@ try {
     $productPrices[] = $row['price'];
     $productBrands[] = $row['brand'];
     $productImagePaths[] = $row['image_path'];
+    if ($isSignedIn){
+      $productFavoriteIds[] = $row['product_id'];
+    }
   }
+
 } catch (PDOException $e) {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
-// IMPLEMENT CATEGORY FUNCTION
+/**
+ *  IMPLEMENT SHOWING BY CATEGORY
+ */
+
 try {
   if (!empty($_GET['category'])) {
     $category = $_GET['category'] ?? '';
-    $stmt = $conn->query("SELECT * FROM Product where category='$category'");
+
+    $sql = ($isSignedIn) 
+                        ? "SELECT * FROM (SELECT * FROM Product where category='$category') AS PC LEFT JOIN ProductFavorite on ProductFavorite.product_id = PC.id and user_id = $userId" 
+                        : "SELECT * FROM Product where category='$category'"; 
+    $stmt = $conn->query($sql);
 
     // Get id product name, brand, price, image_path from product Id 
     unset($productNames);
@@ -34,6 +52,7 @@ try {
     unset($productPrices);
     unset($productBrands);
     unset($productImagePaths);
+    unset($productFavoriteIds);
 
     while ($row = $stmt->fetch()) {
       $productIds[] =  $row['id'];
@@ -41,6 +60,10 @@ try {
       $productPrices[] = $row['price'];
       $productBrands[] = $row['brand'];
       $productImagePaths[] = $row['image_path'];
+      if ($isSignedIn) {
+        $productFavoriteIds[] = $row['product_id'];
+      }
+      
     }
   }
 } catch (PDOException $e) {
@@ -48,7 +71,11 @@ try {
 }
 
 
-//  IMPLEMENT SLIDER FILTER PRICE FUNCTION
+/**
+ *  IMPLEMENT SLIDER FILTER PRICE FUNCTION
+ */
+
+// Set default value for min and max
 $min = 1;
 $max = 200;
 
@@ -61,22 +88,38 @@ if (!empty($_POST['max_price'])) {
 }
 
 
-// IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
+/**
+ *  IMPLEMENT OPTIONS FILTER AVERAGE RATING FUNCTION
+ *   THANH VU 11/10/22
+ */
+$checkCategory = (!empty($_GET['category']));
 $stars = 1;
 try {
-
   if (!empty($_POST['min_price'])) {
     $category = $_GET['category'] ?? '';
     $stars = $_POST['stars'] ?? 0;
     if ($stars == 0) {
-      $checkCategory = (!empty($_GET['category'])) ? "AND category = '$category'" : '';
-      $sql = "SELECT * FROM Product WHERE price between $min and $max " . $checkCategory;
-      // . $checkCategory;
+      if ($checkCategory && $isSignedIn) {
+        $sql = "SELECT * FROM (SELECT * FROM Product WHERE price between $min and $max AND category = '$category') AS PC LEFT JOIN ProductFavorite on ProductFavorite.product_id = PC.id and user_id = $userId";
+      } else if (!$checkCategory && $isSignedIn) {
+        $sql = "SELECT * FROM (SELECT * FROM Product WHERE price between $min and $max )  AS PC LEFT JOIN ProductFavorite on ProductFavorite.product_id = PC.id and user_id = $userId";
+      } else if ($checkCategory && !$isSignedIn) {
+        $sql = "SELECT * FROM Product WHERE price between $min and $max AND category = '$category'";
+      } else {
+        $sql = "SELECT * FROM Product WHERE price between $min and $max";
+      }
     } else {
-      $checkCategory = (!empty($_GET['category'])) ? "AND (Product.category = '$category')" : '';
-      $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path
-                from (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) " . $checkCategory . " GROUP BY product_id) as T
-            where T.RatingAverage between $stars and 5";
+      if ($checkCategory && $isSignedIn) {
+        $sql = "SELECT * FROM (SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path FROM (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes 
+        FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) AND (Product.category = 'Electronics') GROUP BY product_id) as T where T.RatingAverage between $stars and 5) AS PR LEFT JOIN ProductFavorite on ProductFavorite.product_id = PR.id and user_id = $userId";
+      } else if (!$checkCategory && $isSignedIn) {
+        $sql = "SELECT * FROM (SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path FROM (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes 
+        FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) GROUP BY product_id) as T where T.RatingAverage between $stars and 5) AS PR LEFT JOIN ProductFavorite on ProductFavorite.product_id = PR.id and user_id = $userId";
+      } else if ($checkCategory && !$isSignedIn) {
+        $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path from (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) AND (Product.category = '$category') GROUP BY product_id) as T where T.RatingAverage between $stars and 5";
+      } else {
+        $sql = "SELECT T.RatingAverage, T.id, T.name, T.price, T.brand, T.image_path from (SELECT id, name, price, brand, image_path, AVG(Rating) as RatingAverage, COUNT(Rating) as Votes FROM ProductRating INNER JOIN Product ON ProductRating.product_id = Product.id AND (Product.price between $min and $max) GROUP BY product_id) as T where T.RatingAverage between $stars and 5";
+      }
     }
     $stmt = $conn->query($sql);
     // Get id product name, brand, price, image_path from product Id 
@@ -85,12 +128,17 @@ try {
     unset($productPrices);
     unset($productBrands);
     unset($productImagePaths);
+    unset($productFavoriteIds);
+
     while ($row = $stmt->fetch()) {
       $productIds[] =  $row['id'];
       $productNames[] = $row['name'];
       $productPrices[] = $row['price'];
       $productBrands[] = $row['brand'];
       $productImagePaths[] = $row['image_path'];
+      if($isSignedIn) {
+        $productFavoriteIds[] = $row['product_id'];
+      }
     }
   }
 } catch (PDOException $e) {
@@ -98,24 +146,35 @@ try {
 }
 
 
-// IMPLEMENT SEARCH BAR FUNCTION
+/**
+ *  IMPLEMENT SEARCH BAR
+ */
+ 
 $search = "";
 try {
   if (!empty($_POST['search'])) {
     $search = $_POST['search'];
-    $stmt = $conn->query("SELECT * FROM Product where name like '%$search%'");
+    $sql = ($isSignedIn) 
+                        ? "SELECT * FROM (SELECT * FROM Product where name like '%$search%') AS PC LEFT JOIN ProductFavorite on ProductFavorite.product_id = PC.id and user_id = $userId" 
+                        : "SELECT * FROM Product where name like '%$search%'"; 
+    $stmt = $conn->query($sql);
     // Get id product name, brand, price, image_path from product Id 
     unset($productNames);
     unset($productIds);
     unset($productPrices);
     unset($productBrands);
     unset($productImagePaths);
+    unset($productFavoriteIds);
     while ($row = $stmt->fetch()) {
       $productIds[] =  $row['id'];
       $productNames[] = $row['name'];
       $productPrices[] = $row['price'];
       $productBrands[] = $row['brand'];
       $productImagePaths[] = $row['image_path'];
+      
+      if($isSignedIn) {
+        $productFavoriteIds[] = $row['product_id'];
+      }
     }
   }
 } catch (PDOException $e) {
@@ -123,9 +182,7 @@ try {
 }
 
 
-
-
-// GET PRODUCT RATING
+// get product rating from product id:
 $productAvgRatings;
 $voteCounts;
 $ratingDisplays;
@@ -270,38 +327,6 @@ try {
   header("Location: error.php?error=Connection failed:" . $e->getMessage());
 }
 
-$productId = "";
-$heartColor = "WHITE";
-
-
-
-// IMPLEMENT ADD TO WISHLIST FUNCTIONALITY
-try {
-  // Case 1: if vote is selected but user is not signed in
-  if (!empty($_POST['id']) && !isset($_SESSION["email"])) {
-    header("Location: signin.php");
-    // Case 2: if vote is selected
-  } elseif (!empty($_POST['id']) && isset($_SESSION["userid"])) {
-    $userId = $_SESSION["userid"];
-    $productId = $_POST['id'];;
-    $stmt = $conn->query("SELECT * FROM ProductFavorite where product_id = $productId AND user_id = $userId");
-    if ($stmt->rowCount() > 0) {
-      echo "<h2> Product already exists in WishList. Go to <a href='wishlist.php'>Wish Lists.</a> </h2>";
-    } else {
-      $conn->beginTransaction();
-      $sql = ("INSERT INTO ProductFavorite (user_id, product_id) VALUES (?, ?)");
-      $statement = $conn->prepare($sql);
-      $statement->bindValue(1, $userId);
-      $statement->bindValue(2, $productId);
-      $statement->execute();
-      $conn->commit();
-      $heartColor = "red";
-      echo "<h2> Added this product to WishList. Go to <a href='wishlist.php'>Wishlist.</a> </h2>";
-    }
-  }
-} catch (PDOException $e) {
-  header("Location: error.php?error=Connection failed:" . $e->getMessage());
-}
 
 // Set display to none if user is not logged in
 $displayNone = (!isset($_SESSION["email"]))  ? "style='display:none'" : '';
@@ -351,70 +376,72 @@ $conn = null;
     <?php include("partials/menu.php") ?>
 
     <div class="catalog">
-      <div style="padding-top: 10px;">
+      <div style="padding-top: 10px;display: flex;justify-content: center;">
         <details>
-          <summary>Filter the product</summary>
+            <summary>Click Here To Filter Products</summary>
           <ol type="A">
-            <form method="post" action="">
-              <div class="filter-container">
-                <div class="filter-amount">
-                  <div style="display:flex">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">&curren; Min </span>
-                    </div>
-                    <input type="text" class="form-control" type="" style="width:60px; margin-right:10px" aria-describedby="inputGroup-sizing-sm" id="min" class="filter-amount" name="min_price" value="<?php echo $min; ?>">
-                  </div>
-                  <div id="slider-range" style="width: 120px"></div>
-                  <div style="display: flex">
-                    <div class="input-group-prepend" style="margin-left:10px">
-                      <span class="input-group-text" id="inputGroup-sizing-sm">&curren; Max</span>
-                    </div>
-                    <input type="text" class="form-control" type="" style="width:60px" aria-describedby="inputGroup-sizing-sm" id="max" name="max_price" value="<?php echo $max; ?>">
-                  </div>
-                </div>
-                <div style="margin-top: 10px">
-                  <select class="custom-select" name="stars" id="stars" value>
-                    <option value="0" selected disabled hidden>Rating filter</option>
-                    <option value=4>4 Stars & Up</option>
-                    <option value=3>3 Stars & Up</option>
-                    <option value=2>2 Stars & Up</option>
-                    <option value=1>1 Star & Up</option>
-                    <option value=0>Include No Rating</option>
-                  </select>
-                  <button type="submit" class="btn btn-secondary btn-sm">Submit</button>
-                </div>
+            <form method="post" action="" style="border: 2px solid black; background:  white; padding: 15px 30px;">  
+            <div class="slider-form">
+              <strong><p>Filter By Price:</strong> <br>(Move both ends of slider or input prices)</p>
+              <div class='slider' style="display:flex;justify-content: center">
+                <div id="slider-range" style="width: 300px;"></div>              
               </div>
-
+              <div class='slider-min' style="display:flex; padding-top: 10px">
+                <span class="input-group-text" id="inputGroup-sizing-sm" style="background-color:white;border:none">Input Min Price: </span>
+                <input type="number" class="form-control" type="" style="width:80px; margin-right:10px" aria-describedby="inputGroup-sizing-sm" id="min" class="filter-amount" name="min_price" value="<?php echo $min; ?>">
+              </div>
+              <br>
+              <div class='slider-max' style="display: flex">
+                <span class="input-group-text" id="inputGroup-sizing-sm" style="background-color:white;border:none">Input Max Price: </span>
+                <input type="number" class="form-control" type="" style="width:80px" aria-describedby="inputGroup-sizing-sm" id="max" name="max_price" value="<?php echo $max; ?>">
+              </div>
+            <div class="price-form">
+              <br>
+              <strong><p>Filter by Average Rating:</p></strong>
+              <div style="margin-top: 10px">
+                <select class="custom-select" name="stars" id="stars" value>
+                  <option value="0" selected disabled hidden>Select A Rating Range</option>
+                  <option value=4>4 Stars & Up</option>
+                  <option value=3>3 Stars & Up</option>
+                  <option value=2>2 Stars & Up</option>
+                  <option value=1>1 Star & Up</option>
+                  <option value=0>No Rating & Up</option>
+                </select><br>
+              <br>
+              <button type="submit" class="btn btn-secondary btn-sm" style="background-color: #212529; /* Black */ border: none; color: white; padding: 5px 10px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;">Submit</button>
+              </div>
+              </div>
+            </div>
             </form>
           </ol>
         </details>
       </div>
-      <!-- slider begins -->
-      <div>
-      </div>
-      <!-- slider ends -->
-
       <div class="container px-4 px-lg-5 pt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6">
           <?php
           if (!empty($productNames)) {
             for ($i = 0; $i < count($productNames); $i++) {
               $productRateMess = ($voteCounts[$i] > 1) ? $voteCounts[$i] . ' rates' :  $voteCounts[$i] . ' rate';
+              $productsInWishList = (!empty($productFavoriteIds[$i])) 
+                                ? "<input type='image' src='../images/HeartIcon-Red.png' alt='heart-icon' height='12' width='12'>" 
+                                : "<input type='image' src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12'>";
+              if (!$isSignedIn) {
+                $productsInWishList = '';
+              }
               echo "
               <div class='col mb-5'>
                 <div class='catalog-item'>
                   <div class='catalog-item-image'>
-                    <a href='product.php?id=$productIds[$i]'><img src='$productImagePaths[$i]' alt='Item' width='100%' height='130px' class='contain'/></a>
+                    <img src='$productImagePaths[$i]' alt='Item' width='100%' height='130px' class='contain'/>
                   </div>
                   <div class='catalog-item-description'>
                     <div class='catalog-item-description-name'>
                       <a href='product.php?id=$productIds[$i]'><p>$productNames[$i]</p></a>
-                      <img src='../images/HeartIcon.png' alt='heart-icon' height='12' width='12' />
+                      $productsInWishList
                     </div>
                 
                     <div class='catalog-item-description-brand'>
                       <p>$productBrands[$i]</p>
-                      <img src='../images/PointerIcon.png' alt='heart-icon' height='12' width='13' />
                     </div>
                 
                     <div class='catalog-item-description-star'>
