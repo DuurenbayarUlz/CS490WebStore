@@ -43,6 +43,12 @@ html {
   min-height: 300px;
 }
 
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .container::after,
 .row::after {
   content: "";

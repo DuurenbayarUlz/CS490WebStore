@@ -79,6 +79,7 @@ require_once("connection.php");
           <div class="container">
             <div style="height:120px; display:flex; justify-content:center; align-items:center">
               <h2>Sophie</h2>
+              <img src="images/Sophie.jpg" alt="Sophie" class=".center">
             </div>
             <p class="title">UI/UX Lead</p>
             <p>Year: Sophomore</p>
